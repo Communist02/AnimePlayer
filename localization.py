@@ -16,7 +16,7 @@ en = {
     'About': 'About',
     'Quality': 'Quality',
     'Mode': 'Mode',
-    'About program': 'Media player written in Python programming language using PySimpleGUI library for graphical user interface, MPV media player and Anime4K scaling algorithm',
+    'About program': 'Media player written in Python programming language using PySimpleGUI library for graphical user interface, mpv media player and Anime4K scaling algorithm',
     'Activate SVP': 'Activate SVP',
     'Create config for Android': 'Create config for Android'
 }
@@ -37,7 +37,7 @@ ru = {
     'About': 'О программе',
     'Quality': 'Качество',
     'Mode': 'Режим',
-    'About program': 'Медиаплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySimpleGUI, мультимедийного проигрывателя MPV и алгоритма масштабирования Anime4K',
+    'About program': 'Медиаплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySimpleGUI, мультимедийного проигрывателя mpv и алгоритма масштабирования Anime4K',
     'Activate SVP': 'Активировать SVP',
     'Create config for Android': 'Создать конфиг для Android'
 }

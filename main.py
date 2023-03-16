@@ -42,7 +42,7 @@ menu = [
 
 col_files = [
     [
-        sg.Frame('Информация', key='-INFO-', layout=[[sg.Text('', key='-VIDEO_INFO-')]],
+        sg.Frame('Информация', key='-INFO-', layout=[[sg.Text('', key='-MEDIA_INFO-')]],
                  expand_x=True)
     ],
     [
@@ -57,7 +57,7 @@ panel = [
                   disable_number_display=True)
     ],
     [
-        sg.Text('00:00 / 00:00', key='-VIDEO_TIME-'),
+        sg.Text('00:00 / 00:00', key='-MEDIA_TIME-'),
         sg.Button('<<', size=(5, 1)),
         sg.Button('ИГРАТЬ', key='-PLAY-', size=(8, 1)),
         sg.Button('>>', size=(5, 1)),
@@ -104,7 +104,7 @@ while True:
         player.volume = values['-VOLUME-']
     elif event == '-TIME-' and player.duration is not None:
         player.time_pos = values['-TIME-']
-        window['-VIDEO_TIME-'].update(value="{:02d}:{:02d} / {:02d}:{:02d}".format(*divmod(int(player.time_pos), 60),
+        window['-MEDIA_TIME-'].update(value="{:02d}:{:02d} / {:02d}:{:02d}".format(*divmod(int(player.time_pos), 60),
                                                                                    *divmod(int(player.duration), 60)))
     elif event in '>>' and filenum < len(files) - 1:
         filenum += 1
@@ -178,12 +178,13 @@ while True:
             player.hwdec_codecs = 'all'
             player.hr_seek_framedrop = False
     elif event == '-FILELIST-':
-        if len(filenames_only) > 1:
-            filename_temp = os.path.join(folder, values['-FILELIST-'][0].split(' ', 1)[-1])
-            if filename != filename_temp or filenum < 0:
-                filename = filename_temp
-                filenum = files.index(filename)
-                player.play(filename)
+        if len(filenames_only) >= 1:
+            if len(filenames_only) > 1 or len(values['-FILELIST-'][0]) > 1 and values['-FILELIST-'][0][1] == ')':
+                filename_temp = os.path.join(folder, values['-FILELIST-'][0].split(' ', 1)[-1])
+                if filename != filename_temp or filenum < 0:
+                    filename = filename_temp
+                    filenum = files.index(filename)
+                    player.play(filename)
     # ----------------- Верхнее меню -----------------
     if event == loc['Open file']:
         file = sg.popup_get_file('Выберите файл', no_window=True, icon=icon,
@@ -250,14 +251,14 @@ while True:
         with open(f'{os.path.dirname(__file__) + os.sep}doc{os.sep}GLSL_Instructions_Advanced_ru.txt', 'r',
                   encoding='utf-8') as file:
             reference = file.read()
-        sg.popup_scrolled(reference, size=(200, 0), title=loc['Reference'], icon=icon, font='Consolas')
+        sg.popup_scrolled(reference, size=(180, 0), title=loc['Reference'], icon=icon, font='Consolas')
     elif event == loc['Create config for Android']:
         config_layout = [
             [sg.Text(
-                'Этот конфиг вы можете использовать алгоритм Anime4K в видеоплеере mpv на андроид')],
+                'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид')],
             [sg.Text('Введите путь до шейдеров')],
             [sg.Input('/storage/emulated/0/mpv/shaders/')],
-            [sg.Text('Выберите конфигурацию')],
+            [sg.Text('Выберите конфигурацию алгоритма')],
             [sg.Combo(modes, readonly=True)],
             [sg.OK(size=(6, 1)), sg.Button('Все', size=(6, 1))]
         ]
@@ -289,24 +290,28 @@ while True:
     duration = player.duration
     time_pos = player.time_pos
     codec = player.video_format if player.video_format is not None else player.audio_codec_name
-    fps = round(player.estimated_vf_fps, 1) if player.estimated_vf_fps is not None else player.estimated_vf_fps
+    fps = round(player.estimated_vf_fps, 1) if player.estimated_vf_fps is not None else None
+    str_resolution = f'{player.width}x{player.height}' if player.width is not None else ''
+    str_fps = f'{fps} FPS' if fps is not None else '0.0 FPS' if str_resolution != '' else ''
+    str_codec = f'{codec}' if codec is not None else ''
+    str_frame_drop = f'Потеряно кадров:  {player.frame_drop_count}' if player.frame_drop_count is not None else ''
 
     # Обновление имени файла
     window['-INFO-'].update(value=folder)
-    # Обновление информации о кодеке и потерянных файлах
-    window['-VIDEO_INFO-'].update(
-        f'{player.width}x{player.height}|{fps} FPS|{codec}|Потеряно кадров: {player.frame_drop_count}')
+    # Обновление информации о разрешении, FPS, кодеке и потерянных кадрах
+    window['-MEDIA_INFO-'].update(
+        '|'.join([string for string in [str_resolution, str_fps, str_codec, str_frame_drop] if string != '']))
     # Обновление кнопки ИГРАТЬ
     if duration is not None and player.pause and window['-PLAY-'] != 'ИГРАТЬ':
         window['-PLAY-'].update('ИГРАТЬ')
     # Обновление ползунка прокрутки и времени
     if duration is not None and time_pos is not None:
-        window['-VIDEO_TIME-'].update(value="{:02d}:{:02d} / {:02d}:{:02d}".format(*divmod(int(time_pos), 60),
+        window['-MEDIA_TIME-'].update(value="{:02d}:{:02d} / {:02d}:{:02d}".format(*divmod(int(time_pos), 60),
                                                                                    *divmod(int(duration), 60)))
         window['-TIME-'].update(range=(0, duration), value=time_pos)
     else:
         window['-TIME-'].update(range=(0, 0), value=0)
-        window['-VIDEO_TIME-'].update(value='00:00 / 00:00')
+        window['-MEDIA_TIME-'].update(value='00:00 / 00:00')
 
     if not window['-LEFT_PAD-'].visible:
         if window.mouse_location()[1] < 300:
