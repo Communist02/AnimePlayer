@@ -7,7 +7,7 @@ from localization import strings as loc
 sg.theme('DarkBlue9')
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'mp4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
-version = '0.2.1 Alpha'
+version = '0.2.2 Alpha'
 
 
 def list_files():
@@ -40,17 +40,6 @@ menu = [
     [loc['Other'], [loc['Reference'], loc['Activate SVP'], loc['Create config for Android'], loc['About']]]
 ]
 
-col_files = [
-    [
-        sg.Frame('Информация', key='-INFO-', layout=[[sg.Text('', key='-MEDIA_INFO-')]],
-                 expand_x=True)
-    ],
-    [
-        sg.Listbox(values=filenames_only, size=(50, 1000), key='-FILELIST-', enable_events=True, horizontal_scroll=True,
-                   font='Consolas 10')
-    ]
-]
-
 panel = [
     [
         sg.Slider(orientation='h', key='-TIME-', enable_events=True, expand_x=True, range=(0, 0),
@@ -80,6 +69,17 @@ col = [
     ]
 ]
 
+col_files = [
+    [
+        sg.Frame('Информация', key='-INFO-', layout=[[sg.Text('', key='-MEDIA_INFO-')]],
+                 expand_x=True)
+    ],
+    [
+        sg.Listbox(values=filenames_only, size=(50, 1000), key='-FILELIST-', enable_events=True, horizontal_scroll=True,
+                   font='Consolas 10', select_mode=sg.LISTBOX_SELECT_MODE_BROWSE, bind_return_key=False)
+    ]
+]
+
 layout = [
     [
         sg.Menu(menu, key='-MENUBAR-', font='Consolas 10'),
@@ -90,9 +90,10 @@ layout = [
 
 window = sg.Window('Anime Player', layout, icon=icon, resizable=True, finalize=True, font='Consolas 11',
                    size=(980, 540), margins=(0, 0), return_keyboard_events=True)
+window['-FILELIST-'].Widget.bind('<KeyPress>', 'break')
 
-player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), profile='gpu-hq', scale='ewa_lanczossharp',
-                          cscale='ewa_lanczossharp', dscale='ewa_lanczossharp', keep_open=True)
+player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), profile='gpu-hq', scale='ewa_lanczos',
+                          cscale='ewa_lanczos', dscale='ewa_lanczos', keep_open=True)
 
 while True:
     event, values = window.read(timeout=100)
@@ -119,7 +120,7 @@ while True:
         else:
             filenum = 0
             window['-FILELIST-'].update(set_to_index=filenum, scroll_to_index=filenum)
-    elif event in ('-PLAY-', loc['Play | Pause']):
+    elif event in ('-PLAY-', loc['Play | Pause'], ' '):
         if filename != '':
             if player.duration is None:
                 player.play(filename)
@@ -150,7 +151,6 @@ while True:
             window['-LEFT_PAD-'].update(visible=True)
             window['-VID_OUT-'].update(visible=True)
             window['-RIGHT_PAD-'].update(visible=True)
-        # Нужно понять как отличить аудио от видео
         # if player.duration is not None:
         #     player.wid = -1
         #     player.vo = 'null'
@@ -184,8 +184,28 @@ while True:
                     filename = filename_temp
                     filenum = files.index(filename)
                     player.play(filename)
+    # ------------------ Клавиатура ------------------
+    elif event == 'Right:39' and player.time_pos is not None:
+        player.time_pos += 5
+    elif event == 'Left:37' and player.time_pos is not None:
+        if player.time_pos > 5:
+            player.time_pos -= 5
+        else:
+            player.time_pos = 0
+    elif event == 'Up:38':
+        if player.volume > 95:
+            player.volume = 100
+        else:
+            player.volume += 5
+        window['-VOLUME-'].update(value=player.volume)
+    elif event == 'Down:40':
+        if player.volume < 5:
+            player.volume = 0
+        else:
+            player.volume -= 5
+        window['-VOLUME-'].update(value=player.volume)
     # ----------------- Верхнее меню -----------------
-    if event == loc['Open file']:
+    elif event == loc['Open file']:
         file = sg.popup_get_file('Выберите файл', no_window=True, icon=icon,
                                  file_types=(('Все поддерживаемые файлы', ' '.join(['.' + f for f in formats])),))
         if file != '' and file is not None:

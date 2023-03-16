@@ -474,7 +474,7 @@ class MpvEventHook(Structure):
     _fields_ = [('_name', c_char_p),
                 ('id', c_ulonglong),]
 
-    
+
     @property
     def name(self):
         return self._name.decode("utf-8")
@@ -616,7 +616,9 @@ def _mpv_coax_proptype(value, proptype=str):
 
 def _make_node_str_list(l):
     """Take a list of python objects and make a MPV string node array from it.
+
     As an example, the python list ``l = [ "foo", 23, false ]`` will result in the following MPV node object::
+
         struct mpv_node {
             .format = MPV_NODE_ARRAY,
             .u.list = *(struct mpv_node_array){
@@ -824,18 +826,22 @@ class FileOverlay:
 class MPV(object):
     """See man mpv(1) for the details of the implemented commands. All mpv properties can be accessed as
     ``my_mpv.some_property`` and all mpv options can be accessed as ``my_mpv['some-option']``.
+
     By default, properties are returned as decoded ``str`` and an error is thrown if the value does not contain valid
     utf-8. To get a decoded ``str`` if possibly but ``bytes`` instead of an error if not, use
     ``my_mpv.lazy.some_property``. To always get raw ``bytes``, use ``my_mpv.raw.some_property``.  To access a
     property's decoded OSD value, use ``my_mpv.osd.some_property``.
+
     To get API information on an option, use ``my_mpv.option_info('option-name')``. To get API information on a
     property, use ``my_mpv.properties['property-name']``. Take care to use mpv's dashed-names instead of the
     underscore_names exposed on the python object.
+
     To make your program not barf hard the first time its used on a weird file system **always** access properties
     containing file names or file tags through ``MPV.raw``.  """
 
     def __init__(self, *extra_mpv_flags, log_handler=None, start_event_thread=True, loglevel=None, **extra_mpv_opts):
         """Create an MPV instance.
+
         Extra arguments and extra keyword arguments will be passed to mpv as options.
         """
 
@@ -1068,10 +1074,13 @@ class MPV(object):
         """Context manager that waits for the indicated event(s) like wait_for_event after running. If cond is given,
         waits until cond(event) is true. Raises a ShutdownError if the core is shutdown while waiting. This also happens
         when 'shutdown' is in event_types. Re-raises any error inside ``cond``.
+
         Compared to wait_for_event this handles the case where a thread waits for an event it itself causes in a
         thread-safe way. An example from the testsuite is:
+
         with self.m.prepare_and_wait_for_event('client_message'):
             self.m.keypress(key)
+
         Using just wait_for_event it would be impossible to ensure the event is caught since it may already have been
         handled in the interval between keypress(...) running and a subsequent wait_for_event(...) call.
         """
@@ -1115,6 +1124,7 @@ class MPV(object):
     def terminate(self):
         """Properly terminates this player instance. Preferably use this instead of relying on python's garbage
         collector to cause this to be called from the object's destructor.
+
         This method will detach the main libmpv handle and wait for mpv to shut down and the event thread to finish.
         """
         self.handle, handle = None, self.handle
@@ -1133,6 +1143,7 @@ class MPV(object):
         """Set MPV's log level. This adjusts which output will be sent to this object's log handlers. If you just want
         mpv's regular terminal output, you don't need to adjust this but just need to pass a log handler to the MPV
         constructur such as ``MPV(log_handler=print)``.
+
         Valid log levels are "no", "fatal", "error", "warn", "info", "v" "debug" and "trace". For details see your mpv's
         client.h header file.
         """
@@ -1147,7 +1158,9 @@ class MPV(object):
         """Same as mpv_command, but run the command asynchronously. If you provide a callback, that callback will be
         called after completion or on error. This method returns a future that evaluates to the result of the callback
         (if given), and the result of the libmpv call otherwise.
+
         Usage example:
+
             future = player.command_async(...)
             try:
                 print('The result was', future.result())
@@ -1498,12 +1511,16 @@ class MPV(object):
         value every time the property's value is changed. The basic function signature is ``fun(property_name,
         new_value)`` with new_value being the decoded property value as a python object. This function can be used as a
         function decorator if no handler is given.
+
         To unregister the observer, call either of ``mpv.unobserve_property(name, handler)``,
         ``mpv.unobserve_all_properties(handler)`` or the handler's ``unobserve_mpv_properties`` attribute::
+
             @player.property_observer('volume')
             def my_handler(property_name, new_volume):
                 print("It's loud!", new_volume)
+
             my_handler.unobserve_mpv_properties()
+
         exit_handler is a function taking no arguments that is called when the underlying mpv handle is terminated (e.g.
         from calling MPV.terminate() or issuing a "quit" input command).
         """
@@ -1535,12 +1552,16 @@ class MPV(object):
     def register_message_handler(self, target, handler=None):
         """Register a mpv script message handler. This can be used to communicate with embedded lua scripts. Pass the
         script message target name this handler should be listening to and the handler function.
+
         WARNING: Only one handler can be registered at a time for any given target.
+
         To unregister the message handler, call its ``unregister_mpv_messages`` function::
+
             player = mpv.MPV()
             @player.message_handler('foo')
             def my_handler(some, args):
                 print(args)
+
             my_handler.unregister_mpv_messages()
         """
         self._register_message_handler_internal(target, handler)
@@ -1550,6 +1571,7 @@ class MPV(object):
 
     def unregister_message_handler(self, target_or_handler):
         """Unregister a mpv script message handler for the given script message target name.
+
         You can also call the ``unregister_mpv_messages`` function attribute set on the handler function when it is
         registered.
         """
@@ -1562,12 +1584,16 @@ class MPV(object):
 
     def message_handler(self, target):
         """Decorator to register a mpv script message handler.
+
         WARNING: Only one handler can be registered at a time for any given target.
+
         To unregister the message handler, call its ``unregister_mpv_messages`` function::
+
             player = mpv.MPV()
             @player.message_handler('foo')
             def my_handler(some, args):
                 print(args)
+
             my_handler.unregister_mpv_messages()
         """
         def register(handler):
@@ -1578,11 +1604,14 @@ class MPV(object):
 
     def register_event_callback(self, callback):
         """Register a blanket event callback receiving all event types.
+
         To unregister the event callback, call its ``unregister_mpv_events`` function::
+
             player = mpv.MPV()
             @player.event_callback('shutdown')
             def my_handler(event):
                 print('It ded.')
+
             my_handler.unregister_mpv_events()
         """
         self._event_callbacks.append(callback)
@@ -1594,12 +1623,16 @@ class MPV(object):
     def event_callback(self, *event_types):
         """Function decorator to register a blanket event callback for the given event types. Event types can be given
         as str (e.g.  'start-file'), integer or MpvEventID object.
+
         WARNING: Due to the way this is filtering events, this decorator cannot be chained with itself.
+
         To unregister the event callback, call its ``unregister_mpv_events`` function::
+
             player = mpv.MPV()
             @player.event_callback('shutdown')
             def my_handler(event):
                 print('It ded.')
+
             my_handler.unregister_mpv_events()
         """
         def register(callback):
@@ -1622,15 +1655,20 @@ class MPV(object):
     def on_key_press(self, keydef, mode='force'):
         """Function decorator to register a simplified key binding. The callback is called whenever the key given is
         *pressed*.
+
         To unregister the callback function, you can call its ``unregister_mpv_key_bindings`` attribute::
+
             player = mpv.MPV()
             @player.on_key_press('Q')
             def binding():
                 print('blep')
+
             binding.unregister_mpv_key_bindings()
+
         WARNING: For a single keydef only a single callback/command can be registered at the same time. If you register
         a binding multiple times older bindings will be overwritten and there is a possibility of references leaking. So
         don't do that.
+
         The BIG FAT WARNING regarding untrusted keydefs from the key_binding method applies here as well.
         """
         def register(fun):
@@ -1644,19 +1682,26 @@ class MPV(object):
 
     def key_binding(self, keydef, mode='force'):
         """Function decorator to register a low-level key binding.
+
         The callback function signature is ``fun(key_state, key_name)`` where ``key_state`` is either ``'U'`` for "key
         up" or ``'D'`` for "key down".
+
         The keydef format is: ``[Shift+][Ctrl+][Alt+][Meta+]<key>`` where ``<key>`` is either the literal character the
         key produces (ASCII or Unicode character), or a symbolic name (as printed by ``mpv --input-keylist``).
+
         To unregister the callback function, you can call its ``unregister_mpv_key_bindings`` attribute::
+
             player = mpv.MPV()
             @player.key_binding('Q')
             def binding(state, name, char):
                 print('blep')
+
             binding.unregister_mpv_key_bindings()
+
         WARNING: For a single keydef only a single callback/command can be registered at the same time. If you register
         a binding multiple times older bindings will be overwritten and there is a possibility of references leaking. So
         don't do that.
+
         BIG FAT WARNING: mpv's key binding mechanism is pretty powerful.  This means, you essentially get arbitrary code
         exectution through key bindings. This interface makes some limited effort to sanitize the keydef given in the
         first parameter, but YOU SHOULD NOT RELY ON THIS IN FOR SECURITY. If your input comes from config files, this is
@@ -1714,29 +1759,38 @@ class MPV(object):
     def register_stream_protocol(self, proto, open_fn=None):
         """ Register a custom stream protocol as documented in libmpv/stream_cb.h:
             https://github.com/mpv-player/mpv/blob/master/libmpv/stream_cb.h
+
             proto is the protocol scheme, e.g. "foo" for "foo://" urls.
+
             This function can either be used with two parameters or it can be used as a decorator on the target
             function.
+
             open_fn is a function taking an URI string and returning an mpv stream object.
             open_fn may raise a ValueError to signal libmpv the URI could not be opened.
+
             The mpv stream protocol is as follows:
             class Stream:
                 @property
                 def size(self):
                     return None # unknown size
                     return size # int with size in bytes
+
                 def read(self, size):
                     ...
                     return read # non-empty bytes object with input
                     return b'' # empty byte object signals permanent EOF
+
                 def seek(self, pos): # optional
                     return new_offset # integer with new byte offset. The new offset may be before the requested offset
                     in case an exact seek is inconvenient.
+
                 def close(self): # optional
                     ...
+
                 def cancel(self): # optional
                     Abort a running read() or seek() operation
                     ...
+
         """
 
         def decorator(open_fn):
@@ -1852,14 +1906,20 @@ class MPV(object):
 
     def python_stream(self, name=None, size=None):
         """Register a generator for the python stream with the given name.
+
         name is the name, i.e. the part after the "python://" in the URI, that this generator is registered as.
         size is the total number of bytes in the stream (if known).
+
         Any given name can only be registered once. The catch-all can also only be registered once. To unregister a
         stream, call the .unregister function set on the callback.
+
         The generator signals EOF by returning, manually raising StopIteration or by yielding b'', an empty bytes
         object.
+
         The generator may be called multiple times if libmpv seeks or loops.
+
         See also: @mpv.python_stream_catchall
+
         @mpv.python_stream('foobar')
         def reader():
             for chunk in chunks:
@@ -1884,12 +1944,16 @@ class MPV(object):
     def python_stream_catchall(self, cb):
         """ Register a catch-all python stream to be called when no name matches can be found. Use this decorator on a
         function that takes a name argument and returns a (generator, size) tuple (with size being None if unknown).
+
         An invalid URI can be signalled to libmpv by raising a ValueError inside the callback.
+
         See also: @mpv.python_stream(name, size)
+
         @mpv.python_stream_catchall
         def catchall(name):
             if not name.startswith('foo'):
                 raise ValueError('Unknown Name')
+
             def foo_reader():
                 with open(name, 'rb') as f:
                     while True:
