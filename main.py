@@ -60,9 +60,9 @@ panel = [
 
 col = [
     [
-        sg.Image(key='-LEFT_PAD-', pad=(2, 0)),
+        sg.Image(key='-LEFT_PAD-', pad=(0, 0), size=(4, 0)),
         sg.Image(key='-VID_OUT-', expand_x=True, expand_y=True, pad=(0, 0)),
-        sg.Image(key='-RIGHT_PAD-', pad=(2, 0))
+        sg.Image(key='-RIGHT_PAD-', pad=(0, 0), size=(4, 0))
     ],
     [
         sg.Frame('', key='-PANEL-', layout=panel, expand_x=True)
@@ -76,7 +76,7 @@ col_files = [
     ],
     [
         sg.Listbox(values=filenames_only, size=(50, 1000), key='-FILELIST-', enable_events=True, horizontal_scroll=True,
-                   font='Consolas 10', select_mode=sg.LISTBOX_SELECT_MODE_BROWSE, bind_return_key=False)
+                   font='Consolas 10')
     ]
 ]
 
@@ -92,8 +92,8 @@ window = sg.Window('Anime Player', layout, icon=icon, resizable=True, finalize=T
                    size=(980, 540), margins=(0, 0), return_keyboard_events=True)
 window['-FILELIST-'].Widget.bind('<KeyPress>', 'break')
 
-player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), profile='gpu-hq', scale='ewa_lanczos',
-                          cscale='ewa_lanczos', dscale='ewa_lanczos', keep_open=True)
+player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, profile='gpu-hq', scale='spline64',
+                          cscale='spline64')
 
 while True:
     event, values = window.read(timeout=100)
