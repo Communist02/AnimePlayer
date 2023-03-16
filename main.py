@@ -7,7 +7,7 @@ from localization import strings as loc
 sg.theme('DarkBlue9')
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'mp4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
-version = '0.2.0 Alpha'
+version = '0.2.1 Alpha'
 
 
 def list_files():
@@ -34,9 +34,9 @@ for quality in anime4k.qualities:
 tabs += [f'{loc["Quality"]} UHQ', [f'{loc["Mode"]} {mode}' for mode in list(anime4k.presets.keys())[9:]]]
 
 menu = [
-    [loc['File'], [loc['Open file'], loc['Open URL'], loc['Open folder'], loc['Exit']]],
-    [loc['Playback'], [loc['Play | Pause'], loc['Fullscreen']]],
-    [loc['Increasing image quality'], [loc['Disable']] + tabs],
+    [loc['File'], [loc['Open file'], loc['Open URL'], loc['Open folder'], '---', loc['Exit']]],
+    [loc['Playback'], [loc['Play | Pause'], '---', loc['Fullscreen']]],
+    [loc['Increasing image quality'], [loc['Disable'], '---'] + tabs],
     [loc['Other'], [loc['Reference'], loc['Activate SVP'], loc['Create config for Android'], loc['About']]]
 ]
 
@@ -91,8 +91,7 @@ layout = [
 window = sg.Window('Anime Player', layout, icon=icon, resizable=True, finalize=True, font='Consolas 11',
                    size=(980, 540), margins=(0, 0), return_keyboard_events=True)
 
-player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), input_default_bindings=True,
-                          input_vo_keyboard=True, osc=True, profile='gpu-hq', scale='ewa_lanczossharp',
+player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), profile='gpu-hq', scale='ewa_lanczossharp',
                           cscale='ewa_lanczossharp', dscale='ewa_lanczossharp', keep_open=True)
 
 while True:
@@ -204,8 +203,7 @@ while True:
             player.play(file)
             window.refresh()
     elif event == loc['Open URL']:
-        link = sg.popup_get_text(
-            'Введите URL-адрес', title='Ввод ссылки', icon=icon, font='Consolas', size=(30, 40))
+        link = sg.popup_get_text('Введите URL-адрес', title='Ввод ссылки', icon=icon, font='Consolas', size=(30, 40))
         if link != '' and link is not None:
             player.pause = True
             player.stop()
@@ -221,8 +219,7 @@ while True:
             window.refresh()
     elif event == loc['Open folder']:
         new_folder = sg.popup_get_folder(
-            'Выберите папку с медиа', title='Выбор папки', icon=icon, font='Consolas', history=True,
-            size=(30, 40))
+            'Выберите папку с медиа', title='Выбор папки', icon=icon, font='Consolas', history=True, size=(30, 40))
         if new_folder != '' and new_folder is not None:
             new_folder = new_folder.replace('/', os.sep)
             player.pause = True
