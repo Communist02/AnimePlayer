@@ -16,9 +16,13 @@ en = {
     'About': 'About',
     'Quality': 'Quality',
     'Mode': 'Mode',
-    'About program': 'Media player written in Python programming language using PySimpleGUI library for graphical user interface, mpv media player and Anime4K scaling algorithm',
+    'About program': 'Media player written in Python programming language using PySimpleGUI library, mpv media player and Anime4K scaling algorithm',
     'Activate SVP': 'Activate SVP',
-    'Create config for Android': 'Create config for Android'
+    'Create config for Android': 'Create config for Android',
+    'PLAY': 'PLAY',
+    'PAUSE': 'PAUSE',
+    'FULL': 'FULL',
+    'MENU': 'MENU'
 }
 
 ru = {
@@ -39,7 +43,11 @@ ru = {
     'Mode': 'Режим',
     'About program': 'Медиаплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySimpleGUI, мультимедийного проигрывателя mpv и алгоритма масштабирования Anime4K',
     'Activate SVP': 'Активировать SVP',
-    'Create config for Android': 'Создать конфиг для Android'
+    'Create config for Android': 'Создать конфиг для Android',
+    'PLAY': 'ИГРАТЬ',
+    'PAUSE': 'ПАУЗА',
+    'FULL': 'ПОЛН',
+    'MENU': 'МЕНЮ'
 }
 
 match locale.getlocale()[0]:
