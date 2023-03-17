@@ -222,11 +222,15 @@ if len(args) > 1:
 
 while True:
     event, values = window.read(timeout=100)
+    if event is None:
+        break
+    else:
+        event = event.split('::', 1)[-1]
     # --------------------- Кнопки ---------------------
-    match event.split('::', 1)[-1]:
+    match event:
         case '__TIMEOUT__':
             pass
-        case (None | sg.WIN_CLOSED | '-EXIT-'):
+        case (sg.WIN_CLOSED | '-EXIT-'):
             break
         case '-VOLUME-':
             player.volume = values['-VOLUME-']
@@ -279,6 +283,9 @@ while True:
             else:
                 player.volume -= 5
             window['-VOLUME-'].update(value=player.volume)
+        case 'Escape:27':
+            if not window['-LEFT_PAD-'].visible:
+                Player.fullscreen()
         # ----------------- Верхнее меню -----------------
         case '-OPEN_FILE-':
             new_file = sg.popup_get_file('Выберите файл', no_window=True, icon=icon, file_types=(
@@ -301,7 +308,7 @@ while True:
         case _:
             if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
                 player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]])
-            elif event.split('::', 1)[-1] in modes:
+            elif event in modes:
                 quality = event.replace(')', '').split('(')[1]
                 mode = event.split(' ')[1]
                 player.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality, mode))
