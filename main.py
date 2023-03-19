@@ -7,8 +7,8 @@ import sys
 
 sg.theme('DarkBlue9')
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
-formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'mp4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
-version = '0.2.3 Alpha'
+formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
+version = '0.2.4 Alpha'
 args = sys.argv
 
 modes = []
@@ -21,12 +21,21 @@ for quality in anime4k.qualities:
 tabs += [f'{loc["Quality"]} UHQ', [f'{loc["Mode"]} {mode}' for mode in list(anime4k.ultra_hq_presets.keys())]]
 
 menu = [
-    [loc['File'],
-     [loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
-      '---', loc['Exit'] + '::-EXIT-']],
-    [loc['Playback'], [loc['Play | Pause'] + '::-TAB_PLAY-', '---', loc['Fullscreen'] + '::-TAB_FS-']],
-    [loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs],
-    [loc['Other'], [loc['Reference'], loc['Activate SVP'] + '::-SVP-', loc['Create config for Android'], loc['About']]]
+    [
+        loc['File'],
+        [loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
+         '---', loc['Exit'] + '::-EXIT-']
+    ],
+    [
+        loc['Playback'], [loc['Play | Pause'] + '::-TAB_PLAY-', '---', loc['Fullscreen'] + '::-TAB_FS-']
+    ],
+    [
+        loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs
+    ],
+    [
+        loc['Other'], [loc['Reference'] + '::-REFERENCE-', loc['Activate SVP'] + '::-SVP-',
+                       loc['Create config for Android'] + '::-ANDROID_CONFIG-', loc['About'] + '::-ABOUT-']
+    ]
 ]
 
 panel = [
@@ -136,41 +145,50 @@ class Player:
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
 
     @classmethod
-    def open_file(cls, file):
+    def open_file(cls, file, pause=False):
         file = file.replace('/', os.sep)
-        player.pause = True
+        player.pause = pause
         player.stop()
-        window['-PLAY-'].update(loc['PLAY'])
+        if pause:
+            window['-PLAY-'].update(loc['PLAY'])
+        else:
+            window['-PLAY-'].update(loc['PAUSE'])
         cls.folder = file.rsplit(os.sep, 1)[0]
         cls.files = [file]
         cls.filenames_only = [file.split(os.sep)[-1]]
         cls.filenum = 0
         cls.filename = file.rsplit(os.sep, 1)[-1]
         window['-FILELIST-'].update(values=cls.filenames_only)
-        window['-INFO-'].update(value=Player.folder)
+        window['-INFO-'].update(value=cls.folder)
         player.play(file)
 
     @classmethod
-    def open_url(cls, link):
-        player.pause = True
+    def open_url(cls, link, pause=False):
+        player.pause = pause
         player.stop()
-        window['-PLAY-'].update(loc['PLAY'])
+        if pause:
+            window['-PLAY-'].update(loc['PLAY'])
+        else:
+            window['-PLAY-'].update(loc['PAUSE'])
         cls.folder = 'Ссылка'
         cls.files = [link]
         cls.filenames_only = []
         cls.filenum = 0
         cls.filename = link
         window['-FILELIST-'].update(values=cls.files)
-        window['-INFO-'].update(value=Player.folder)
+        window['-INFO-'].update(value=cls.folder)
         player.play(link)
 
     @classmethod
-    def open_folder(cls, folder):
+    def open_folder(cls, folder, pause=True):
         cls.folder = folder.replace('/', os.sep)
-        player.pause = True
+        player.pause = pause
         player.stop()
-        window['-PLAY-'].update(loc['PLAY'])
-        cls.folder = new_folder
+        if pause:
+            window['-PLAY-'].update(loc['PLAY'])
+        else:
+            window['-PLAY-'].update(loc['PAUSE'])
+        cls.folder = folder
         cls.files = cls.list_files()
         cls.filenames_only = cls.list_filenames()
         cls.filenum = -1
@@ -180,7 +198,7 @@ class Player:
             cls.filename = ''
         window['-FILELIST-'].update(values=cls.filenames_only)
         window['-LIST-'].update(visible=True)
-        window['-INFO-'].update(value=Player.folder)
+        window['-INFO-'].update(value=cls.folder)
 
     @classmethod
     def update_filelist(cls):
@@ -305,6 +323,47 @@ while True:
                 Player.open_folder(new_folder)
         case '-DISABLE-':
             player.glsl_shaders = ''
+        case '-ABOUT-':
+            sg.popup(f'Anime Player v{version}\n\n{loc["About program"]}\n\nCopyright © 2023 MazurDev',
+                     title=loc['About'], icon=icon)
+        case '-REFERENCE-':
+            with open(f'{os.path.dirname(__file__) + os.sep}doc{os.sep}GLSL_Instructions_Advanced_ru.txt', 'r',
+                      encoding='utf-8') as ref_data:
+                reference = ref_data.read()
+                sg.popup_scrolled(reference, size=(180, 0), title=loc['Reference'], icon=icon, font='Consolas')
+        case 'ANDROID_CONFIG':
+            config_layout = [
+                [sg.Text(
+                    'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид')],
+                [sg.Text('Введите путь до шейдеров')],
+                [sg.Input('/storage/emulated/0/mpv/shaders/')],
+                [sg.Text('Выберите конфигурацию алгоритма')],
+                [sg.Combo(modes, readonly=True)],
+                [sg.OK(size=(6, 1)), sg.Button('Все', size=(6, 1))]
+            ]
+            config_windows = sg.Window(loc['Create config for Android'], config_layout, icon=icon, resizable=True,
+                                       size=(500, 180), modal=True)
+            while True:
+                event, values = config_windows.read()
+                if event == sg.WINDOW_CLOSED:
+                    break
+                elif event == 'OK' and values[1] != '':
+                    quality = values[1].replace(')', '').split('(')[1]
+                    mode = values[1].split(' ')[1]
+                    sg.popup_scrolled(
+                        f'# {values[1]}\n' + anime4k.android_config(anime4k.create_preset(quality, mode),
+                                                                    values[0]),
+                        title=values[1], icon=icon)
+                elif event == 'Все':
+                    mods = []
+                    for mod in modes:
+                        quality = mod.replace(')', '').split('(')[1]
+                        mode = mod.split(' ')[1]
+                        mods.append(
+                            f'# {mod}\n' + '# ' + anime4k.android_config(anime4k.create_preset(quality, mode),
+                                                                         values[0]))
+                    sg.popup_scrolled('\n\n'.join(mods), title='Все', icon=icon)
+            config_windows.close()
         case _:
             if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
                 player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]])
@@ -312,48 +371,6 @@ while True:
                 quality = event.replace(')', '').split('(')[1]
                 mode = event.split(' ')[1]
                 player.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality, mode))
-            elif event == loc['Reference']:
-                with open(f'{os.path.dirname(__file__) + os.sep}doc{os.sep}GLSL_Instructions_Advanced_ru.txt', 'r',
-                          encoding='utf-8') as ref_data:
-                    reference = ref_data.read()
-                sg.popup_scrolled(reference, size=(180, 0), title=loc['Reference'], icon=icon, font='Consolas')
-            elif event == loc['Create config for Android']:
-                config_layout = [
-                    [sg.Text(
-                        'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид')],
-                    [sg.Text('Введите путь до шейдеров')],
-                    [sg.Input('/storage/emulated/0/mpv/shaders/')],
-                    [sg.Text('Выберите конфигурацию алгоритма')],
-                    [sg.Combo(modes, readonly=True)],
-                    [sg.OK(size=(6, 1)), sg.Button('Все', size=(6, 1))]
-                ]
-                config_windows = sg.Window(loc['Create config for Android'], config_layout, icon=icon, resizable=True,
-                                           size=(500, 180), modal=True)
-                while True:
-                    event, values = config_windows.read()
-                    if event == sg.WINDOW_CLOSED:
-                        break
-                    elif event == 'OK' and values[1] != '':
-                        quality = values[1].replace(')', '').split('(')[1]
-                        mode = values[1].split(' ')[1]
-                        sg.popup_scrolled(
-                            f'# {values[1]}\n' + anime4k.android_config(anime4k.create_preset(quality, mode),
-                                                                        values[0]),
-                            title=values[1], icon=icon)
-                    elif event == 'Все':
-                        mods = []
-                        for mod in modes:
-                            quality = mod.replace(')', '').split('(')[1]
-                            mode = mod.split(' ')[1]
-                            mods.append(
-                                f'# {mod}\n' + '# ' + anime4k.android_config(anime4k.create_preset(quality, mode),
-                                                                             values[0]))
-                        sg.popup_scrolled('\n\n'.join(mods), title='Все', icon=icon)
-                config_windows.close()
-            if event == loc['About']:
-                sg.popup(f'Anime Player v{version}\n\n{loc["About program"]}\n\nCopyright © 2023 MazurDev',
-                         title=loc['About'],
-                         icon=icon)
 
     duration = player.duration
     time_pos = player.time_pos
