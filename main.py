@@ -8,7 +8,7 @@ import sys
 sg.theme('DarkBlue9')
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
-version = '0.2.4 Alpha'
+version = '0.2.5 Alpha'
 args = sys.argv
 
 modes = []
@@ -37,6 +37,20 @@ menu = [
                        loc['Create config for Android'] + '::-ANDROID_CONFIG-', loc['About'] + '::-ABOUT-']
     ]
 ]
+right_click_menu = [
+    [],
+    [
+        loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
+        '---',
+        loc['Play | Pause'] + '::-TAB_PLAY-', loc['Fullscreen'] + '::-TAB_FS-',
+        '---',
+        loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs,
+        loc['Other'], [loc['Reference'] + '::-REFERENCE-', loc['Activate SVP'] + '::-SVP-',
+                       loc['Create config for Android'] + '::-ANDROID_CONFIG-', loc['About'] + '::-ABOUT-'],
+        '---',
+        loc['Exit'] + '::-EXIT-'
+    ]
+]
 
 panel = [
     [
@@ -59,7 +73,8 @@ panel = [
 col = [
     [
         sg.Image(key='-LEFT_PAD-', pad=(0, 0), size=(4, 0)),
-        sg.Image(key='-VID_OUT-', expand_x=True, expand_y=True, pad=(0, 0)),
+        sg.Image(f'{os.path.dirname(__file__) + os.sep}image{os.sep}play-button.png', key='-VID_OUT-', subsample=3,
+                 right_click_menu=right_click_menu, expand_x=True, expand_y=True, pad=(0, 0)),
         sg.Image(key='-RIGHT_PAD-', pad=(0, 0), size=(4, 0))
     ],
     [
@@ -69,12 +84,11 @@ col = [
 
 col_files = [
     [
-        sg.Frame('Информация', key='-INFO-', layout=[[sg.Text('', key='-MEDIA_INFO-')]],
-                 expand_x=True)
+        sg.Frame('Информация', key='-INFO-', layout=[[sg.Text('', key='-MEDIA_INFO-')]], expand_x=True)
     ],
     [
-        sg.Listbox(values=[], size=(50, 1000), key='-FILELIST-', enable_events=True,
-                   horizontal_scroll=True, font='Consolas 10')
+        sg.Listbox(values=[], size=(50, 1000), key='-FILELIST-', enable_events=True, horizontal_scroll=True,
+                   font='Consolas 10')
     ]
 ]
 
@@ -89,6 +103,7 @@ layout = [
 window = sg.Window('Anime Player', layout, icon=icon, resizable=True, finalize=True, font='Consolas 11',
                    size=(980, 540), margins=(0, 0), return_keyboard_events=True)
 window['-FILELIST-'].Widget.bind('<KeyPress>', 'break')
+window['-VID_OUT-'].bind('<Double-Button-1>', '+-double_click-')
 
 player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, profile='gpu-hq', scale='spline64',
                           cscale='spline64')
@@ -264,7 +279,7 @@ while True:
             Player.prev()
         case ('-PLAY-' | '-TAB_PLAY-' | ' '):
             Player.play()
-        case ('-FS-' | '-TAB_FS-' | 'F11:122'):
+        case ('-FS-' | '-TAB_FS-' | 'F11:122' | '-VID_OUT-+-double_click-'):
             Player.fullscreen()
         case '-MENU-':
             if not window['-LIST-'].visible:
@@ -331,7 +346,7 @@ while True:
                       encoding='utf-8') as ref_data:
                 reference = ref_data.read()
                 sg.popup_scrolled(reference, size=(180, 0), title=loc['Reference'], icon=icon, font='Consolas')
-        case 'ANDROID_CONFIG':
+        case '-ANDROID_CONFIG-':
             config_layout = [
                 [sg.Text(
                     'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид')],
@@ -397,10 +412,10 @@ while True:
         window['-MEDIA_TIME-'].update(value='00:00 / 00:00')
 
     if not window['-LEFT_PAD-'].visible:
-        if window.mouse_location()[1] < 300:
-            window['-MENUBAR-'].update(visible=True)
-        else:
-            window['-MENUBAR-'].update(visible=False)
+        # if window.mouse_location()[1] < 300:
+        #     window['-MENUBAR-'].update(visible=True)
+        # else:
+        #     window['-MENUBAR-'].update(visible=False)
         if window.mouse_location()[1] > window.size[1] - 120 and window['-VID_OUT-'].get_size()[0] > window.size[0] - 1:
             window['-VID_OUT-'].set_size((window.size[0], 0))
         elif window.mouse_location()[0] > window.size[0] - 450:
