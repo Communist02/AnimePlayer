@@ -19,10 +19,14 @@ en = {
     'About program': 'Media player written in Python programming language using PySimpleGUI library, mpv media player and Anime4K scaling algorithm',
     'Activate SVP': 'Activate SVP',
     'Create config for Android': 'Create config for Android',
-    'PLAY': 'PLAY',
-    'PAUSE': 'PAUSE',
-    'FULL': 'FULL',
-    'MENU': 'MENU'
+    'Play': 'Play',
+    'Pause': 'Pause',
+    'Menu': 'Menu',
+    'Next file': 'Next file',
+    'Previous file': 'Previous file',
+    'Sound level': 'Sound level',
+    'Frames lost': 'Frames lost',
+    'Information': 'Information'
 }
 
 ru = {
@@ -44,10 +48,14 @@ ru = {
     'About program': 'Медиаплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySimpleGUI, мультимедийного проигрывателя mpv и алгоритма масштабирования Anime4K',
     'Activate SVP': 'Активировать SVP',
     'Create config for Android': 'Создать конфиг для Android',
-    'PLAY': 'ИГРАТЬ',
-    'PAUSE': 'ПАУЗА',
-    'FULL': 'ПОЛН',
-    'MENU': 'МЕНЮ'
+    'Play': 'Играть',
+    'Pause': 'Пауза',
+    'Menu': 'Меню',
+    'Next file': 'Следующий файл',
+    'Previous file': 'Предыдущий файл',
+    'Sound level': 'Уровень звука',
+    'Frames lost': 'Потеряно кадров',
+    'Information': 'Информация'
 }
 
 match locale.getlocale()[0]:
