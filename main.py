@@ -24,10 +24,10 @@ Light = {
     'PROGRESS_DEPTH': 1
 }
 fonts.load_font(f'{os.path.dirname(__file__) + os.sep}fonts{os.sep}BalsamiqSans-Regular.ttf')
-
 sg.theme_add_new('Light', Light)
 sg.theme('Light')
 sg.set_options(font=(font, 10), icon=icon)
+sg.user_settings_filename(filename='AnimePlayer.json')
 
 modes = []
 for quality in anime4k.qualities:
@@ -289,11 +289,13 @@ class Player:
             window['-RIGHT_PAD-'].update(visible=True)
 
     @staticmethod
-    def new_position(position):
+    def new_position(position, slider_update=False):
         if player.duration is not None:
             player.time_pos = position
             window['-CURRENT_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
             window['-ALL_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(player.duration), 60)))
+            if slider_update:
+                window['-TIME-'].update(range=(0, player.duration), value=player.time_pos)
 
     @staticmethod
     def volume_update():
@@ -318,7 +320,7 @@ class Player:
             except TimeoutError:
                 pass
             else:
-                cls.new_position(position)
+                cls.new_position(position, slider_update=True)
 
     @classmethod
     def configuration(cls, open_prev=True):
@@ -352,9 +354,9 @@ class Player:
         if len(args) > 1:
             cls.configuration(open_prev=False)
             if os.path.isfile(args[1]):
-                cls.open_file(args[1])
                 file = sg.user_settings_get_entry('opened')[1]
                 position = sg.user_settings_get_entry('position')
+                cls.open_file(args[1])
                 if file is not None and file == args[1] and position is not None:
                     cls.position_recovery(position)
             elif os.path.isdir(args[1]):
