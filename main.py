@@ -10,7 +10,6 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 version = '0.3.0 Alpha'
-args = sys.argv
 font = 'Balsamiq Sans Regular'
 Light = {
     'BACKGROUND': '#f5f1eb',
@@ -43,7 +42,7 @@ menu = [
     [
         loc['File'],
         [loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
-         '---', loc['Exit'] + '::-EXIT-']
+         loc['Close'] + '::-CLOSE-', '---', loc['Exit'] + '::-EXIT-']
     ],
     [
         loc['Playback'], [loc['Play | Pause'] + '::-TAB_PLAY-', '---', loc['Fullscreen'] + '::-TAB_FS-']
@@ -61,6 +60,7 @@ right_click_menu = [
     '&Right',
     [
         loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
+        loc['Close'] + '::-CLOSE-',
         '---',
         loc['Play | Pause'] + '::-TAB_PLAY-', loc['Fullscreen'] + '::-TAB_FS-',
         '---',
@@ -190,8 +190,8 @@ class Player:
     @classmethod
     def open_file(cls, file, pause=False):
         file = file.replace('/', os.sep)
-        player.pause = pause
         player.stop()
+        player.pause = pause
         if pause:
             window['-PLAY-'].update(image_data=icons.play)
         else:
@@ -208,8 +208,8 @@ class Player:
 
     @classmethod
     def open_url(cls, link, pause=False):
-        player.pause = pause
         player.stop()
+        player.pause = pause
         if pause:
             window['-PLAY-'].update(image_data=icons.play)
         else:
@@ -227,8 +227,8 @@ class Player:
     @classmethod
     def open_folder(cls, folder, pause=True):
         cls.folder = folder.replace('/', os.sep)
-        player.pause = pause
         player.stop()
+        player.pause = pause
         if pause:
             window['-PLAY-'].update(image_data=icons.play)
         else:
@@ -244,6 +244,20 @@ class Player:
         window['-LIST-'].update(visible=True)
         window['-INFO-'].update(value=cls.folder)
         sg.user_settings_set_entry('opened', ['folder', folder])
+
+    @classmethod
+    def close(cls):
+        player.stop()
+        player.pause = False
+        window['-PLAY-'].update(image_data=icons.play)
+        cls.folder = ''
+        cls.filename = ''
+        cls.files = []
+        cls.filenames_only = []
+        cls.filenum = -1
+        window['-FILELIST-'].update(values=cls.filenames_only)
+        window['-INFO-'].update(value=cls.folder)
+        sg.user_settings_set_entry('opened', ['', ''])
 
     @classmethod
     def update_filelist(cls):
@@ -297,45 +311,59 @@ class Player:
             sg.user_settings_set_entry('position', None)
 
     @classmethod
-    def configuration(cls):
+    def position_recovery(cls, position):
+        if position is not None:
+            try:
+                player.wait_for_property('duration', lambda val: val is not None, timeout=3)
+            except TimeoutError:
+                pass
+            else:
+                cls.new_position(position)
+
+    @classmethod
+    def configuration(cls, open_prev=True):
         volume = sg.user_settings_get_entry('volume')
         opened = sg.user_settings_get_entry('opened')
         file = sg.user_settings_get_entry('file')
         position = sg.user_settings_get_entry('position')
-        if opened is not None:
-            if opened[0] == 'file':
-                if os.path.exists(opened[1]):
-                    cls.open_file(opened[1], pause=True)
-                    if position is not None:
-                        player.wait_for_property('duration', lambda val: val is not None)
-                        cls.new_position(position)
-            elif opened[0] == 'url':
-                cls.open_url(opened[1], pause=True)
-                if position is not None:
-                    player.wait_for_property('duration', lambda val: val is not None)
-                    cls.new_position(position)
-            elif opened[0] == 'folder':
-                if os.path.exists(opened[1]):
-                    cls.open_folder(opened[1], pause=True)
-                    if file is not None and os.path.exists(file):
-                        cls.filename = file
-                        cls.filenum = cls.files.index(cls.filename)
-                        player.play(cls.filename)
-                        if position is not None:
-                            player.wait_for_property('duration', lambda val: val is not None)
-                            cls.new_position(position)
         if volume is not None:
             player.volume = volume
             window['-VOLUME-'].update(value=volume)
+        if opened is not None and open_prev:
+            match opened[0]:
+                case 'file':
+                    if os.path.exists(opened[1]):
+                        cls.open_file(opened[1], pause=True)
+                        cls.position_recovery(position)
+                case 'url':
+                    cls.open_url(opened[1], pause=True)
+                    cls.position_recovery(position)
+                case 'folder':
+                    if os.path.exists(opened[1]):
+                        cls.open_folder(opened[1], pause=True)
+                        if file is not None and os.path.exists(file):
+                            cls.filename = file
+                            cls.filenum = cls.files.index(cls.filename)
+                            player.play(cls.filename)
+                            cls.position_recovery(position)
+
+    @classmethod
+    def start_player(cls, args):
+        if len(args) > 1:
+            cls.configuration(open_prev=False)
+            if os.path.isfile(args[1]):
+                cls.open_file(args[1])
+                file = sg.user_settings_get_entry('opened')[1]
+                position = sg.user_settings_get_entry('position')
+                if file is not None and file == args[1] and position is not None:
+                    cls.position_recovery(position)
+            elif os.path.isdir(args[1]):
+                cls.open_folder(args[1])
+        else:
+            cls.configuration(open_prev=True)
 
 
-Player.configuration()
-
-if len(args) > 1:
-    if os.path.isfile(args[1]):
-        Player.open_file(args[1])
-    elif os.path.isdir(args[1]):
-        Player.open_folder(args[1])
+Player.start_player(sys.argv)
 
 while True:
     event, values = window.read(timeout=100)
@@ -414,6 +442,8 @@ while True:
             new_folder = sg.popup_get_folder('Выберите папку с медиа', title='Выбор папки', history=True, size=(30, 40))
             if new_folder != '' and new_folder is not None:
                 Player.open_folder(new_folder)
+        case '-CLOSE-':
+            Player.close()
         case '-DISABLE-':
             player.glsl_shaders = ''
         case '-ABOUT-':
