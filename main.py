@@ -2,32 +2,53 @@ import os
 import PySimpleGUI as sg
 import mpv
 import anime4k
-from localization import strings as loc
+import localization
 import sys
 import icons
 import fonts
 
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
-version = '0.3.0 Alpha'
+version = '0.3.1 Alpha'
 font = 'Balsamiq Sans Regular'
-Light = {
+light = {
     'BACKGROUND': '#f5f1eb',
     'TEXT': '#575656',
     'INPUT': '#ebe3d7',
     'TEXT_INPUT': '#575656',
-    'SCROLL': '#d7d3ce',
+    'SCROLL': '#ebe3d7',
     'BUTTON': ('#ebe3d7', '#575656'),
     'PROGRESS': ('#ebe3d7', '#beab98'),
     'BORDER': 1,
     'SLIDER_DEPTH': 1,
     'PROGRESS_DEPTH': 1
 }
+dark = {
+    'BACKGROUND': '#1b1c1e',
+    'TEXT': '#e3e3e3',
+    'INPUT': '#202328',
+    'TEXT_INPUT': '#c4c7c5',
+    'SCROLL': '#28292a',
+    'BUTTON': ('#c2e7ff', '#42474d'),
+    'PROGRESS': ('#505f69', '#32414b'),
+    'BORDER': 1,
+    'SLIDER_DEPTH': 0,
+    'PROGRESS_DEPTH': 0,
+}
+sg.theme_add_new('light', light)
+sg.theme_add_new('dark', dark)
 fonts.load_font(f'{os.path.dirname(__file__) + os.sep}fonts{os.sep}BalsamiqSans-Regular.ttf')
-sg.theme_add_new('Light', Light)
-sg.theme('Light')
 sg.set_options(font=(font, 10), icon=icon)
 sg.user_settings_filename(filename='AnimePlayer.json')
+if sg.user_settings_get_entry('darkTheme') is not None and sg.user_settings_get_entry('darkTheme'):
+    sg.theme('dark')
+    icons.set_grey_color()
+else:
+    sg.theme('light')
+    icons.set_grey_color()
+localization.set_locale(sg.user_settings_get_entry('language'))
+loc = localization.strings
+
 
 modes = []
 for quality in anime4k.qualities:
@@ -36,13 +57,13 @@ tabs = []
 for quality in anime4k.qualities:
     tabs += [f'{loc["Quality"]} {quality}',
              [f'{loc["Mode"]} {mode}' + f'::{loc["Mode"]} {mode} ({quality})' for mode in anime4k.modes]]
-tabs += [f'{loc["Quality"]} UHQ', [f'{loc["Mode"]} {mode}' for mode in list(anime4k.ultra_hq_presets.keys())]]
+tabs += [f'{loc["Quality"]} HQ', [f'{loc["Mode"]} {mode}' for mode in list(anime4k.ultra_hq_presets.keys())]]
 
 menu = [
     [
         loc['File'],
         [loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
-         loc['Close'] + '::-CLOSE-', '---', loc['Exit'] + '::-EXIT-']
+         loc['Close'] + '::-CLOSE-', '---', loc['Settings'] + '::-SETTINGS-', '---', loc['Exit'] + '::-EXIT-']
     ],
     [
         loc['Playback'], [loc['Play | Pause'] + '::-TAB_PLAY-', '---', loc['Fullscreen'] + '::-TAB_FS-']
@@ -62,6 +83,8 @@ right_click_menu = [
         loc['Open file'] + '::-OPEN_FILE-', loc['Open URL'] + '::-OPEN_URL-', loc['Open folder'] + '::-OPEN_FOLDER-',
         loc['Close'] + '::-CLOSE-',
         '---',
+        loc['Settings'] + '::-SETTINGS-',
+        '---',
         loc['Play | Pause'] + '::-TAB_PLAY-', loc['Fullscreen'] + '::-TAB_FS-',
         '---',
         loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs,
@@ -76,7 +99,7 @@ panel = [
     [
         sg.Text('00:00', key='-CURRENT_TIME-', size=(5, 0)),
         sg.Slider(orientation='h', key='-TIME-', enable_events=True, expand_x=True, range=(0, 0),
-                  disable_number_display=True),
+                  disable_number_display=True, background_color=sg.theme_button_color()[1], relief=sg.RELIEF_GROOVE),
         sg.Text('00:00', key='-ALL_TIME-', size=(5, 0)),
     ],
     [
@@ -116,7 +139,7 @@ col_files = [
     ],
     [
         sg.Listbox(values=[], size=(50, 1000), key='-FILELIST-', enable_events=True, horizontal_scroll=True,
-                   font=(font, 10))
+                   font=(font, 10), expand_x=True)
     ]
 ]
 
@@ -328,10 +351,11 @@ class Player:
         opened = sg.user_settings_get_entry('opened')
         file = sg.user_settings_get_entry('file')
         position = sg.user_settings_get_entry('position')
+        open_last = sg.user_settings_get_entry('openLastFile')
         if volume is not None:
             player.volume = volume
             window['-VOLUME-'].update(value=volume)
-        if opened is not None and open_prev:
+        if opened is not None and open_prev and (open_last is None or open_last):
             match opened[0]:
                 case 'file':
                     if os.path.exists(opened[1]):
@@ -447,6 +471,7 @@ while True:
         case '-CLOSE-':
             Player.close()
         case '-DISABLE-':
+            anime4k.current_preset = ''
             player.glsl_shaders = ''
         case '-ABOUT-':
             sg.popup(f'Anime Player v{version}\n\n{loc["About program"]}\n\nCopyright © 2023 MazurDev',
@@ -466,8 +491,8 @@ while True:
                 [sg.Combo(modes, readonly=True)],
                 [sg.OK(size=(6, 1)), sg.Button('Все', size=(6, 1))]
             ]
-            config_windows = sg.Window(loc['Create config for Android'], config_layout, resizable=True,
-                                       size=(500, 200), modal=True)
+            config_windows = sg.Window(loc['Create config for Android'], config_layout, resizable=True, size=(500, 200),
+                                       modal=True)
             while True:
                 event, values = config_windows.read()
                 if event == sg.WINDOW_CLOSED:
@@ -488,13 +513,45 @@ while True:
                                                                          values[0]))
                     sg.popup_scrolled('\n\n'.join(mods), title='Все')
             config_windows.close()
+        case '-SETTINGS-':
+            open_last_file = sg.user_settings_get_entry('openLastFile') is None or sg.user_settings_get_entry(
+                'openLastFile')
+            match sg.user_settings_get_entry('language'):
+                case 'Русский':
+                    lang = 'Русский'
+                case 'English':
+                    lang = 'English'
+                case _:
+                    lang = 'Auto'
+            settings_layout = [
+                [sg.Text('Выбор языка (требуется перезагрузка)'),
+                 sg.Combo(['Auto', 'Русский', 'English'], readonly=True, default_value=lang, key='-LANGUAGE-')],
+                [sg.Checkbox('При запуске открывать последний открытый файл', key='-OPEN_LAST_FILE-',
+                             default=open_last_file)],
+                # [sg.Checkbox('Устанавливать позицию последнего открытого файла')],
+                [sg.Checkbox('Темная тема (требуется перезагрузка)', key='-DARK_THEME-',
+                             default=sg.user_settings_get_entry('darkTheme'))],
+                [sg.OK(size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
+            ]
+            settings_windows = sg.Window(loc['Settings'], settings_layout, modal=True)
+            while True:
+                event, values = settings_windows.read()
+                if event == sg.WINDOW_CLOSED or event == 'Отмена':
+                    break
+                elif event == 'OK':
+                    sg.user_settings_set_entry('language', values['-LANGUAGE-'])
+                    sg.user_settings_set_entry('openLastFile', values['-OPEN_LAST_FILE-'])
+                    sg.user_settings_set_entry('darkTheme', values['-DARK_THEME-'])
+                    break
+            settings_windows.close()
         case _:
             if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
-                player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]])
+                player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]],
+                                                        event + ' (HQ)')
             elif event in modes:
                 quality = event.replace(')', '').split('(')[1]
                 mode = event.split(' ')[1]
-                player.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality, mode))
+                player.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality, mode), event)
 
     duration = player.duration
     time_pos = player.time_pos
@@ -502,19 +559,21 @@ while True:
     fps = round(player.estimated_vf_fps, 1) if player.estimated_vf_fps is not None else None
     str_resolution = f'{player.width}x{player.height}' if player.width is not None else ''
     str_fps = f'{fps} FPS' if fps is not None else '0.0 FPS' if str_resolution != '' else ''
-    str_codec = f'{codec}' if codec is not None else ''
+    str_codec = f'{codec.upper()}' if codec is not None else ''
     str_frame_drop = f'{loc["Frames lost"]}: {player.frame_drop_count}' if player.frame_drop_count is not None else ''
 
     # Обновление информации о разрешении, FPS, кодеке и потерянных кадрах
-    window['-MEDIA_INFO-'].update(
-        ' | '.join([string for string in [str_resolution, str_fps, str_codec, str_frame_drop] if string != '']))
+    window['-MEDIA_INFO-'].update(' | '.join(
+        [string for string in [anime4k.current_preset, str_codec, str_resolution, str_fps, str_frame_drop] if
+         string != '']
+    ))
     # Обновление кнопки ИГРАТЬ
     if duration is not None and player.pause:
         window['-PLAY-'].update(image_data=icons.play)
     # Обновление ползунка прокрутки и времени
     if duration is not None and time_pos is not None:
-        window['-CURRENT_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
-        window['-ALL_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(player.duration), 60)))
+        window['-CURRENT_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(time_pos), 60)))
+        window['-ALL_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(duration), 60)))
         window['-TIME-'].update(range=(0, duration), value=time_pos)
     else:
         window['-TIME-'].update(range=(0, 0), value=0)

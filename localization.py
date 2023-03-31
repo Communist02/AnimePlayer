@@ -1,6 +1,7 @@
 import locale
 
 en = {
+    'lang': 'English',
     'File': 'File',
     'Open file': 'Open file',
     'Open URL': 'Open URL',
@@ -15,6 +16,7 @@ en = {
     'Other': 'Other',
     'Reference': 'Reference',
     'About': 'About',
+    'Settings': 'Settings',
     'Quality': 'Quality',
     'Mode': 'Mode',
     'About program': 'Media player written in Python programming language using PySimpleGUI library, mpv media player and Anime4K scaling algorithm',
@@ -31,6 +33,7 @@ en = {
 }
 
 ru = {
+    'lang': 'Русский',
     'File': 'Файл',
     'Open file': 'Открыть файл',
     'Open URL': 'Открыть URL-адрес',
@@ -45,6 +48,7 @@ ru = {
     'Other': 'Другое',
     'Reference': 'Справка',
     'About': 'О программе',
+    'Settings': 'Настройки',
     'Quality': 'Качество',
     'Mode': 'Режим',
     'About program': 'Медиаплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySimpleGUI, мультимедийного проигрывателя mpv и алгоритма масштабирования Anime4K',
@@ -65,3 +69,12 @@ match locale.getlocale()[0]:
         strings = ru
     case _:
         strings = en
+
+
+def set_locale(lang):
+    global strings
+    match lang:
+        case 'Русский':
+            strings = ru
+        case 'English':
+            strings = en

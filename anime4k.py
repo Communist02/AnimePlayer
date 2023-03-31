@@ -124,9 +124,10 @@ def create_preset(quality, mode):
     return created_presets[mode]
 
 
-def to_string(preset, preset_name = ''):
+def to_string(preset, preset_name=''):
+    global current_preset
     preset = (os.path.dirname(__file__) + os.sep + 'shaders' + os.sep + shader for shader in preset)
-    current_preset_name = preset_name
+    current_preset = preset_name
     return ';'.join(preset)
 
 
