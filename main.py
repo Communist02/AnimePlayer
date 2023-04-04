@@ -1,6 +1,6 @@
 import os
 import PySimpleGUI as sg
-import mpv
+from mpv import MPV
 import anime4k
 import localization
 import sys
@@ -48,7 +48,6 @@ else:
     icons.set_grey_color()
 localization.set_locale(sg.user_settings_get_entry('language'))
 loc = localization.strings
-
 
 modes = []
 for quality in anime4k.qualities:
@@ -123,10 +122,8 @@ panel = [
 
 col = [
     [
-        sg.Image(key='-LEFT_PAD-', pad=(2, 0)),
         sg.Image(f'{os.path.dirname(__file__) + os.sep}image{os.sep}play-button.png', key='-VID_OUT-', subsample=3,
                  right_click_menu=right_click_menu, expand_x=True, expand_y=True, pad=(0, 0)),
-        sg.Image(key='-RIGHT_PAD-', pad=(2, 0))
     ],
     [
         sg.Frame('', key='-PANEL-', layout=panel, expand_x=True)
@@ -156,16 +153,20 @@ window = sg.Window('Anime Player', layout, resizable=True, finalize=True, size=(
 window['-FILELIST-'].Widget.bind('<KeyPress>', 'break')
 window['-VID_OUT-'].bind('<Double-Button-1>', '+-double_click-')
 
-player: mpv.MPV = mpv.MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, profile='gpu-hq', scale='spline64',
-                          cscale='spline64')
+player: MPV = MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, profile='gpu-hq', scale='spline64',
+                  cscale='spline64')
 
 
 class Player:
+    """
+    Управление возможностями плеера
+    """
     folder = ''
     filename = ''
     files = []
     filenames_only = []
     filenum = -1
+    fullscreen = False
 
     @classmethod
     def list_files(cls):
@@ -178,6 +179,7 @@ class Player:
 
     @classmethod
     def play(cls):
+        """Воспроизведение / Пауза"""
         if cls.filename != '':
             if player.duration is None:
                 player.play(cls.filename)
@@ -192,7 +194,7 @@ class Player:
 
     @classmethod
     def next(cls):
-        print(1)
+        """Переход к следующему файлу"""
         if cls.filenum < len(cls.files) - 1:
             cls.filenum += 1
             cls.filename = cls.files[cls.filenum]
@@ -201,6 +203,7 @@ class Player:
 
     @classmethod
     def prev(cls):
+        """Переход к предыдущему файлу"""
         if cls.filenum > 0:
             cls.filenum -= 1
             cls.filename = cls.files[cls.filenum]
@@ -211,7 +214,12 @@ class Player:
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
 
     @classmethod
-    def open_file(cls, file, pause=False):
+    def open_file(cls, file: str, pause: bool = False):
+        """
+        Открытие файла
+        :param file: путь к файлу
+        :param pause: должна ли стоять пауза после открытия
+        """
         file = file.replace('/', os.sep)
         player.stop()
         player.pause = pause
@@ -230,7 +238,12 @@ class Player:
         sg.user_settings_set_entry('opened', ['file', file])
 
     @classmethod
-    def open_url(cls, link, pause=False):
+    def open_url(cls, link: str, pause: bool = False):
+        """
+        Открытие с помощью URL-адреса
+        :param link: URL-адрес
+        :param pause: должна ли стоять пауза после открытия
+        """
         player.stop()
         player.pause = pause
         if pause:
@@ -248,7 +261,12 @@ class Player:
         sg.user_settings_set_entry('opened', ['url', link])
 
     @classmethod
-    def open_folder(cls, folder, pause=True):
+    def open_folder(cls, folder: str, pause: bool = True):
+        """
+        Открытие папки
+        :param folder: путь к папке
+        :param pause: должна ли стоять пауза после открытия
+        """
         cls.folder = folder.replace('/', os.sep)
         player.stop()
         player.pause = pause
@@ -270,6 +288,9 @@ class Player:
 
     @classmethod
     def close(cls):
+        """
+        Сохранение параметров перед закрытием плеера
+        """
         player.stop()
         player.pause = False
         window['-PLAY-'].update(image_data=icons.play)
@@ -284,6 +305,9 @@ class Player:
 
     @classmethod
     def update_filelist(cls):
+        """
+        Обновление списка файлов
+        """
         if len(cls.filenames_only) >= 1:
             if len(cls.filenames_only) > 1 or len(values['-FILELIST-'][0]) > 1 and values['-FILELIST-'][0][1] == ')':
                 filename_temp = os.path.join(cls.folder, values['-FILELIST-'][0].split(' ', 1)[-1])
@@ -292,27 +316,29 @@ class Player:
                     cls.filenum = cls.files.index(cls.filename)
                     player.play(cls.filename)
 
-    @staticmethod
-    def fullscreen():
-        # Взял window['-LEFT_PAD-'].visible как значение по которому ориентируюсь включен ли полноэкранный режим
-        if window['-LEFT_PAD-'].visible:
+    @classmethod
+    def fullscreen_switch(cls):
+        """
+        Переключение полноэкранного режима
+        """
+        if not cls.fullscreen:
+            cls.fullscreen = True
             window.TKroot.attributes('-fullscreen', True)
             window['-VID_OUT-'].set_size(window.size)
             window['-MENUBAR-'].update(visible=False)
-            window['-LEFT_PAD-'].update(visible=False)
-            window['-RIGHT_PAD-'].update(visible=False)
         else:
+            cls.fullscreen = False
             window.TKroot.attributes('-fullscreen', False)
             window['-VID_OUT-'].set_size((0, 0))
-            window['-PANEL-'].update(visible=True)
             window['-MENUBAR-'].update(visible=True)
-            window['-VID_OUT-'].update(visible=False)
-            window['-LEFT_PAD-'].update(visible=True)
-            window['-VID_OUT-'].update(visible=True)
-            window['-RIGHT_PAD-'].update(visible=True)
 
     @staticmethod
-    def new_position(position, slider_update=False):
+    def new_position(position: float, slider_update: bool = False):
+        """
+        Установка новой позиции
+        :param position: позиция
+        :param slider_update: обновлять ли слайдер
+        """
         if player.duration is not None:
             player.time_pos = position
             window['-CURRENT_TIME-'].update(value='{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
@@ -322,11 +348,13 @@ class Player:
 
     @staticmethod
     def volume_update():
+        """Изменение громкости"""
         player.volume = values['-VOLUME-']
         sg.user_settings_set_entry('volume', values['-VOLUME-'])
 
     @classmethod
     def save_parameters(cls):
+        """Сохранение текущего открытого файла и позиции"""
         file = cls.filename
         position = player.time_pos
         sg.user_settings_set_entry('file', file)
@@ -336,17 +364,26 @@ class Player:
             sg.user_settings_set_entry('position', None)
 
     @classmethod
-    def position_recovery(cls, position):
+    def position_recovery(cls, position: float, timeout: int = 3):
+        """
+        Восстановление позиции плеера
+        :param position: позиция
+        :param timeout: максимальное время ожидания загрузки файла
+        """
         if position is not None:
             try:
-                player.wait_for_property('duration', lambda val: val is not None, timeout=3)
+                player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
             except TimeoutError:
                 pass
             else:
                 cls.new_position(position, slider_update=True)
 
     @classmethod
-    def configuration(cls, open_prev=True):
+    def configuration(cls, open_prev: bool = True):
+        """
+        Начальная настройка плеера
+        :param open_prev: открывать ли предыдущий файл
+        """
         volume = sg.user_settings_get_entry('volume')
         opened = sg.user_settings_get_entry('opened')
         file = sg.user_settings_get_entry('file')
@@ -363,7 +400,7 @@ class Player:
                         cls.position_recovery(position)
                 case 'url':
                     cls.open_url(opened[1], pause=True)
-                    cls.position_recovery(position)
+                    cls.position_recovery(position, timeout=5)
                 case 'folder':
                     if os.path.exists(opened[1]):
                         cls.open_folder(opened[1], pause=True)
@@ -374,7 +411,11 @@ class Player:
                             cls.position_recovery(position)
 
     @classmethod
-    def start_player(cls, args):
+    def start_player(cls, args: list):
+        """
+        Начальные действия при открытии плеера
+        :param args: аргументы командной строки
+        """
         if len(args) > 1:
             cls.configuration(open_prev=False)
             if os.path.isfile(args[1]):
@@ -401,7 +442,7 @@ while True:
     match event:
         case '__TIMEOUT__':
             pass
-        case (sg.WIN_CLOSED | '-EXIT-' | sg.WINDOW_CLOSE_ATTEMPTED_EVENT):
+        case sg.WIN_CLOSED | '-EXIT-' | sg.WINDOW_CLOSE_ATTEMPTED_EVENT:
             Player.save_parameters()
             break
         case '-VOLUME-':
@@ -412,10 +453,10 @@ while True:
             Player.next()
         case '-PREV-':
             Player.prev()
-        case ('-PLAY-' | '-TAB_PLAY-' | ' '):
+        case '-PLAY-' | '-TAB_PLAY-' | ' ':
             Player.play()
-        case ('-FS-' | '-TAB_FS-' | 'F11:122' | '-VID_OUT-+-double_click-'):
-            Player.fullscreen()
+        case '-FS-' | '-TAB_FS-' | 'F11:122' | '-VID_OUT-+-double_click-':
+            Player.fullscreen_switch()
         case '-MENU-':
             if not window['-LIST-'].visible:
                 window['-LIST-'].update(visible=True)
@@ -453,7 +494,7 @@ while True:
             window['-VOLUME-'].update(value=player.volume)
         case 'Escape:27':
             if not window['-LEFT_PAD-'].visible:
-                Player.fullscreen()
+                Player.fullscreen_switch()
         # ----------------- Верхнее меню -----------------
         case '-OPEN_FILE-':
             new_file = sg.popup_get_file('Выберите файл', no_window=True, file_types=(
@@ -536,13 +577,14 @@ while True:
             settings_windows = sg.Window(loc['Settings'], settings_layout, modal=True)
             while True:
                 event, values = settings_windows.read()
-                if event == sg.WINDOW_CLOSED or event == 'Отмена':
-                    break
-                elif event == 'OK':
-                    sg.user_settings_set_entry('language', values['-LANGUAGE-'])
-                    sg.user_settings_set_entry('openLastFile', values['-OPEN_LAST_FILE-'])
-                    sg.user_settings_set_entry('darkTheme', values['-DARK_THEME-'])
-                    break
+                match event:
+                    case sg.WINDOW_CLOSED | 'Отмена':
+                        break
+                    case 'OK':
+                        sg.user_settings_set_entry('language', values['-LANGUAGE-'])
+                        sg.user_settings_set_entry('openLastFile', values['-OPEN_LAST_FILE-'])
+                        sg.user_settings_set_entry('darkTheme', values['-DARK_THEME-'])
+                        break
             settings_windows.close()
         case _:
             if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
@@ -555,18 +597,24 @@ while True:
 
     duration = player.duration
     time_pos = player.time_pos
-    codec = player.video_format if player.video_format is not None else player.audio_codec_name
-    fps = round(player.estimated_vf_fps, 1) if player.estimated_vf_fps is not None else None
-    str_resolution = f'{player.width}x{player.height}' if player.width is not None else ''
-    str_fps = f'{fps} FPS' if fps is not None else '0.0 FPS' if str_resolution != '' else ''
-    str_codec = f'{codec.upper()}' if codec is not None else ''
-    str_frame_drop = f'{loc["Frames lost"]}: {player.frame_drop_count}' if player.frame_drop_count is not None else ''
+    info = {
+        'preset': anime4k.current_preset,
+        'codec': player.video_format if player.video_format is not None else player.audio_codec_name,
+        'resolution': (player.width, player.height),
+        'fps': player.estimated_vf_fps,
+        'frame_drop': player.frame_drop_count
+    }
+    str_info = {
+        'preset': info['preset'],
+        'codec': f'{info["codec"].upper()}' if info["codec"] is not None else '',
+        'resolution': f'{info["resolution"][0]}x{info["resolution"][1]}' if info["resolution"] != (None, None) else '',
+        'fps': f'{round(info["fps"], 1) if info["fps"] is not None else "0.0"} FPS' if info["resolution"] != (
+            None, None) else '',
+        'frame_drop': f'{loc["Frames lost"]}: {info["frame_drop"]}' if info["frame_drop"] is not None else ''
+    }
 
     # Обновление информации о разрешении, FPS, кодеке и потерянных кадрах
-    window['-MEDIA_INFO-'].update(' | '.join(
-        [string for string in [anime4k.current_preset, str_codec, str_resolution, str_fps, str_frame_drop] if
-         string != '']
-    ))
+    window['-MEDIA_INFO-'].update(' | '.join([string for string in str_info.values() if string != '']))
     # Обновление кнопки ИГРАТЬ
     if duration is not None and player.pause:
         window['-PLAY-'].update(image_data=icons.play)
@@ -580,7 +628,7 @@ while True:
         window['-CURRENT_TIME-'].update(value='00:00')
         window['-ALL_TIME-'].update(value='00:00')
 
-    if not window['-LEFT_PAD-'].visible:
+    if Player.fullscreen:
         # if window.mouse_location()[1] < 300:
         #     window['-MENUBAR-'].update(visible=True)
         # else:
