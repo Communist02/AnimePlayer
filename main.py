@@ -9,7 +9,8 @@ import fonts
 
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
-version = '0.3.1 Alpha'
+name_program = 'Anime Player'
+version = '0.3.2 Alpha'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -35,12 +36,12 @@ dark = {
     'SLIDER_DEPTH': 0,
     'PROGRESS_DEPTH': 0,
 }
+sg.user_settings_filename(filename='AnimePlayer.json')
 sg.theme_add_new('light', light)
 sg.theme_add_new('dark', dark)
 fonts.load_font(f'{os.path.dirname(__file__) + os.sep}fonts{os.sep}BalsamiqSans-Regular.ttf')
 sg.set_options(font=(font, 10), icon=icon)
-sg.user_settings_filename(filename='AnimePlayer.json')
-if sg.user_settings_get_entry('darkTheme') is not None and sg.user_settings_get_entry('darkTheme'):
+if sg.user_settings_get_entry('darkTheme', False):
     sg.theme('dark')
     icons.set_grey_color()
 else:
@@ -199,6 +200,7 @@ class Player:
             cls.filenum += 1
             cls.filename = cls.files[cls.filenum]
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
+            window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
             player.play(cls.filename)
 
     @classmethod
@@ -208,10 +210,12 @@ class Player:
             cls.filenum -= 1
             cls.filename = cls.files[cls.filenum]
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
+            window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
             player.play(cls.filename)
         else:
             cls.filenum = 0
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
+            window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
 
     @classmethod
     def open_file(cls, file: str, pause: bool = False):
@@ -232,8 +236,9 @@ class Player:
         cls.filenames_only = [file.split(os.sep)[-1]]
         cls.filenum = 0
         cls.filename = file.rsplit(os.sep, 1)[-1]
-        window['-FILELIST-'].update(values=cls.filenames_only)
+        window['-FILELIST-'].update(values=cls.filenames_only, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
+        window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
         player.play(file)
         sg.user_settings_set_entry('opened', ['file', file])
 
@@ -250,13 +255,14 @@ class Player:
             window['-PLAY-'].update(image_data=icons.play)
         else:
             window['-PLAY-'].update(image_data=icons.pause)
-        cls.folder = 'Ссылка'
+        cls.folder = 'URL'
         cls.files = [link]
         cls.filenames_only = []
         cls.filenum = 0
         cls.filename = link
-        window['-FILELIST-'].update(values=cls.files)
+        window['-FILELIST-'].update(values=cls.files, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
+        window.set_title(f'{cls.filename.rsplit("/", 1)[-1]} - {name_program}')
         player.play(link)
         sg.user_settings_set_entry('opened', ['url', link])
 
@@ -276,12 +282,15 @@ class Player:
             window['-PLAY-'].update(image_data=icons.pause)
         cls.files = cls.list_files()
         cls.filenames_only = cls.list_filenames()
-        cls.filenum = -1
+        cls.filenum = 0
         if len(cls.files) != 0:
             cls.filename = cls.files[0]
+            window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
+            player.play(cls.filename)
         else:
             cls.filename = ''
-        window['-FILELIST-'].update(values=cls.filenames_only)
+            window.set_title(name_program)
+        window['-FILELIST-'].update(values=cls.filenames_only, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-LIST-'].update(visible=True)
         window['-INFO-'].update(value=cls.folder)
         sg.user_settings_set_entry('opened', ['folder', folder])
@@ -301,6 +310,7 @@ class Player:
         cls.filenum = -1
         window['-FILELIST-'].update(values=cls.filenames_only)
         window['-INFO-'].update(value=cls.folder)
+        window.set_title(name_program)
         sg.user_settings_set_entry('opened', ['', ''])
 
     @classmethod
@@ -315,6 +325,7 @@ class Player:
                     cls.filename = filename_temp
                     cls.filenum = cls.files.index(cls.filename)
                     player.play(cls.filename)
+                    window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
 
     @classmethod
     def fullscreen_switch(cls):
@@ -388,7 +399,8 @@ class Player:
         opened = sg.user_settings_get_entry('opened')
         file = sg.user_settings_get_entry('file')
         position = sg.user_settings_get_entry('position')
-        open_last = sg.user_settings_get_entry('openLastFile')
+        open_last = sg.user_settings_get_entry('onOpenLastFile')
+        on_pos_last_file = sg.user_settings_get_entry('onPosLastFile')
         if volume is not None:
             player.volume = volume
             window['-VOLUME-'].update(value=volume)
@@ -397,9 +409,11 @@ class Player:
                 case 'file':
                     if os.path.exists(opened[1]):
                         cls.open_file(opened[1], pause=True)
-                        cls.position_recovery(position)
+                        if on_pos_last_file is None or on_pos_last_file:
+                            cls.position_recovery(position)
                 case 'url':
-                    cls.open_url(opened[1], pause=True)
+                    if on_pos_last_file is None or on_pos_last_file:
+                        cls.open_url(opened[1], pause=True)
                     cls.position_recovery(position, timeout=5)
                 case 'folder':
                     if os.path.exists(opened[1]):
@@ -408,7 +422,8 @@ class Player:
                             cls.filename = file
                             cls.filenum = cls.files.index(cls.filename)
                             player.play(cls.filename)
-                            cls.position_recovery(position)
+                            if on_pos_last_file is None or on_pos_last_file:
+                                cls.position_recovery(position)
 
     @classmethod
     def start_player(cls, args: list):
@@ -493,21 +508,44 @@ while True:
                 player.volume -= 5
             window['-VOLUME-'].update(value=player.volume)
         case 'Escape:27':
-            if not window['-LEFT_PAD-'].visible:
+            if Player.fullscreen:
                 Player.fullscreen_switch()
         # ----------------- Верхнее меню -----------------
         case '-OPEN_FILE-':
             new_file = sg.popup_get_file('Выберите файл', no_window=True, file_types=(
                 ('Все поддерживаемые файлы', ' '.join(['.' + f for f in formats])),))
-            if new_file != '' and new_file is not None:
+            if new_file is not None and new_file != '':
                 Player.open_file(new_file)
         case '-OPEN_URL-':
-            new_link = sg.popup_get_text('Введите URL-адрес', title='Ввод ссылки', size=(30, 40))
-            if new_link != '' and new_link is not None:
+            links_history = sg.user_settings_get_entry('linksHistory', [])
+            new_link = ''
+            open_url_layout = [
+                [sg.Text('Введите URL-адрес')],
+                [sg.Combo(links_history, size=(35, 10), key='-LINK-'), sg.Button('Очистить', key='-CLEAR-')],
+                [sg.Button('ОК', size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
+            ]
+            open_url_windows = sg.Window('Открытие ссылки', open_url_layout, modal=True)
+            while True:
+                event, values = open_url_windows.read()
+                if event == sg.WINDOW_CLOSED or event == 'Отмена':
+                    break
+                elif event == 'ОК':
+                    new_link = values['-LINK-'].strip()
+                    break
+                elif event == '-CLEAR-':
+                    links_history = []
+                    open_url_windows['-LINK-'].update(value='', values=[])
+                    sg.user_settings_set_entry('linksHistory', [])
+            open_url_windows.close()
+            if new_link is not None and new_link != '':
+                if links_history.count(new_link) > 0:
+                    links_history.remove(new_link)
+                links_history.insert(0, new_link)
+                sg.user_settings_set_entry('linksHistory', links_history)
                 Player.open_url(new_link)
         case '-OPEN_FOLDER-':
             new_folder = sg.popup_get_folder('Выберите папку с медиа', title='Выбор папки', history=True, size=(30, 40))
-            if new_folder != '' and new_folder is not None:
+            if new_folder is not None and new_folder != '':
                 Player.open_folder(new_folder)
         case '-CLOSE-':
             Player.close()
@@ -530,7 +568,7 @@ while True:
                 [sg.Input('/storage/emulated/0/mpv/shaders/')],
                 [sg.Text('Выберите конфигурацию алгоритма')],
                 [sg.Combo(modes, readonly=True)],
-                [sg.OK(size=(6, 1)), sg.Button('Все', size=(6, 1))]
+                [sg.Button('Выбранный'), sg.Button('Все')]
             ]
             config_windows = sg.Window(loc['Create config for Android'], config_layout, resizable=True, size=(500, 200),
                                        modal=True)
@@ -538,7 +576,7 @@ while True:
                 event, values = config_windows.read()
                 if event == sg.WINDOW_CLOSED:
                     break
-                elif event == 'OK' and values[1] != '':
+                elif event == 'Выбранный' and values[1] != '':
                     quality = values[1].replace(')', '').split('(')[1]
                     mode = values[1].split(' ')[1]
                     sg.popup_scrolled(
@@ -555,8 +593,6 @@ while True:
                     sg.popup_scrolled('\n\n'.join(mods), title='Все')
             config_windows.close()
         case '-SETTINGS-':
-            open_last_file = sg.user_settings_get_entry('openLastFile') is None or sg.user_settings_get_entry(
-                'openLastFile')
             match sg.user_settings_get_entry('language'):
                 case 'Русский':
                     lang = 'Русский'
@@ -565,14 +601,25 @@ while True:
                 case _:
                     lang = 'Auto'
             settings_layout = [
-                [sg.Text('Выбор языка (требуется перезагрузка)'),
-                 sg.Combo(['Auto', 'Русский', 'English'], readonly=True, default_value=lang, key='-LANGUAGE-')],
-                [sg.Checkbox('При запуске открывать последний открытый файл', key='-OPEN_LAST_FILE-',
-                             default=open_last_file)],
-                # [sg.Checkbox('Устанавливать позицию последнего открытого файла')],
-                [sg.Checkbox('Темная тема (требуется перезагрузка)', key='-DARK_THEME-',
-                             default=sg.user_settings_get_entry('darkTheme'))],
-                [sg.OK(size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
+                [
+                    sg.Text('Выбор языка (требуется перезагрузка)'),
+                    sg.Combo(['Auto', 'Русский', 'English'], readonly=True, default_value=lang, key='-LANGUAGE-')
+                ],
+                [
+                    sg.Checkbox('При запуске открывать последний открытый файл', key='-OPEN_LAST_FILE-',
+                                default=sg.user_settings_get_entry('onOpenLastFile', True))
+                ],
+                [
+                    sg.Checkbox('Устанавливать позицию последнего открытого файла', key='-POS_LAST_FILE-',
+                                default=sg.user_settings_get_entry('onPosLastFile', True))
+                ],
+                [
+                    sg.Checkbox('Темная тема (требуется перезагрузка)', key='-DARK_THEME-',
+                                default=sg.user_settings_get_entry('darkTheme', False))
+                ],
+                [
+                    sg.OK(size=(6, 1)), sg.Button('Отмена', size=(6, 1))
+                ]
             ]
             settings_windows = sg.Window(loc['Settings'], settings_layout, modal=True)
             while True:
@@ -582,7 +629,8 @@ while True:
                         break
                     case 'OK':
                         sg.user_settings_set_entry('language', values['-LANGUAGE-'])
-                        sg.user_settings_set_entry('openLastFile', values['-OPEN_LAST_FILE-'])
+                        sg.user_settings_set_entry('onOpenLastFile', values['-OPEN_LAST_FILE-'])
+                        sg.user_settings_set_entry('onPosLastFile', values['-POS_LAST_FILE-'])
                         sg.user_settings_set_entry('darkTheme', values['-DARK_THEME-'])
                         break
             settings_windows.close()
