@@ -128,7 +128,11 @@ def to_string(preset, preset_name=''):
     global current_preset
     preset = (os.path.dirname(__file__) + os.sep + 'shaders' + os.sep + shader for shader in preset)
     current_preset = preset_name
-    return ';'.join(preset)
+    if os.name == 'nt':
+        sep = ';'
+    else:
+        sep = ':'
+    return sep.join(preset)
 
 
 def android_config(preset, path='/storage/emulated/0/mpv/shaders/'):

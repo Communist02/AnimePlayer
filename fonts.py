@@ -28,3 +28,6 @@ if os.name == 'nt':
         flags = (FR_PRIVATE if private else 0) | (FR_NOT_ENUM if not enumerable else 0)
         num_fonts_added = add_font_resource_ex(byref(path_buf), flags, 0)
         return bool(num_fonts_added)
+else:
+    def load_font(font_path):
+        pass

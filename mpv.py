@@ -39,7 +39,7 @@ if os.name == 'nt':
     #                   '"import mpv": os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"] '
     #                   'If mpv-1.dll is located elsewhere, you can add that path to os.environ["PATH"].')
     # backend = CDLL(dll)
-    path = os.path.dirname(__file__) + os.sep + 'mpv' + os.sep + 'mpv-1.dll'
+    path = os.path.dirname(__file__) + os.sep + 'mpv' + os.sep + 'libmpv-2.dll'
     backend = CDLL(path)
     fs_enc = 'utf-8'
 else:
