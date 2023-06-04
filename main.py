@@ -10,7 +10,7 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 name_program = 'Anime Player'
-version = '0.3.2 Alpha'
+version = '0.3.3 Alpha'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -160,7 +160,7 @@ player: MPV = MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, pro
 
 class Player:
     """
-    Управление возможностями плеера
+    Управление плеером
     """
     folder = ''
     filename = ''
@@ -524,9 +524,9 @@ while True:
                 [sg.Combo(links_history, size=(35, 10), key='-LINK-'), sg.Button('Очистить', key='-CLEAR-')],
                 [sg.Button('ОК', size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
             ]
-            open_url_windows = sg.Window('Открытие ссылки', open_url_layout, modal=True)
+            open_url_window = sg.Window('Открытие ссылки', open_url_layout, modal=True)
             while True:
-                event, values = open_url_windows.read()
+                event, values = open_url_window.read()
                 if event == sg.WINDOW_CLOSED or event == 'Отмена':
                     break
                 elif event == 'ОК':
@@ -534,9 +534,9 @@ while True:
                     break
                 elif event == '-CLEAR-':
                     links_history = []
-                    open_url_windows['-LINK-'].update(value='', values=[])
+                    open_url_window['-LINK-'].update(value='', values=[])
                     sg.user_settings_set_entry('linksHistory', [])
-            open_url_windows.close()
+            open_url_window.close()
             if new_link is not None and new_link != '':
                 if links_history.count(new_link) > 0:
                     links_history.remove(new_link)
@@ -544,8 +544,36 @@ while True:
                 sg.user_settings_set_entry('linksHistory', links_history)
                 Player.open_url(new_link)
         case '-OPEN_FOLDER-':
-            new_folder = sg.popup_get_folder('Выберите папку с медиа', title='Выбор папки', history=True, size=(30, 40))
+            folders_history = sg.user_settings_get_entry('foldersHistory', [])
+            new_folder = ''
+            open_folder_layout = [
+                [sg.Text('Выберите папку')],
+                [sg.Combo(folders_history, size=(35, 10), key='-FOLDER-'), sg.Button('Выбрать', key='-BROWSE-'), sg.Button('Очистить', key='-CLEAR-')],
+                [sg.Button('ОК', size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
+            ]
+            open_folder_window = sg.Window('Открытие папки', open_folder_layout, modal=True)
+            while True:
+                event, values = open_folder_window.read()
+                if event == sg.WINDOW_CLOSED or event == 'Отмена':
+                    break
+                elif event == 'ОК':
+                    new_folder = values['-FOLDER-'].strip()
+                    break
+                elif event == '-CLEAR-':
+                    links_history = []
+                    open_folder_window['-FOLDER-'].update(value='', values=[])
+                    sg.user_settings_set_entry('foldersHistory', [])
+                elif event == '-BROWSE-':
+                    path = sg.popup_get_folder('Выберите папку', no_window=True).replace('/', os.sep)
+                    if path != '':
+                        open_folder_window['-FOLDER-'].update(value=path)
+                    pass
+            open_folder_window.close()
             if new_folder is not None and new_folder != '':
+                if folders_history.count(new_folder) > 0:
+                    folders_history.remove(new_folder)
+                folders_history.insert(0, new_folder)
+                sg.user_settings_set_entry('foldersHistory', folders_history)
                 Player.open_folder(new_folder)
         case '-CLOSE-':
             Player.close()
