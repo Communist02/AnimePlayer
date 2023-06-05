@@ -29,7 +29,16 @@ en = {
     'Previous file': 'Previous file',
     'Sound level': 'Sound level',
     'Frames lost': 'Frames lost',
-    'Information': 'Information'
+    'Information': 'Information',
+    'Clear': 'Clear',
+    'Select': 'Select',
+    'Cancel': 'Cancel',
+    'Language selection (requires reboot)': 'Language selection (requires reboot)',
+    'On startup, open the last opened file': 'On startup, open the last opened file',
+    'Set the position of the last opened file': 'Set the position of the last opened file',
+    'Dark theme (requires reboot)': 'Dark theme (requires reboot)',
+    'Speed': 'Speed',
+    'Playback speed': 'Playback speed'
 }
 
 ru = {
@@ -61,7 +70,16 @@ ru = {
     'Previous file': 'Предыдущий файл',
     'Sound level': 'Уровень звука',
     'Frames lost': 'Потеряно кадров',
-    'Information': 'Информация'
+    'Information': 'Информация',
+    'Clear': 'Очистить',
+    'Select': 'Выбрать',
+    'Cancel': 'Отмена',
+    'Language selection (requires reboot)': 'Выбор языка (требуется перезагрузка)',
+    'On startup, open the last opened file': 'При запуске открывать последний открытый файл',
+    'Set the position of the last opened file': 'Устанавливать позицию последнего открытого файла',
+    'Dark theme (requires reboot)': 'Темная тема (требуется перезагрузка)',
+    'Speed': 'Скорость',
+    'Playback speed': 'Скорость воспроизведения'
 }
 
 match locale.getlocale()[0]:

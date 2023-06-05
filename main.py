@@ -66,7 +66,13 @@ menu = [
          loc['Close'] + '::-CLOSE-', '---', loc['Settings'] + '::-SETTINGS-', '---', loc['Exit'] + '::-EXIT-']
     ],
     [
-        loc['Playback'], [loc['Play | Pause'] + '::-TAB_PLAY-', '---', loc['Fullscreen'] + '::-TAB_FS-']
+        loc['Playback'],
+        [
+            loc['Play | Pause'] + '::-TAB_PLAY-',
+            loc['Playback speed'],
+            ['x0.25', 'x0.5', 'x0.75', 'x1.0', 'x1.25', 'x1.5', 'x1.75', 'x2.0', 'x2.25', 'x2.5', 'x2.75', 'x3.0'],
+            '---', loc['Fullscreen'] + '::-TAB_FS-'
+        ]
     ],
     [
         loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs
@@ -85,7 +91,10 @@ right_click_menu = [
         '---',
         loc['Settings'] + '::-SETTINGS-',
         '---',
-        loc['Play | Pause'] + '::-TAB_PLAY-', loc['Fullscreen'] + '::-TAB_FS-',
+        loc['Play | Pause'] + '::-TAB_PLAY-',
+        loc['Playback speed'],
+        ['x0.25', 'x0.5', 'x0.75', 'x1.0', 'x1.25', 'x1.5', 'x1.75', 'x2.0', 'x2.25', 'x2.5', 'x2.75', 'x3.0'],
+        loc['Fullscreen'] + '::-TAB_FS-',
         '---',
         loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs,
         loc['Other'], [loc['Reference'] + '::-REFERENCE-', loc['Activate SVP'] + '::-SVP-',
@@ -314,13 +323,14 @@ class Player:
         sg.user_settings_set_entry('opened', ['', ''])
 
     @classmethod
-    def update_filelist(cls):
+    def update_filelist(cls, file_name_in_list: str):
         """
         Обновление списка файлов
+        :param file_name_in_list: Имя файла в списке файлов (вместе с номером)
         """
         if len(cls.filenames_only) >= 1:
-            if len(cls.filenames_only) > 1 or len(values['-FILELIST-'][0]) > 1 and values['-FILELIST-'][0][1] == ')':
-                filename_temp = os.path.join(cls.folder, values['-FILELIST-'][0].split(' ', 1)[-1])
+            if len(cls.filenames_only) > 1 or len(file_name_in_list) > 1 and file_name_in_list[1] == ')':
+                filename_temp = os.path.join(cls.folder, file_name_in_list.split(' ', 1)[-1])
                 if cls.filename != filename_temp or cls.filenum < 0:
                     cls.filename = filename_temp
                     cls.filenum = cls.files.index(cls.filename)
@@ -421,6 +431,8 @@ class Player:
                         if file is not None and os.path.exists(file):
                             cls.filename = file
                             cls.filenum = cls.files.index(cls.filename)
+                            window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
+                            window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
                             player.play(cls.filename)
                             if on_pos_last_file is None or on_pos_last_file:
                                 cls.position_recovery(position)
@@ -484,7 +496,7 @@ while True:
                 player.hwdec_codecs = 'all'
                 player.hr_seek_framedrop = False
         case '-FILELIST-':
-            Player.update_filelist()
+            Player.update_filelist(values['-FILELIST-'][0])
         # ------------------ Клавиатура ------------------
         case 'Right:39':
             if player.time_pos is not None:
@@ -521,15 +533,15 @@ while True:
             new_link = ''
             open_url_layout = [
                 [sg.Text('Введите URL-адрес')],
-                [sg.Combo(links_history, size=(35, 10), key='-LINK-'), sg.Button('Очистить', key='-CLEAR-')],
-                [sg.Button('ОК', size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
+                [sg.Combo(links_history, size=(35, 10), key='-LINK-'), sg.Button(loc['Clear'], key='-CLEAR-')],
+                [sg.Button('OK', size=(6, 1)), sg.Button(loc['Cancel'], size=(6, 1))]
             ]
             open_url_window = sg.Window('Открытие ссылки', open_url_layout, modal=True)
             while True:
                 event, values = open_url_window.read()
-                if event == sg.WINDOW_CLOSED or event == 'Отмена':
+                if event == sg.WINDOW_CLOSED or event == loc['Cancel']:
                     break
-                elif event == 'ОК':
+                elif event == 'OK':
                     new_link = values['-LINK-'].strip()
                     break
                 elif event == '-CLEAR-':
@@ -548,15 +560,16 @@ while True:
             new_folder = ''
             open_folder_layout = [
                 [sg.Text('Выберите папку')],
-                [sg.Combo(folders_history, size=(35, 10), key='-FOLDER-'), sg.Button('Выбрать', key='-BROWSE-'), sg.Button('Очистить', key='-CLEAR-')],
-                [sg.Button('ОК', size=(6, 1)), sg.Button('Отмена', size=(6, 1))]
+                [sg.Combo(folders_history, size=(35, 10), key='-FOLDER-'), sg.Button(loc['Select'], key='-BROWSE-'),
+                 sg.Button(loc['Clear'], key='-CLEAR-')],
+                [sg.Button('OK', size=(6, 1)), sg.Button(loc['Cancel'], size=(6, 1))]
             ]
             open_folder_window = sg.Window('Открытие папки', open_folder_layout, modal=True)
             while True:
                 event, values = open_folder_window.read()
-                if event == sg.WINDOW_CLOSED or event == 'Отмена':
+                if event == sg.WINDOW_CLOSED or event == loc['Cancel']:
                     break
-                elif event == 'ОК':
+                elif event == 'OK':
                     new_folder = values['-FOLDER-'].strip()
                     break
                 elif event == '-CLEAR-':
@@ -577,6 +590,9 @@ while True:
                 Player.open_folder(new_folder)
         case '-CLOSE-':
             Player.close()
+        case 'x0.25' | 'x0.5' | 'x0.75' | 'x1.0' | 'x1.25' | 'x1.5' | 'x1.75' | 'x2.0' | 'x2.25' | 'x2.5' | 'x2.75' | 'x3.0':
+            print(event)
+            player.speed = float(event[1:])
         case '-DISABLE-':
             anime4k.current_preset = ''
             player.glsl_shaders = ''
@@ -630,30 +646,30 @@ while True:
                     lang = 'Auto'
             settings_layout = [
                 [
-                    sg.Text('Выбор языка (требуется перезагрузка)'),
+                    sg.Text(loc['Language selection (requires reboot)']),
                     sg.Combo(['Auto', 'Русский', 'English'], readonly=True, default_value=lang, key='-LANGUAGE-')
                 ],
                 [
-                    sg.Checkbox('При запуске открывать последний открытый файл', key='-OPEN_LAST_FILE-',
+                    sg.Checkbox(loc['On startup, open the last opened file'], key='-OPEN_LAST_FILE-',
                                 default=sg.user_settings_get_entry('onOpenLastFile', True))
                 ],
                 [
-                    sg.Checkbox('Устанавливать позицию последнего открытого файла', key='-POS_LAST_FILE-',
+                    sg.Checkbox(loc['Set the position of the last opened file'], key='-POS_LAST_FILE-',
                                 default=sg.user_settings_get_entry('onPosLastFile', True))
                 ],
                 [
-                    sg.Checkbox('Темная тема (требуется перезагрузка)', key='-DARK_THEME-',
+                    sg.Checkbox(loc['Dark theme (requires reboot)'], key='-DARK_THEME-',
                                 default=sg.user_settings_get_entry('darkTheme', False))
                 ],
                 [
-                    sg.OK(size=(6, 1)), sg.Button('Отмена', size=(6, 1))
+                    sg.OK(size=(6, 1)), sg.Button(loc['Cancel'], key='-CANCEL-', size=(6, 1))
                 ]
             ]
             settings_windows = sg.Window(loc['Settings'], settings_layout, modal=True)
             while True:
                 event, values = settings_windows.read()
                 match event:
-                    case sg.WINDOW_CLOSED | 'Отмена':
+                    case sg.WINDOW_CLOSED | '-CANCEL-':
                         break
                     case 'OK':
                         sg.user_settings_set_entry('language', values['-LANGUAGE-'])
