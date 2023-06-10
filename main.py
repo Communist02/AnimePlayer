@@ -10,7 +10,7 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 name_program = 'Anime Player'
-version = '0.4.0 Alpha'
+version = '0.4.1 Alpha'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -222,14 +222,14 @@ class Player:
             window['-SUB-'].update(menu_definition=['', []])
 
     @classmethod
-    def file_play(cls, file: str, timeout=3, position: float = 0):
+    def play_file(cls, file: str, timeout=3, position: float = 0):
         player.play(file)
         try:
             player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
         except TimeoutError:
             pass
         else:
-            if position is not None and position > 0:
+            if position > 0:
                 cls.new_position(position, slider_update=True)
         finally:
             cls.update_tracks()
@@ -239,7 +239,7 @@ class Player:
         """Воспроизведение / Пауза"""
         if cls.filename != '':
             if player.duration is None:
-                Player.file_play(cls.filename)
+                Player.play_file(cls.filename)
                 player.pause = False
                 window['-PLAY-'].update(image_data=icons.pause)
             elif not player.pause:
@@ -257,7 +257,7 @@ class Player:
             cls.filename = cls.files[cls.filenum]
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            Player.file_play(cls.filename)
+            Player.play_file(cls.filename)
 
     @classmethod
     def prev(cls):
@@ -267,7 +267,7 @@ class Player:
             cls.filename = cls.files[cls.filenum]
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            Player.file_play(cls.filename)
+            Player.play_file(cls.filename)
         else:
             cls.filenum = 0
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
@@ -292,11 +292,11 @@ class Player:
         cls.files = [file]
         cls.filenames_only = [file.split(os.sep)[-1]]
         cls.filenum = 0
-        cls.filename = file.rsplit(os.sep, 1)[-1]
+        cls.filename = file
         window['-FILELIST-'].update(values=cls.filenames_only, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
         window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-        Player.file_play(cls.filename, position=position)
+        Player.play_file(cls.filename, position=position)
         sg.user_settings_set_entry('opened', ['file', file])
 
     @classmethod
@@ -321,7 +321,7 @@ class Player:
         window['-FILELIST-'].update(values=cls.files, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
         window.set_title(f'{cls.filename.rsplit("/", 1)[-1]} - {name_program}')
-        Player.file_play(cls.filename, position=position)
+        Player.play_file(cls.filename, position=position)
         sg.user_settings_set_entry('opened', ['url', link])
 
     @classmethod
@@ -350,7 +350,7 @@ class Player:
         if len(cls.files) != 0:
             cls.filename = cls.files[cls.filenum]
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            Player.file_play(cls.filename, position=position)
+            Player.play_file(cls.filename, position=position)
         else:
             cls.filename = ''
             window.set_title(name_program)
@@ -390,7 +390,7 @@ class Player:
                 if cls.filename != filename_temp or cls.filenum < 0:
                     cls.filename = filename_temp
                     cls.filenum = cls.files.index(cls.filename)
-                    Player.file_play(cls.filename)
+                    Player.play_file(cls.filename)
                     window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
 
     @classmethod
@@ -453,7 +453,7 @@ class Player:
             position = sg.user_settings_get_entry('position')
             open_last = sg.user_settings_get_entry('onOpenLastFile')
             on_pos_last_file = sg.user_settings_get_entry('onPosLastFile')
-            if on_pos_last_file is not None and not on_pos_last_file:
+            if on_pos_last_file is not None and not on_pos_last_file or position is None:
                 position = 0
             if volume is not None:
                 player.volume = volume
@@ -487,7 +487,7 @@ class Player:
                 position = sg.user_settings_get_entry('position')
 
                 if file is not None and file == args[1] and position is not None:
-                    cls.open_file(args[1], position)
+                    cls.open_file(args[1], position=position)
                 else:
                     cls.open_file(args[1])
             elif os.path.isdir(args[1]):
