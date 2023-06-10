@@ -10,7 +10,7 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 name_program = 'Anime Player'
-version = '0.3.3 Alpha'
+version = '0.4.0 Alpha'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -43,10 +43,8 @@ fonts.load_font(f'{os.path.dirname(__file__) + os.sep}fonts{os.sep}BalsamiqSans-
 sg.set_options(font=(font, 10), icon=icon)
 if sg.user_settings_get_entry('darkTheme', False):
     sg.theme('dark')
-    icons.set_grey_color()
 else:
     sg.theme('light')
-    icons.set_grey_color()
 localization.set_locale(sg.user_settings_get_entry('language'))
 loc = localization.strings
 
@@ -114,16 +112,22 @@ panel = [
     [
         sg.Col([], expand_x=True, pad=(0, 0)),
         sg.Col([[
-            sg.Button(key='-FS-', image_data=icons.fullscreen, button_color=sg.theme_background_color(),
+            sg.ButtonMenu(key='-SUB-', menu_def=['', []], image_source=icons.sub,
+                          button_color=sg.theme_background_color(), border_width=0, tooltip=loc['Subtitles'],
+                          button_text=''),
+            sg.ButtonMenu(key='-AUDIO-', menu_def=['', []], image_source=icons.audio,
+                          button_color=sg.theme_background_color(), border_width=0, tooltip=loc['Soundtrack'],
+                          button_text=''),
+            sg.Button(key='-FS-', image_source=icons.fullscreen, button_color=sg.theme_background_color(),
                       border_width=0, tooltip=loc['Fullscreen']),
-            sg.Button(key='-MENU-', image_data=icons.menu, button_color=sg.theme_background_color(), border_width=0,
-                      tooltip=loc['Menu']),
-            sg.Button(key='-PREV-', image_data=icons.prev, button_color=sg.theme_background_color(), border_width=0,
+            sg.Button(key='-PREV-', image_source=icons.prev, button_color=sg.theme_background_color(), border_width=0,
                       tooltip=loc['Previous file']),
             sg.Button(key='-PLAY-', image_data=icons.play, button_color=sg.theme_background_color(), border_width=0,
                       tooltip=loc['Play']),
-            sg.Button(key='-NEXT-', image_data=icons.next, button_color=sg.theme_background_color(), border_width=0,
+            sg.Button(key='-NEXT-', image_source=icons.next, button_color=sg.theme_background_color(), border_width=0,
                       tooltip=loc['Next file']),
+            sg.Button(key='-MENU-', image_source=icons.menu, button_color=sg.theme_background_color(), border_width=0,
+                      tooltip=loc['Menu']),
             sg.Slider(orientation='h', key='-VOLUME-', default_value=100, enable_events=True, range=(0, 100),
                       size=(12, 16), pad=((5, 5), (0, 8)), tooltip=loc['Sound level'])
         ]], expand_x=True, pad=(0, 0)),
@@ -171,12 +175,14 @@ class Player:
     """
     Управление плеером
     """
-    folder = ''
-    filename = ''
-    files = []
-    filenames_only = []
-    filenum = -1
-    fullscreen = False
+    folder: str = ''
+    filename: str = ''
+    files: list = []
+    filenames_only: list = []
+    filenum: int = -1
+    fullscreen: bool = False
+    audio: dict = {}
+    sub: dict = {}
 
     @classmethod
     def list_files(cls):
@@ -188,11 +194,52 @@ class Player:
         return [f'{i + 1}) ' + filenames[i] for i in range(len(filenames))]
 
     @classmethod
+    def update_tracks(cls):
+        cls.audio = {}
+        cls.sub = {}
+        for track in player.track_list:
+            if track['type'] == 'audio':
+                if 'lang' in track.keys():
+                    cls.audio[track['id']] = f'{track["lang"]} - {track["codec"]}'
+                else:
+                    cls.audio[track['id']] = track['codec']
+            if track['type'] == 'sub':
+                if 'lang' in track.keys():
+                    cls.sub[track['id']] = f'{track["lang"]} - {track["codec"]}'
+                else:
+                    cls.sub[track['id']] = track['codec']
+        if len(cls.audio) > 0:
+            window['-AUDIO-'].update(
+                menu_definition=['',
+                                 [loc['Off'] + '::0'] + [f'{key}) {value}::{key}' for key, value in cls.audio.items()]])
+        else:
+            window['-AUDIO-'].update(menu_definition=['', []])
+        if len(cls.sub) > 0:
+            window['-SUB-'].update(
+                menu_definition=['',
+                                 [loc['Off'] + '::0'] + [f'{key}) {value}::{key}' for key, value in cls.sub.items()]])
+        else:
+            window['-SUB-'].update(menu_definition=['', []])
+
+    @classmethod
+    def file_play(cls, file: str, timeout=3, position: float = 0):
+        player.play(file)
+        try:
+            player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
+        except TimeoutError:
+            pass
+        else:
+            if position is not None and position > 0:
+                cls.new_position(position, slider_update=True)
+        finally:
+            cls.update_tracks()
+
+    @classmethod
     def play(cls):
         """Воспроизведение / Пауза"""
         if cls.filename != '':
             if player.duration is None:
-                player.play(cls.filename)
+                Player.file_play(cls.filename)
                 player.pause = False
                 window['-PLAY-'].update(image_data=icons.pause)
             elif not player.pause:
@@ -210,7 +257,7 @@ class Player:
             cls.filename = cls.files[cls.filenum]
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            player.play(cls.filename)
+            Player.file_play(cls.filename)
 
     @classmethod
     def prev(cls):
@@ -220,18 +267,19 @@ class Player:
             cls.filename = cls.files[cls.filenum]
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            player.play(cls.filename)
+            Player.file_play(cls.filename)
         else:
             cls.filenum = 0
             window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
 
     @classmethod
-    def open_file(cls, file: str, pause: bool = False):
+    def open_file(cls, file: str, pause: bool = False, position: float = 0):
         """
         Открытие файла
         :param file: путь к файлу
         :param pause: должна ли стоять пауза после открытия
+        :param position: позиция
         """
         file = file.replace('/', os.sep)
         player.stop()
@@ -248,15 +296,16 @@ class Player:
         window['-FILELIST-'].update(values=cls.filenames_only, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
         window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-        player.play(file)
+        Player.file_play(cls.filename, position=position)
         sg.user_settings_set_entry('opened', ['file', file])
 
     @classmethod
-    def open_url(cls, link: str, pause: bool = False):
+    def open_url(cls, link: str, pause: bool = False, position: float = 0):
         """
         Открытие с помощью URL-адреса
         :param link: URL-адрес
         :param pause: должна ли стоять пауза после открытия
+        :param position: позиция
         """
         player.stop()
         player.pause = pause
@@ -272,15 +321,18 @@ class Player:
         window['-FILELIST-'].update(values=cls.files, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
         window.set_title(f'{cls.filename.rsplit("/", 1)[-1]} - {name_program}')
-        player.play(link)
+        Player.file_play(cls.filename, position=position)
         sg.user_settings_set_entry('opened', ['url', link])
 
     @classmethod
-    def open_folder(cls, folder: str, pause: bool = True):
+    def open_folder(cls, folder: str, pause: bool = True, file: str = '', position: float = 0):
         """
         Открытие папки
+        :param file:
         :param folder: путь к папке
         :param pause: должна ли стоять пауза после открытия
+        :param file: полное имя файла
+        :param position: позиция
         """
         cls.folder = folder.replace('/', os.sep)
         player.stop()
@@ -291,11 +343,14 @@ class Player:
             window['-PLAY-'].update(image_data=icons.pause)
         cls.files = cls.list_files()
         cls.filenames_only = cls.list_filenames()
-        cls.filenum = 0
+        if file != '' and os.path.exists(file):
+            cls.filenum = cls.files.index(file)
+        else:
+            cls.filenum = 0
         if len(cls.files) != 0:
-            cls.filename = cls.files[0]
+            cls.filename = cls.files[cls.filenum]
             window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            player.play(cls.filename)
+            Player.file_play(cls.filename, position=position)
         else:
             cls.filename = ''
             window.set_title(name_program)
@@ -307,7 +362,7 @@ class Player:
     @classmethod
     def close(cls):
         """
-        Сохранение параметров перед закрытием плеера
+        Закрытие открытых фалов и переход в изначальное состояние
         """
         player.stop()
         player.pause = False
@@ -319,6 +374,7 @@ class Player:
         cls.filenum = -1
         window['-FILELIST-'].update(values=cls.filenames_only)
         window['-INFO-'].update(value=cls.folder)
+        window['-AUDIO-'].update(menu_definition=['', []])
         window.set_title(name_program)
         sg.user_settings_set_entry('opened', ['', ''])
 
@@ -334,7 +390,7 @@ class Player:
                 if cls.filename != filename_temp or cls.filenum < 0:
                     cls.filename = filename_temp
                     cls.filenum = cls.files.index(cls.filename)
-                    player.play(cls.filename)
+                    Player.file_play(cls.filename)
                     window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
 
     @classmethod
@@ -385,57 +441,38 @@ class Player:
             sg.user_settings_set_entry('position', None)
 
     @classmethod
-    def position_recovery(cls, position: float, timeout: int = 3):
-        """
-        Восстановление позиции плеера
-        :param position: позиция
-        :param timeout: максимальное время ожидания загрузки файла
-        """
-        if position is not None:
-            try:
-                player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
-            except TimeoutError:
-                pass
-            else:
-                cls.new_position(position, slider_update=True)
-
-    @classmethod
     def configuration(cls, open_prev: bool = True):
         """
         Начальная настройка плеера
         :param open_prev: открывать ли предыдущий файл
         """
-        volume = sg.user_settings_get_entry('volume')
-        opened = sg.user_settings_get_entry('opened')
-        file = sg.user_settings_get_entry('file')
-        position = sg.user_settings_get_entry('position')
-        open_last = sg.user_settings_get_entry('onOpenLastFile')
-        on_pos_last_file = sg.user_settings_get_entry('onPosLastFile')
-        if volume is not None:
-            player.volume = volume
-            window['-VOLUME-'].update(value=volume)
-        if opened is not None and open_prev and (open_last is None or open_last):
-            match opened[0]:
-                case 'file':
-                    if os.path.exists(opened[1]):
-                        cls.open_file(opened[1], pause=True)
+        try:
+            volume = sg.user_settings_get_entry('volume')
+            opened = sg.user_settings_get_entry('opened')
+            file = sg.user_settings_get_entry('file')
+            position = sg.user_settings_get_entry('position')
+            open_last = sg.user_settings_get_entry('onOpenLastFile')
+            on_pos_last_file = sg.user_settings_get_entry('onPosLastFile')
+            if on_pos_last_file is not None and not on_pos_last_file:
+                position = 0
+            if volume is not None:
+                player.volume = volume
+                window['-VOLUME-'].update(value=volume)
+            if opened is not None and open_prev and (open_last is None or open_last):
+                match opened[0]:
+                    case 'file':
+                        if os.path.exists(opened[1]):
+                            cls.open_file(opened[1], pause=True, position=position)
+                    case 'url':
                         if on_pos_last_file is None or on_pos_last_file:
-                            cls.position_recovery(position)
-                case 'url':
-                    if on_pos_last_file is None or on_pos_last_file:
-                        cls.open_url(opened[1], pause=True)
-                    cls.position_recovery(position, timeout=5)
-                case 'folder':
-                    if os.path.exists(opened[1]):
-                        cls.open_folder(opened[1], pause=True)
-                        if file is not None and os.path.exists(file):
-                            cls.filename = file
-                            cls.filenum = cls.files.index(cls.filename)
-                            window.set_title(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-                            window['-FILELIST-'].update(set_to_index=cls.filenum, scroll_to_index=cls.filenum)
-                            player.play(cls.filename)
-                            if on_pos_last_file is None or on_pos_last_file:
-                                cls.position_recovery(position)
+                            cls.open_url(opened[1], pause=True, position=position)
+                    case 'folder':
+                        if os.path.exists(opened[1]):
+                            cls.open_folder(opened[1], pause=True, file=file, position=position)
+        except ValueError:
+            sg.user_settings_delete_entry('opened')
+            sg.user_settings_delete_entry('file')
+            sg.user_settings_delete_entry('position')
 
     @classmethod
     def start_player(cls, args: list):
@@ -448,9 +485,11 @@ class Player:
             if os.path.isfile(args[1]):
                 file = sg.user_settings_get_entry('opened')[1]
                 position = sg.user_settings_get_entry('position')
-                cls.open_file(args[1])
+
                 if file is not None and file == args[1] and position is not None:
-                    cls.position_recovery(position)
+                    cls.open_file(args[1], position)
+                else:
+                    cls.open_file(args[1])
             elif os.path.isdir(args[1]):
                 cls.open_folder(args[1])
         else:
@@ -484,6 +523,10 @@ while True:
             Player.play()
         case '-FS-' | '-TAB_FS-' | 'F11:122' | '-VID_OUT-+-double_click-':
             Player.fullscreen_switch()
+        case '-SUB-':
+            player.sid = values['-SUB-'].rsplit(':', 1)[1]
+        case '-AUDIO-':
+            player.aid = values['-AUDIO-'].rsplit(':', 1)[1]
         case '-MENU-':
             if not window['-LIST-'].visible:
                 window['-LIST-'].update(visible=True)
@@ -524,19 +567,19 @@ while True:
                 Player.fullscreen_switch()
         # ----------------- Верхнее меню -----------------
         case '-OPEN_FILE-':
-            new_file = sg.popup_get_file('Выберите файл', no_window=True, file_types=(
-                ('Все поддерживаемые файлы', ' '.join(['.' + f for f in formats])),))
+            new_file = sg.popup_get_file(loc['Choose file'], no_window=True, file_types=(
+                (loc['All supported files'], ' '.join(['.' + f for f in formats])),))
             if new_file is not None and new_file != '':
                 Player.open_file(new_file)
         case '-OPEN_URL-':
             links_history = sg.user_settings_get_entry('linksHistory', [])
             new_link = ''
             open_url_layout = [
-                [sg.Text('Введите URL-адрес')],
+                [sg.Text(loc['Enter the URL'])],
                 [sg.Combo(links_history, size=(35, 10), key='-LINK-'), sg.Button(loc['Clear'], key='-CLEAR-')],
                 [sg.Button('OK', size=(6, 1)), sg.Button(loc['Cancel'], size=(6, 1))]
             ]
-            open_url_window = sg.Window('Открытие ссылки', open_url_layout, modal=True)
+            open_url_window = sg.Window(loc['Opening a link'], open_url_layout, modal=True)
             while True:
                 event, values = open_url_window.read()
                 if event == sg.WINDOW_CLOSED or event == loc['Cancel']:
@@ -559,12 +602,12 @@ while True:
             folders_history = sg.user_settings_get_entry('foldersHistory', [])
             new_folder = ''
             open_folder_layout = [
-                [sg.Text('Выберите папку')],
+                [sg.Text(loc['Select a folder'])],
                 [sg.Combo(folders_history, size=(35, 10), key='-FOLDER-'), sg.Button(loc['Select'], key='-BROWSE-'),
                  sg.Button(loc['Clear'], key='-CLEAR-')],
                 [sg.Button('OK', size=(6, 1)), sg.Button(loc['Cancel'], size=(6, 1))]
             ]
-            open_folder_window = sg.Window('Открытие папки', open_folder_layout, modal=True)
+            open_folder_window = sg.Window(loc['Opening a folder'], open_folder_layout, modal=True)
             while True:
                 event, values = open_folder_window.read()
                 if event == sg.WINDOW_CLOSED or event == loc['Cancel']:
@@ -577,7 +620,7 @@ while True:
                     open_folder_window['-FOLDER-'].update(value='', values=[])
                     sg.user_settings_set_entry('foldersHistory', [])
                 elif event == '-BROWSE-':
-                    path = sg.popup_get_folder('Выберите папку', no_window=True).replace('/', os.sep)
+                    path = sg.popup_get_folder(loc['Select a folder'], no_window=True).replace('/', os.sep)
                     if path != '':
                         open_folder_window['-FOLDER-'].update(value=path)
                     pass
@@ -591,7 +634,6 @@ while True:
         case '-CLOSE-':
             Player.close()
         case 'x0.25' | 'x0.5' | 'x0.75' | 'x1.0' | 'x1.25' | 'x1.5' | 'x1.75' | 'x2.0' | 'x2.25' | 'x2.5' | 'x2.75' | 'x3.0':
-            print(event)
             player.speed = float(event[1:])
         case '-DISABLE-':
             anime4k.current_preset = ''
@@ -607,12 +649,12 @@ while True:
         case '-ANDROID_CONFIG-':
             config_layout = [
                 [sg.Text(
-                    'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид')],
-                [sg.Text('Введите путь до шейдеров')],
+                    loc['You can use this config to use the Anime4K algorithm in the mpv video player on android'])],
+                [sg.Text(loc['Enter the path to the shaders'])],
                 [sg.Input('/storage/emulated/0/mpv/shaders/')],
-                [sg.Text('Выберите конфигурацию алгоритма')],
+                [sg.Text(loc['Select the algorithm configuration'])],
                 [sg.Combo(modes, readonly=True)],
-                [sg.Button('Выбранный'), sg.Button('Все')]
+                [sg.Button(loc['Selected']), sg.Button(loc['All'])]
             ]
             config_windows = sg.Window(loc['Create config for Android'], config_layout, resizable=True, size=(500, 200),
                                        modal=True)
@@ -620,13 +662,13 @@ while True:
                 event, values = config_windows.read()
                 if event == sg.WINDOW_CLOSED:
                     break
-                elif event == 'Выбранный' and values[1] != '':
+                elif event == loc['Selected'] and values[1] != '':
                     quality = values[1].replace(')', '').split('(')[1]
                     mode = values[1].split(' ')[1]
                     sg.popup_scrolled(
                         f'# {values[1]}\n' + anime4k.android_config(anime4k.create_preset(quality, mode), values[0]),
                         title=values[1])
-                elif event == 'Все':
+                elif event == loc['All']:
                     mods = []
                     for mod in modes:
                         quality = mod.replace(')', '').split('(')[1]
