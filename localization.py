@@ -38,7 +38,21 @@ en = {
     'Set the position of the last opened file': 'Set the position of the last opened file',
     'Dark theme (requires reboot)': 'Dark theme (requires reboot)',
     'Speed': 'Speed',
-    'Playback speed': 'Playback speed'
+    'Playback speed': 'Playback speed',
+    'Subtitles': 'Subtitles',
+    'Soundtrack': 'Soundtrack',
+    'Choose file': 'Choose file',
+    'All supported files': 'All supported files',
+    'Enter the URL': 'Enter the URL',
+    'Opening a link': 'Opening a link',
+    'Select a folder': 'Select a folder',
+    'Opening a folder': 'Opening a folder',
+    'You can use this config to use the Anime4K algorithm in the mpv video player on android': 'You can use this config to use the Anime4K algorithm in the mpv video player on android',
+    'Enter the path to the shaders': 'Enter the path to the shaders',
+    'Select the algorithm configuration': 'Select the algorithm configuration',
+    'All': 'All',
+    'Selected': 'Selected',
+    'Off': 'Off'
 }
 
 ru = {
@@ -79,7 +93,21 @@ ru = {
     'Set the position of the last opened file': 'Устанавливать позицию последнего открытого файла',
     'Dark theme (requires reboot)': 'Темная тема (требуется перезагрузка)',
     'Speed': 'Скорость',
-    'Playback speed': 'Скорость воспроизведения'
+    'Playback speed': 'Скорость воспроизведения',
+    'Subtitles': 'Субтитры',
+    'Soundtrack': 'Звуковая дорожка',
+    'Choose file': 'Выберите файл',
+    'All supported files': 'Все поддерживаемые файлы',
+    'Enter the URL': 'Введите URL-адрес',
+    'Opening a link': 'Открытие ссылки',
+    'Select a folder': 'Выберите папку',
+    'Opening a folder': 'Открытие папки',
+    'You can use this config to use the Anime4K algorithm in the mpv video player on android': 'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид',
+    'Enter the path to the shaders': 'Введите путь до шейдеров',
+    'Select the algorithm configuration': 'Выберите конфигурацию алгоритма',
+    'All': 'Все',
+    'Selected': 'Выбранный',
+    'Off': 'Выкл.'
 }
 
 match locale.getlocale()[0]:
