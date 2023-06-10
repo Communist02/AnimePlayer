@@ -1,14 +1,14 @@
 # Anime Player
 
-<img align="left" width="250" src="image/anime-player-icon.png" alt="Иконка"/>
+<img align="left" width="250" src="image/anime-player-icon.png" alt="Icon"/>
 
-A video player that enhances the quality of a hand-drawn image using Anime4K's high-performance scaling algorithm.
+Video player with the function of improving the quality of the hand-drawn image using the high-performance scaling algorithm of Anime4K.
 
 This program is a video player written in the Python programming language using the GUI library [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI), the media player [mpv](https://mpv.io/) and scaling algorithm [Anime4K](https://github.com/bloc97/Anime4K). Anime Player is designed to play video and audio files and includes functions such as opening files, URLs and folders, setting image scaling parameters using the Anime4K algorithm, creating mpv config for watching videos using the Anime4K algorithm on Android, viewing help and information about tuning the algorithm.
 The player also has support for frame interpolation using SVP (to work, you need to install [SVP](https://www.svp-team.com/) and [VapourSynth](https://github.com/vapoursynth/vapoursynth/releases )).
 <br clear="left"/>
 
-![Скриншот](doc/screenshot.jpg)
+![Screenshot](doc/screenshot.jpg)
 
 Видеоплеер с функцией улучшения качества рисованного изображения с помощью высокопроизводительного алгоритма масштабирования Anime4K.
 
