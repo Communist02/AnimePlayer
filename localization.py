@@ -52,7 +52,11 @@ en = {
     'Select the algorithm configuration': 'Select the algorithm configuration',
     'All': 'All',
     'Selected': 'Selected',
-    'Off': 'Off'
+    'Off': 'Off',
+    'Paste': 'Paste',
+    'Screenshot': 'Screenshot',
+    'Take a screenshot': 'Take a screenshot',
+    'Enter folder path for screenshots': 'Enter folder path for screenshots'
 }
 
 ru = {
@@ -107,7 +111,11 @@ ru = {
     'Select the algorithm configuration': 'Выберите конфигурацию алгоритма',
     'All': 'Все',
     'Selected': 'Выбранный',
-    'Off': 'Выкл.'
+    'Off': 'Выкл.',
+    'Paste': 'Вставить',
+    'Screenshot': 'Cкриншот',
+    'Take a screenshot': 'Сделать скриншот',
+    'Enter folder path for screenshots': 'Введите путь до папки для скриншотов'
 }
 
 match locale.getlocale()[0]:
