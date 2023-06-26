@@ -10,7 +10,7 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 name_program = 'Anime Player'
-version = '0.4.1 Alpha'
+version = '0.5.0 Beta'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -56,6 +56,7 @@ for quality in anime4k.qualities:
     tabs += [f'{loc["Quality"]} {quality}',
              [f'{loc["Mode"]} {mode}' + f'::{loc["Mode"]} {mode} ({quality})' for mode in anime4k.modes]]
 tabs += [f'{loc["Quality"]} HQ', [f'{loc["Mode"]} {mode}' for mode in list(anime4k.ultra_hq_presets.keys())]]
+screenshot_path = ''
 
 menu = [
     [
@@ -69,6 +70,7 @@ menu = [
             loc['Play | Pause'] + '::-TAB_PLAY-',
             loc['Playback speed'],
             ['x0.25', 'x0.5', 'x0.75', 'x1.0', 'x1.25', 'x1.5', 'x1.75', 'x2.0', 'x2.25', 'x2.5', 'x2.75', 'x3.0'],
+            loc['Take a screenshot'] + '::-SCREENSHOT-',
             '---', loc['Fullscreen'] + '::-TAB_FS-'
         ]
     ],
@@ -92,6 +94,7 @@ right_click_menu = [
         loc['Play | Pause'] + '::-TAB_PLAY-',
         loc['Playback speed'],
         ['x0.25', 'x0.5', 'x0.75', 'x1.0', 'x1.25', 'x1.5', 'x1.75', 'x2.0', 'x2.25', 'x2.5', 'x2.75', 'x3.0'],
+        loc['Take a screenshot'] + '::-SCREENSHOT-',
         loc['Fullscreen'] + '::-TAB_FS-',
         '---',
         loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs,
@@ -136,7 +139,7 @@ panel = [
 
 col = [
     [
-        sg.Image(f'{os.path.dirname(__file__) + os.sep}image{os.sep}play-button.png', key='-VID_OUT-', subsample=3,
+        sg.Image(f'{os.path.dirname(__file__) + os.sep}images{os.sep}play-button.png', key='-VID_OUT-', subsample=3,
                  right_click_menu=right_click_menu, expand_x=True, expand_y=True, pad=(0, 0)),
     ],
     [
@@ -321,7 +324,7 @@ class Player:
         window['-FILELIST-'].update(values=cls.files, set_to_index=cls.filenum, scroll_to_index=cls.filenum)
         window['-INFO-'].update(value=cls.folder)
         window.set_title(f'{cls.filename.rsplit("/", 1)[-1]} - {name_program}')
-        Player.play_file(cls.filename, position=position)
+        Player.play_file(cls.filename, position=position, timeout=5)
         sg.user_settings_set_entry('opened', ['url', link])
 
     @classmethod
@@ -576,7 +579,8 @@ while True:
             new_link = ''
             open_url_layout = [
                 [sg.Text(loc['Enter the URL'])],
-                [sg.Combo(links_history, size=(35, 10), key='-LINK-'), sg.Button(loc['Clear'], key='-CLEAR-')],
+                [sg.Combo(links_history, size=(35, 10), key='-INPUT-'), sg.Button(loc['Paste'], key='-PASTE-'),
+                 sg.Button(loc['Clear'], key='-CLEAR-')],
                 [sg.Button('OK', size=(6, 1)), sg.Button(loc['Cancel'], size=(6, 1))]
             ]
             open_url_window = sg.Window(loc['Opening a link'], open_url_layout, modal=True)
@@ -584,12 +588,14 @@ while True:
                 event, values = open_url_window.read()
                 if event == sg.WINDOW_CLOSED or event == loc['Cancel']:
                     break
+                elif event == '-PASTE-':
+                    open_url_window['-INPUT-'].update(sg.clipboard_get())
                 elif event == 'OK':
-                    new_link = values['-LINK-'].strip()
+                    new_link = values['-INPUT-'].strip()
                     break
                 elif event == '-CLEAR-':
                     links_history = []
-                    open_url_window['-LINK-'].update(value='', values=[])
+                    open_url_window['-INPUT-'].update(value='', values=[])
                     sg.user_settings_set_entry('linksHistory', [])
             open_url_window.close()
             if new_link is not None and new_link != '':
@@ -603,7 +609,9 @@ while True:
             new_folder = ''
             open_folder_layout = [
                 [sg.Text(loc['Select a folder'])],
-                [sg.Combo(folders_history, size=(35, 10), key='-FOLDER-'), sg.Button(loc['Select'], key='-BROWSE-'),
+                [sg.Combo(folders_history, size=(35, 10), key='-INPUT-'),
+                 sg.Button(loc['Select'], key='-BROWSE-'),
+                 sg.Button(loc['Paste'], key='-PASTE-'),
                  sg.Button(loc['Clear'], key='-CLEAR-')],
                 [sg.Button('OK', size=(6, 1)), sg.Button(loc['Cancel'], size=(6, 1))]
             ]
@@ -612,17 +620,19 @@ while True:
                 event, values = open_folder_window.read()
                 if event == sg.WINDOW_CLOSED or event == loc['Cancel']:
                     break
+                elif event == '-PASTE-':
+                    open_folder_window['-INPUT-'].update(sg.clipboard_get())
                 elif event == 'OK':
-                    new_folder = values['-FOLDER-'].strip()
+                    new_folder = values['-INPUT-'].strip()
                     break
                 elif event == '-CLEAR-':
                     links_history = []
-                    open_folder_window['-FOLDER-'].update(value='', values=[])
+                    open_folder_window['-INPUT-'].update(value='', values=[])
                     sg.user_settings_set_entry('foldersHistory', [])
                 elif event == '-BROWSE-':
                     path = sg.popup_get_folder(loc['Select a folder'], no_window=True).replace('/', os.sep)
                     if path != '':
-                        open_folder_window['-FOLDER-'].update(value=path)
+                        open_folder_window['-INPUT-'].update(value=path)
                     pass
             open_folder_window.close()
             if new_folder is not None and new_folder != '':
@@ -642,7 +652,11 @@ while True:
             sg.popup(f'Anime Player v{version}\n\n{loc["About program"]}\n\nCopyright © 2023 MazurDev',
                      title=loc['About'])
         case '-REFERENCE-':
-            with open(f'{os.path.dirname(__file__) + os.sep}doc{os.sep}GLSL_Instructions_Advanced_ru.txt', 'r',
+            if loc['lang'] == 'Русский':
+                reference_file_name = 'GLSL_Instructions_Advanced_ru.txt'
+            else:
+                reference_file_name = 'GLSL_Instructions_Advanced.txt'
+            with open(f'{os.path.dirname(__file__) + os.sep}doc{os.sep}{reference_file_name}', 'r',
                       encoding='utf-8') as ref_data:
                 reference = ref_data.read()
                 sg.popup_scrolled(reference, size=(180, 0), title=loc['Reference'], font=('Consolas', 11))
@@ -720,6 +734,42 @@ while True:
                         sg.user_settings_set_entry('darkTheme', values['-DARK_THEME-'])
                         break
             settings_windows.close()
+        case '-SCREENSHOT-':
+            open_url_layout = [
+                [sg.Text(loc['Enter folder path for screenshots'])],
+                [
+                    sg.Input(screenshot_path, size=(35, 10), key='-INPUT-'),
+                    sg.Button(loc['Select'], key='-BROWSE-'),
+                    sg.Button(loc['Paste'], key='-PASTE-')
+                ],
+                [
+                    sg.Button(loc['Take a screenshot'], key='-TAKE_SCREENSHOT-'),
+                    sg.Button(loc['Close'])
+                ]
+            ]
+            open_screenshot_window = sg.Window(loc['Screenshot'], open_url_layout, modal=True)
+            while True:
+                event, values = open_screenshot_window.read()
+                if event == sg.WINDOW_CLOSED or event == loc['Close']:
+                    screenshot_path = values['-INPUT-'].strip()
+                    break
+                elif event == '-PASTE-':
+                    open_screenshot_window['-INPUT-'].update(sg.clipboard_get())
+                elif event == '-TAKE_SCREENSHOT-':
+                    screenshot_path = values['-INPUT-'].strip()
+                    if screenshot_path is not None and screenshot_path != '':
+                        player.screenshot_directory = screenshot_path
+                        player.screenshot_jpeg_quality = 100
+                        try:
+                            player.screenshot()
+                        except SystemError:
+                            sg.popup_error('Error path')
+                elif event == '-BROWSE-':
+                    path = sg.popup_get_folder(loc['Select a folder'], no_window=True).replace('/', os.sep)
+                    if path != '':
+                        open_screenshot_window['-INPUT-'].update(value=path)
+                    pass
+            open_screenshot_window.close()
         case _:
             if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
                 player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]],
@@ -769,7 +819,7 @@ while True:
         #     window['-MENUBAR-'].update(visible=False)
         if window.mouse_location()[1] > window.size[1] - 120 and window['-VID_OUT-'].get_size()[0] > window.size[0] - 1:
             window['-VID_OUT-'].set_size((window.size[0], 0))
-        elif window.mouse_location()[0] > window.size[0] - 450:
+        elif window.mouse_location()[0] > window.size[0] - 465:
             window['-VID_OUT-'].set_size((0, window.size[1]))
         else:
             window['-VID_OUT-'].set_size(window.size)
