@@ -1,6 +1,6 @@
 # Anime Player
 
-<img align="left" width="250" src="image/anime-player-icon.png" alt="Icon"/>
+<img align="left" width="250" src="images/anime-player-icon.png" alt="Icon"/>
 
 Video player with the function of improving the quality of the hand-drawn image using the high-performance scaling algorithm of Anime4K.
 
