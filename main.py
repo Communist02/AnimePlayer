@@ -10,7 +10,7 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 name_program = 'Anime Player'
-version = '0.5.0 Beta'
+version = '0.5.1 Beta'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -47,6 +47,8 @@ else:
     sg.theme('light')
 localization.set_locale(sg.user_settings_get_entry('language'))
 loc = localization.strings
+cursor_last = (0, 0)
+cursor_timer = 0
 
 modes = []
 for quality in anime4k.qualities:
@@ -406,11 +408,13 @@ class Player:
             window.TKroot.attributes('-fullscreen', True)
             window['-VID_OUT-'].set_size(window.size)
             window['-MENUBAR-'].update(visible=False)
+            window['-VID_OUT-'].Widget.config(cursor='none')
         else:
             cls.fullscreen = False
             window.TKroot.attributes('-fullscreen', False)
             window['-VID_OUT-'].set_size((0, 0))
             window['-MENUBAR-'].update(visible=True)
+            window['-VID_OUT-'].Widget.config(cursor='arrow')
 
     @staticmethod
     def new_position(position: float, slider_update: bool = False):
@@ -823,5 +827,14 @@ while True:
             window['-VID_OUT-'].set_size((0, window.size[1]))
         else:
             window['-VID_OUT-'].set_size(window.size)
+
+        if window.mouse_location() != cursor_last:
+            window['-VID_OUT-'].Widget.config(cursor='arrow')
+            cursor_last = window.mouse_location()
+            cursor_timer = 0
+        elif window['-VID_OUT-'].get_size() == window.size:
+            cursor_timer += 1
+            if cursor_timer > 10:
+                window['-VID_OUT-'].Widget.config(cursor='none')
 
 window.close()
