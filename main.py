@@ -10,7 +10,7 @@ import fonts
 icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 name_program = 'Anime Player'
-version = '0.5.2 Beta'
+version = '1.0 rc1'
 font = 'Balsamiq Sans Regular'
 light = {
     'BACKGROUND': '#f5f1eb',
@@ -172,8 +172,7 @@ window = sg.Window('Anime Player', layout, resizable=True, finalize=True, size=(
 window['-FILELIST-'].Widget.bind('<KeyPress>', 'break')
 window['-VID_OUT-'].bind('<Double-Button-1>', '+-double_click-')
 
-player: MPV = MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, profile='gpu-hq', scale='spline64',
-                  cscale='spline64')
+player: MPV = MPV(wid=window['-VID_OUT-'].Widget.winfo_id(), keep_open=True, profile='gpu-hq')
 
 
 class Player:
@@ -188,6 +187,13 @@ class Player:
     fullscreen: bool = False
     audio: dict = {}
     sub: dict = {}
+    info: dict = {
+        'preset': '',
+        'codec': '',
+        'resolution': '',
+        'fps': 0,
+        'frame_drop': 0
+    }
 
     @classmethod
     def list_files(cls):
@@ -550,11 +556,11 @@ while True:
         # ------------------ Клавиатура ------------------
         case 'Right:39':
             if player.time_pos is not None:
-                player.time_pos += 5
+                player.seek(5)
         case 'Left:37':
             if player.time_pos is not None:
                 if player.time_pos > 5:
-                    player.time_pos -= 5
+                    player.seek(-5)
                 else:
                     player.time_pos = 0
         case 'Up:38':
@@ -766,6 +772,7 @@ while True:
                         player.screenshot_jpeg_quality = 100
                         try:
                             player.screenshot()
+                            break
                         except SystemError:
                             sg.popup_error('Error path')
                 elif event == '-BROWSE-':
@@ -778,27 +785,32 @@ while True:
             if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
                 player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]],
                                                         event + ' (HQ)')
+                Player.info['preset'] = anime4k.current_preset
             elif event in modes:
                 quality = event.replace(')', '').split('(')[1]
                 mode = event.split(' ')[1]
                 player.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality, mode), event)
+                Player.info['preset'] = anime4k.current_preset
 
     duration = player.duration
     time_pos = player.time_pos
-    info = {
-        'preset': anime4k.current_preset,
-        'codec': player.video_format if player.video_format is not None else player.audio_codec_name,
-        'resolution': (player.width, player.height),
-        'fps': player.estimated_vf_fps,
-        'frame_drop': player.frame_drop_count
-    }
+    Player.info['codec'] = player.video_format if player.video_format is not None else player.audio_codec_name
+    Player.info['resolution'] = (player.width, player.height)
+    if event not in ('-TIME-', 'Right:39', 'Left:37'):
+        Player.info['fps'] = player.estimated_vf_fps
+    Player.info['frame_drop'] = player.frame_drop_count
+
     str_info = {
-        'preset': info['preset'],
-        'codec': f'{info["codec"].upper()}' if info["codec"] is not None else '',
-        'resolution': f'{info["resolution"][0]}x{info["resolution"][1]}' if info["resolution"] != (None, None) else '',
-        'fps': f'{round(info["fps"], 1) if info["fps"] is not None else "0.0"} FPS' if info["resolution"] != (
+        'preset': Player.info['preset'],
+        'codec': f'{Player.info["codec"].upper()}' if Player.info["codec"] is not None else '',
+        'resolution': f'{Player.info["resolution"][0]}x{Player.info["resolution"][1]}' if Player.info["resolution"] != (
             None, None) else '',
-        'frame_drop': f'{loc["Frames lost"]}: {info["frame_drop"]}' if info["frame_drop"] is not None else ''
+        'fps': f'{round(Player.info["fps"], 1) if Player.info["fps"] is not None else "0.0"} FPS' if Player.info[
+                                                                                                         "resolution"] != (
+                                                                                                         None,
+                                                                                                         None) else '',
+        'frame_drop': f'{loc["Frames lost"]}: {Player.info["frame_drop"]}' if Player.info[
+                                                                                  "frame_drop"] is not None else ''
     }
 
     # Обновление информации о разрешении, FPS, кодеке и потерянных кадрах
