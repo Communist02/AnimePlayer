@@ -56,7 +56,8 @@ en = {
     'Paste': 'Paste',
     'Screenshot': 'Screenshot',
     'Take a screenshot': 'Take a screenshot',
-    'Enter folder path for screenshots': 'Enter folder path for screenshots'
+    'Enter folder path for screenshots': 'Enter folder path for screenshots',
+    'Increase maximum volume up to 200%': 'Increase maximum volume up to 200%'
 }
 
 ru = {
@@ -115,7 +116,8 @@ ru = {
     'Paste': 'Вставить',
     'Screenshot': 'Cкриншот',
     'Take a screenshot': 'Сделать скриншот',
-    'Enter folder path for screenshots': 'Введите путь до папки для скриншотов'
+    'Enter folder path for screenshots': 'Введите путь до папки для скриншотов',
+    'Increase maximum volume up to 200%': 'Увеличить максимальную громкость до 200%'
 }
 
 match locale.getlocale()[0]:
