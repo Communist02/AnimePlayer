@@ -8,14 +8,13 @@ import icons
 import fonts
 
 name_program = 'Anime Player'
-version = '1.0 Release Candidate 2'
+version = '1.0 Release Candidate 3'
 loc = localization.strings
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 
 
 def make_window(title: str = 'Anime Player', is_pause: bool = True, files_list: list = None, filenum: int = 0, volume: int = 100, is_files_list_visible: bool = False):
-    if files_list is None:
-        files_list = []
+    global loc
     icon = f'{os.path.dirname(__file__) + os.sep}favicon.ico'
     font = 'Balsamiq Sans Regular'
     light = {
@@ -42,6 +41,8 @@ def make_window(title: str = 'Anime Player', is_pause: bool = True, files_list: 
         'SLIDER_DEPTH': 0,
         'PROGRESS_DEPTH': 0,
     }
+    if files_list is None:
+        files_list = []
     sg.user_settings_filename(filename='AnimePlayer.json')
     sg.theme_add_new('light', light)
     sg.theme_add_new('dark', dark)
@@ -53,6 +54,7 @@ def make_window(title: str = 'Anime Player', is_pause: bool = True, files_list: 
         sg.theme('light')
     volume_plus = sg.user_settings_get_entry('volumePlus', False)
     localization.set_locale(sg.user_settings_get_entry('language'))
+    loc = localization.strings
     tabs = []
     for quality in anime4k.qualities:
         tabs += [f'{loc["Quality"]} {quality}', [f'{loc["Mode"]} {mode}' + f'::{loc["Mode"]} {mode} ({quality})' for mode in anime4k.modes]]
