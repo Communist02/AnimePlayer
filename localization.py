@@ -27,7 +27,7 @@ en = {
     'Menu': 'Menu',
     'Next file': 'Next file',
     'Previous file': 'Previous file',
-    'Sound level': 'Sound level',
+    'Volume level': 'Volume level',
     'Frames lost': 'Frames lost',
     'Information': 'Information',
     'Clear': 'Clear',
@@ -57,7 +57,7 @@ en = {
     'Screenshot': 'Screenshot',
     'Take a screenshot': 'Take a screenshot',
     'Enter folder path for screenshots': 'Enter folder path for screenshots',
-    'Increase maximum volume up to 200%': 'Increase maximum volume up to 200%'
+    'Increase maximum volume up to 150%': 'Increase maximum volume up to 150%'
 }
 
 ru = {
@@ -87,7 +87,7 @@ ru = {
     'Menu': 'Меню',
     'Next file': 'Следующий файл',
     'Previous file': 'Предыдущий файл',
-    'Sound level': 'Уровень звука',
+    'Volume level': 'Уровень громкости',
     'Frames lost': 'Потеряно кадров',
     'Information': 'Информация',
     'Clear': 'Очистить',
@@ -117,7 +117,7 @@ ru = {
     'Screenshot': 'Cкриншот',
     'Take a screenshot': 'Сделать скриншот',
     'Enter folder path for screenshots': 'Введите путь до папки для скриншотов',
-    'Increase maximum volume up to 200%': 'Увеличить максимальную громкость до 200%'
+    'Increase maximum volume up to 150%': 'Увеличить максимальную громкость до 150%'
 }
 
 match locale.getlocale()[0]:
