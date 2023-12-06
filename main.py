@@ -125,8 +125,8 @@ def make_window(title: str = 'Anime Player', is_pause: bool = True, files_list: 
                     sg.Button(key='-PLAY-', image_data=icons.play if is_pause else icons.pause, button_color=sg.theme_background_color(), border_width=0, tooltip=loc['Play']),
                     sg.Button(key='-NEXT-', image_source=icons.next, button_color=sg.theme_background_color(), border_width=0, tooltip=loc['Next file']),
                     sg.Button(key='-MENU-', image_source=icons.menu, button_color=sg.theme_background_color(), border_width=0, tooltip=loc['Menu']),
-                    sg.Slider(orientation='h', key='-VOLUME-', default_value=volume, enable_events=True, range=(0, 100 if not volume_plus else 200), size=(12, 16), pad=((5, 5), (0, 8)),
-                              tooltip=loc['Sound level'])
+                    sg.Slider(orientation='h', key='-VOLUME-', default_value=volume, enable_events=True, range=(0, 100 if not volume_plus else 150), size=(14, 16), pad=((5, 5), (0, 8)),
+                              tooltip=loc['Volume level'])
                 ]
             ], expand_x=True, pad=(0, 0)),
         ]
@@ -620,8 +620,8 @@ def main():
             case 'Up:38':
                 if player.volume > 95 and window['-VOLUME-'].Range[1] == 100:
                     player.volume = 100
-                elif player.volume > 195 and window['-VOLUME-'].Range[1] == 200:
-                    player.volume = 200
+                elif player.volume > 145 and window['-VOLUME-'].Range[1] == 150:
+                    player.volume = 150
                 else:
                     player.volume += 5
                 window['-VOLUME-'].update(value=player.volume)
@@ -775,7 +775,7 @@ def main():
                         sg.Checkbox(loc['Set the position of the last opened file'], key='-POS_LAST_FILE-', default=sg.user_settings_get_entry('onPosLastFile', True))
                     ],
                     [
-                        sg.Checkbox(loc['Increase maximum volume up to 200%'], key='-VOLUME_PLUS-', default=sg.user_settings_get_entry('volumePlus', False))
+                        sg.Checkbox(loc['Increase maximum volume up to 150%'], key='-VOLUME_PLUS-', default=sg.user_settings_get_entry('volumePlus', False))
                     ],
                     [
                         sg.Checkbox(loc['Activate SVP'], key='-SVP-', default=sg.user_settings_get_entry('SVP', False))
@@ -802,7 +802,7 @@ def main():
                                 if not values['-VOLUME_PLUS-'] and player.volume > 100:
                                     player.volume = 100
                                     window['-VOLUME-'].update(value=100)
-                                window['-VOLUME-'].update(range=(0, 100 if not values['-VOLUME_PLUS-'] else 200))
+                                window['-VOLUME-'].update(range=(0, 100 if not values['-VOLUME_PLUS-'] else 150))
                                 sg.user_settings_set_entry('volumePlus', values['-VOLUME_PLUS-'])
 
                             if sg.user_settings_get_entry('language', lang) != values['-LANGUAGE-'] or sg.user_settings_get_entry('darkTheme', False) != values['-DARK_THEME-']:
