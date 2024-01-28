@@ -57,7 +57,13 @@ en = {
     'Screenshot': 'Screenshot',
     'Take a screenshot': 'Take a screenshot',
     'Enter folder path for screenshots': 'Enter folder path for screenshots',
-    'Increase maximum volume up to 150%': 'Increase maximum volume up to 150%'
+    'Increase maximum volume up to 150%': 'Increase maximum volume up to 150%',
+    'Launch parameters': 'Launch parameters',
+    'Manual launch parameters': 'Use the mpv manual https://mpv.io/manual/\nBut keep in mind that Python syntax is required.\nFor example, instead of --volume=50 use player.volume = 50',
+    'Apply': 'Apply',
+    'Save': 'Save',
+    'Error': 'Error',
+    'Success': 'Success'
 }
 
 ru = {
@@ -117,7 +123,13 @@ ru = {
     'Screenshot': 'Cкриншот',
     'Take a screenshot': 'Сделать скриншот',
     'Enter folder path for screenshots': 'Введите путь до папки для скриншотов',
-    'Increase maximum volume up to 150%': 'Увеличить максимальную громкость до 150%'
+    'Increase maximum volume up to 150%': 'Увеличить максимальную громкость до 150%',
+    'Launch parameters': 'Параметры запуска',
+    'Manual launch parameters': 'Используйте руководство mpv https://mpv.io/manual/\nНо имейте ввиду, что требуется синтаксис языка Python.\nОбращайтесь к переменной player.\nНапример, вместо --volume=50 используйте player.volume = 50',
+    'Apply': 'Применить',
+    'Save': 'Сохранить',
+    'Error': 'Ошибка',
+    'Success': 'Успех'
 }
 
 match locale.getlocale()[0]:
@@ -134,3 +146,9 @@ def set_locale(lang):
             strings = ru
         case 'English':
             strings = en
+        case 'Auto':
+            match locale.getlocale()[0]:
+                case 'Russian_Russia':
+                    strings = ru
+                case _:
+                    strings = en

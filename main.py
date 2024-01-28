@@ -8,7 +8,7 @@ import icons
 import fonts
 
 name_program = 'Anime Player'
-version = '1.0 Release Candidate 3'
+version = '1.0'
 loc = localization.strings
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 
@@ -81,7 +81,13 @@ def make_window(title: str = 'Anime Player', is_pause: bool = True, files_list: 
             loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs
         ],
         [
-            loc['Other'], [loc['Reference'] + '::-REFERENCE-', loc['Create config for Android'] + '::-ANDROID_CONFIG-', loc['About'] + '::-ABOUT-']
+            loc['Other'],
+            [
+                loc['Reference'] + '::-REFERENCE-',
+                loc['Create config for Android'] + '::-ANDROID_CONFIG-',
+                loc['Launch parameters'] + '::-LAUNCH_PARAMETERS-',
+                loc['About'] + '::-ABOUT-'
+            ]
         ]
     ]
 
@@ -101,7 +107,13 @@ def make_window(title: str = 'Anime Player', is_pause: bool = True, files_list: 
             loc['Fullscreen'] + '::-TAB_FS-',
             '---',
             loc['Increasing image quality'], [loc['Disable'] + '::-DISABLE-', '---'] + tabs,
-            loc['Other'], [loc['Reference'] + '::-REFERENCE-', loc['Create config for Android'] + '::-ANDROID_CONFIG-', loc['About'] + '::-ABOUT-'],
+            loc['Other'],
+            [
+                loc['Reference'] + '::-REFERENCE-',
+                loc['Create config for Android'] + '::-ANDROID_CONFIG-',
+                loc['Launch parameters'] + '::-LAUNCH_PARAMETERS-',
+                loc['About'] + '::-ABOUT-'
+            ],
             '---',
             loc['Exit'] + '::-EXIT-'
         ]
@@ -514,6 +526,7 @@ class Player:
             open_last = sg.user_settings_get_entry('onOpenLastFile')
             on_pos_last_file = sg.user_settings_get_entry('onPosLastFile')
             svp = sg.user_settings_get_entry('SVP')
+            launch_parameters = sg.user_settings_get_entry('launchParameters')
             if on_pos_last_file is not None and not on_pos_last_file or position is None:
                 position = 0
             if volume is not None:
@@ -535,6 +548,13 @@ class Player:
                 player.hwdec = 'auto-copy'
                 player.hwdec_codecs = 'all'
                 player.hr_seek_framedrop = False
+            if launch_parameters is not None and launch_parameters != '':
+                try:
+                    exec(launch_parameters)
+                    window['-VOLUME-'].update(value=player.volume)
+                    sg.user_settings_set_entry('volume', player.volume)
+                except Exception:
+                    pass
         except ValueError:
             sg.user_settings_delete_entry('opened')
             sg.user_settings_delete_entry('file')
@@ -625,12 +645,14 @@ def main():
                 else:
                     player.volume += 5
                 window['-VOLUME-'].update(value=player.volume)
+                Player.volume_update(values['-VOLUME-'])
             case 'Down:40':
                 if player.volume < 5:
                     player.volume = 0
                 else:
                     player.volume -= 5
                 window['-VOLUME-'].update(value=player.volume)
+                Player.volume_update(values['-VOLUME-'])
             case 'Escape:27':
                 if Player.fullscreen:
                     Player.fullscreen_switch()
@@ -833,7 +855,7 @@ def main():
                             break
                 settings_windows.close()
             case '-SCREENSHOT-':
-                open_url_layout = [
+                screenshot_layout = [
                     [
                         sg.Text(loc['Enter folder path for screenshots'])
                     ],
@@ -847,14 +869,14 @@ def main():
                         sg.Button(loc['Close'])
                     ]
                 ]
-                open_screenshot_window = sg.Window(loc['Screenshot'], open_url_layout, modal=True)
+                screenshot_window = sg.Window(loc['Screenshot'], screenshot_layout, modal=True)
                 while True:
-                    event, values = open_screenshot_window.read()
+                    event, values = screenshot_window.read()
                     if event == sg.WINDOW_CLOSED or event == loc['Close']:
                         screenshot_path = values['-INPUT-'].strip()
                         break
                     elif event == '-PASTE-':
-                        open_screenshot_window['-INPUT-'].update(sg.clipboard_get())
+                        screenshot_window['-INPUT-'].update(sg.clipboard_get())
                     elif event == '-TAKE_SCREENSHOT-':
                         screenshot_path = values['-INPUT-'].strip()
                         if screenshot_path is not None and screenshot_path != '':
@@ -868,9 +890,44 @@ def main():
                     elif event == '-BROWSE-':
                         path = sg.popup_get_folder(loc['Select a folder'], no_window=True).replace('/', os.sep)
                         if path != '':
-                            open_screenshot_window['-INPUT-'].update(value=path)
-                        pass
-                open_screenshot_window.close()
+                            screenshot_window['-INPUT-'].update(value=path)
+                screenshot_window.close()
+            case '-LAUNCH_PARAMETERS-':
+                launch_parameters_layout = [
+                    [
+                        sg.Text(loc['Manual launch parameters']),
+                    ],
+                    [
+                        sg.Input(sg.user_settings_get_entry('launchParameters', ''), size=(35, 10), key='-INPUT-'),
+                        sg.Text('', key='-TEST-')
+                    ],
+                    [
+                        sg.Button(loc['Save'], key='-SAVE-'),
+                        sg.Button(loc['Apply'], key='-APPLY-'),
+                        sg.Button(loc['Close'])
+                    ]
+                ]
+                launch_parameters_window = sg.Window(loc['Launch parameters'], launch_parameters_layout, modal=True)
+                while True:
+                    event, values = launch_parameters_window.read()
+                    if event == sg.WINDOW_CLOSED or event == loc['Close']:
+                        break
+                    elif event == '-PASTE-':
+                        launch_parameters_window['-INPUT-'].update(sg.clipboard_get())
+                    elif event == '-SAVE-':
+                        sg.user_settings_set_entry('launchParameters', values['-INPUT-'])
+                        break
+                    elif event == '-APPLY-':
+                        try:
+                            exec(values['-INPUT-'])
+                            sg.user_settings_set_entry('launchParameters', values['-INPUT-'])
+                            window['-VOLUME-'].update(value=player.volume)
+                            Player.volume_update(player.volume)
+                            launch_parameters_window['-TEST-'].update(loc['Success'])
+                        except Exception:
+                            launch_parameters_window['-TEST-'].update(loc['Error'])
+
+                launch_parameters_window.close()
             case _:
                 if event in [f'{loc["Mode"]} {mode}' for mode in anime4k.ultra_hq_presets.keys()]:
                     player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[event.split(' ', 1)[-1]], event + ' (HQ)')
