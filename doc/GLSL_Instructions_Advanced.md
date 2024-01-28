@@ -4,12 +4,13 @@ Now, Anime4K has 3 major modes, as the small CNN networks cannot learn effective
 
 The easiest way is to first visually inspect each mode in the A-B-C order. Mode A has the most visible artifacts of the three modes if used incorrectly. B and C can be harder to distinguish for lower resolution anime. 
 
-If you want increased perceptual quality, use the corresponding secondary mode. 
-| Primary Mode         | Corresponding Secondary Mode |
-| ------------- |-------------|
-| A | A+A |
-| B | B+B |
-| C | C+A |
+If you want increased perceptual quality, use the corresponding secondary mode.
+
+| Primary Mode | Corresponding Secondary Mode |
+|--------------|------------------------------|
+| A            | A+A                          |
+| B            | B+B                          |
+| C            | C+A                          |
 
 Here's what each mode is optimized for and what it does:
 
@@ -52,6 +53,7 @@ Quick explanation of each shader type:
 | AutoDownscalePre_x2 | Downscales an image after a first upscaling step to match screen size. This improves performance without noticeably impacting quality as you will not be working with images larger than the screen size. Should be placed after the first Upscale shader. Without this shader, the default behaviour is to downscale to the screen size after running all shaders. |
 ____
 Overview of default modes:
+
 | Mode         | Shaders |
 | ------------- |-------------|
 | A | `Restore -> Upscale -> Upscale` |
@@ -98,6 +100,4 @@ Use the mpv profiler (press Shift+I and then 2 on the keyboard's top row) to ver
 | 30        | 33                |
 | 60        | 16                |
 
-
 ----
-
