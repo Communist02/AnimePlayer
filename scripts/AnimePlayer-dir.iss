@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Anime Player"
-#define MyAppVersion "1.0 Release Candidate 3"
+#define MyAppVersion "1.0"
 #define MyAppPublisher "MazurDev"
 #define MyAppURL "https://github.com/Communist02/AnimePlayer"
 #define MyAppExeName "AnimePlayer.exe"
