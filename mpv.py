@@ -17,9 +17,12 @@
 #
 # You can find copies of the GPLv2 and LGPLv2.1 licenses in the project repository's LICENSE.GPL and LICENSE.LGPL files.
 
+__version__ = '1.0.5'
+
 from ctypes import *
 import ctypes.util
 import threading
+import queue
 import os
 import sys
 from warnings import warn
@@ -52,10 +55,8 @@ else:
 
     sofile = ctypes.util.find_library('mpv')
     if sofile is None:
-        raise OSError("Cannot find libmpv in the usual places. Depending on your distro, you may try installing an "
-                      "mpv-devel or mpv-libs package. If you have libmpv around but this script can't find it, consult "
-                      "the documentation for ctypes.util.find_library which this script uses to look up the library "
-                      "filename.")
+        raise OSError(
+            "Cannot find libmpv in the usual places. Depending on your distro, you may try installing an mpv-devel or mpv-libs package. If you have libmpv around but this script can't find it, consult the documentation for ctypes.util.find_library which this script uses to look up the library filename.")
     backend = CDLL(sofile)
     fs_enc = sys.getfilesystemencoding()
 
@@ -590,8 +591,7 @@ def _mpv_client_api_version():
 MPV_VERSION = _mpv_client_api_version()
 if MPV_VERSION < (1, 108):
     ver = '.'.join(str(num) for num in MPV_VERSION)
-    raise RuntimeError(
-        f"python-mpv requires libmpv with an API version of 1.108 or higher (libmpv >= 0.33), but you have an older version ({ver}).")
+    raise RuntimeError(f"python-mpv requires libmpv with an API version of 1.108 or higher (libmpv >= 0.33), but you have an older version ({ver}).")
 
 backend.mpv_free.argtypes = [c_void_p]
 _mpv_free = backend.mpv_free
@@ -643,12 +643,10 @@ _handle_func('mpv_set_wakeup_callback', [WakeupCallback, c_void_p], None, errche
 
 _handle_func('mpv_stream_cb_add_ro', [c_char_p, c_void_p, StreamOpenFn], c_int, ec_errcheck)
 
-_handle_func('mpv_render_context_create', [MpvRenderCtxHandle, MpvHandle, POINTER(MpvRenderParam)], c_int, ec_errcheck,
-             ctx=None)
+_handle_func('mpv_render_context_create', [MpvRenderCtxHandle, MpvHandle, POINTER(MpvRenderParam)], c_int, ec_errcheck, ctx=None)
 _handle_func('mpv_render_context_set_parameter', [MpvRenderParam], c_int, ec_errcheck, ctx=MpvRenderCtxHandle)
 _handle_func('mpv_render_context_get_info', [MpvRenderParam], c_int, ec_errcheck, ctx=MpvRenderCtxHandle)
-_handle_func('mpv_render_context_set_update_callback', [RenderUpdateFn, c_void_p], None, errcheck=None,
-             ctx=MpvRenderCtxHandle)
+_handle_func('mpv_render_context_set_update_callback', [RenderUpdateFn, c_void_p], None, errcheck=None, ctx=MpvRenderCtxHandle)
 _handle_func('mpv_render_context_update', [], c_int64, errcheck=None, ctx=MpvRenderCtxHandle)
 _handle_func('mpv_render_context_render', [POINTER(MpvRenderParam)], c_int, ec_errcheck, ctx=MpvRenderCtxHandle)
 _handle_func('mpv_render_context_report_swap', [], None, errcheck=None, ctx=MpvRenderCtxHandle)
@@ -1009,9 +1007,7 @@ class MPV(object):
                     # cache list, since error handlers will unregister themselves
                     for cb in list(self._command_reply_callbacks.values()):
                         with self._enqueue_exceptions():
-                            cb(EventOverflowError(
-                                'libmpv event queue has flown over because events have not been processed fast enough'),
-                               None)
+                            cb(EventOverflowError('libmpv event queue has flown over because events have not been processed fast enough'), None)
 
                 if eid == MpvEventID.SHUTDOWN:
                     _mpv_destroy(self._event_handle)
@@ -1056,8 +1052,7 @@ class MPV(object):
         properties such as ``idle_active`` indicating the player is done with regular playback and just idling around.
         Raises a ShutdownError when the core is shutdown while waiting.
         """
-        with self.prepare_and_wait_for_property(name, cond, level_sensitive, timeout=timeout,
-                                                catch_errors=catch_errors) as result:
+        with self.prepare_and_wait_for_property(name, cond, level_sensitive, timeout=timeout, catch_errors=catch_errors) as result:
             pass
         return result.result()
 
@@ -1076,16 +1071,14 @@ class MPV(object):
                 if event.event_id.value == MpvEventID.SHUTDOWN:
                     future.set_exception(ShutdownError('libmpv core has been shutdown'))
                 else:
-                    future.set_exception(EventOverflowError(
-                        'libmpv event queue has flown over because events have not been processed fast enough'))
+                    future.set_exception(EventOverflowError('libmpv event queue has flown over because events have not been processed fast enough'))
             except InvalidStateError:
                 pass
 
         return shutdown_handler.unregister_mpv_events
 
     @contextmanager
-    def prepare_and_wait_for_property(self, name, cond=lambda val: val, level_sensitive=True, timeout=None,
-                                      catch_errors=True):
+    def prepare_and_wait_for_property(self, name, cond=lambda val: val, level_sensitive=True, timeout=None, catch_errors=True):
         """Context manager that waits until ``cond`` evaluates to a truthy value on the named property. See
         prepare_and_wait_for_event for usage.
         Raises a ShutdownError when the core is shutdown while waiting. Re-raises any errors inside ``cond``.
@@ -1132,8 +1125,7 @@ class MPV(object):
         if the core is shutdown while waiting. This also happens when 'shutdown' is in event_types. Re-raises any error
         inside ``cond``.
         """
-        with self.prepare_and_wait_for_event(*event_types, cond=cond, timeout=timeout,
-                                             catch_errors=catch_errors) as result:
+        with self.prepare_and_wait_for_event(*event_types, cond=cond, timeout=timeout, catch_errors=catch_errors) as result:
             pass
         return result.result()
 
@@ -1265,8 +1257,7 @@ class MPV(object):
 
         if kwargs:
             if args:
-                raise ValueError(
-                    'Can only call mpv commands either using positional or using named arguments, not a mix of both.')
+                raise ValueError('Can only call mpv commands either using positional or using named arguments, not a mix of both.')
             kwargs['name'] = name
             _1, _2, _3, pointer = _make_node_str_map(kwargs)
         else:
@@ -1282,8 +1273,7 @@ class MPV(object):
     def command(self, name, *args, decoder=strict_decoder, **kwargs):
         if kwargs:
             if args:
-                raise ValueError(
-                    'Can only call mpv commands either using positional or using named arguments, not a mix of both.')
+                raise ValueError('Can only call mpv commands either using positional or using named arguments, not a mix of both.')
             kwargs['name'] = name
             _1, _2, _3, pointer = _make_node_str_map(kwargs)
         else:
@@ -1893,8 +1883,7 @@ class MPV(object):
                         except InvalidStateError:
                             pass
                     else:
-                        warnings.warn(
-                            f'Unhandled exception {e} inside stream open callback for URI {uri}\n{traceback.format_exc()}')
+                        warnings.warn(f'Unhandled exception {e} inside stream open callback for URI {uri}\n{traceback.format_exc()}')
 
                     return ErrorCode.LOADING_FAILED
 
@@ -2033,6 +2022,56 @@ class MPV(object):
             return cb
 
         return register
+
+    @contextmanager
+    def play_context(self):
+        """ Context manager for streaming bytes straight into libmpv.
+
+        This is a convenience wrapper around python_stream. play_context returns a write method, which you can use in
+        the body of the context manager to feed libmpv bytes. All bytes you feed in with write() in the body of a single
+        call of this context manager are treated as one single file. A queue is used internally, so this function is
+        thread-safe. The queue is unlimited, so it cannot block and is safe to call from async code. You can use this
+        function to stream chunked data, e.g. from the network.
+
+        Use it like this:
+
+        with m.play_context() as write:
+            with open(TESTVID, 'rb') as f:
+                while (chunk := f.read(65536)): # Get some chunks of bytes
+                    write(chunk)
+        """
+        q = queue.Queue()
+
+        frame = sys._getframe()
+        stream_name = f'__python_mpv_play_generator_{hash(frame)}'
+        EOF = frame  # Get some unique object as EOF marker
+
+        @self.python_stream(stream_name)
+        def reader():
+            while (chunk := q.get()) is not EOF:
+                if chunk:
+                    yield chunk
+            reader.unregister()
+
+        def write(chunk):
+            q.put(chunk)
+
+        # Start playback before yielding, the first call to reader() will block until write is called at least once.
+        self.play(f'python://{stream_name}')
+        yield write
+        q.put(EOF)
+
+    def play_bytes(self, data):
+        """ Play the given bytes object as a single file. """
+        frame = sys._getframe()
+        stream_name = f'__python_mpv_play_generator_{hash(frame)}'
+
+        @self.python_stream(stream_name)
+        def reader():
+            yield data
+            reader.unregister()  # unregister itself
+
+        self.play(f'python://{stream_name}')
 
     def python_stream_catchall(self, cb):
         """ Register a catch-all python stream to be called when no name matches can be found. Use this decorator on a
@@ -2190,4 +2229,3 @@ class MpvRenderContext:
 
     def report_swap(self):
         _mpv_render_context_report_swap(self._handle)
-
