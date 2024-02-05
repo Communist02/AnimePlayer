@@ -8,7 +8,7 @@ import icons
 import fonts
 
 name_program = 'Anime Player'
-version = '1.0'
+version = '1.0.1'
 loc = localization.strings
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 
@@ -873,7 +873,8 @@ def main():
                 while True:
                     event, values = screenshot_window.read()
                     if event == sg.WINDOW_CLOSED or event == loc['Close']:
-                        screenshot_path = values['-INPUT-'].strip()
+                        if values['-INPUT-'] is not None and values['-INPUT-'] != '':
+                            screenshot_path = values['-INPUT-'].strip()
                         break
                     elif event == '-PASTE-':
                         screenshot_window['-INPUT-'].update(sg.clipboard_get())
@@ -898,7 +899,7 @@ def main():
                         sg.Text(loc['Manual launch parameters']),
                     ],
                     [
-                        sg.Input(sg.user_settings_get_entry('launchParameters', ''), size=(35, 10), key='-INPUT-'),
+                        sg.Multiline(sg.user_settings_get_entry('launchParameters', ''), size=(35, 10), key='-INPUT-'),
                         sg.Text('', key='-TEST-')
                     ],
                     [
