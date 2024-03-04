@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1302</width>
+    <height>634</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Anime Player</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../favicon.ico</normaloff>../favicon.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow {
+	background-color: rgb(245, 241, 235);
+}
+
+#centralwidget {
+	background-color: rgb(245, 241, 235);
+}
+
+#info {
+	border: 1px solid rgb(87, 86, 86);
+	border-radius:7px;
+}
+
+QListWidget {
+	color: rgb(87, 86, 86);
+	background-color: rgb(235, 227, 215);
+	border: 1px solid rgb(87, 86, 86);
+	border-radius: 3px;
+}
+
+QListView::item:selected {
+	background-color: rgb(87, 86, 86);
+}
+
+QListView::item:selected:!active {
+	color: rgb(240, 240, 240);
+	background-color: rgb(87, 86, 86);
+}
+
+QListView::item:hover {
+    background-color: rgb(180, 180, 180)
+}
+
+QLabel {
+	color: rgb(87, 86, 86);
+}
+
+#controlPanel {
+	border: 1px solid rgb(87, 86, 86);
+	border-radius: 9px;
+	margin-top: 6px;
+	margin-bottom: 8px;
+	margin-left: 6px;
+	margin-right: 6px;
+}
+
+QSlider::groove:horizontal {
+    border: 1px solid rgb(87, 86, 86);
+    height: 16px;
+    background: rgb(240, 240, 240);
+	border-radius: 5px;
+}
+
+QSlider::handle:horizontal {
+	background: rgb(240, 240, 240);
+	width: 16px;
+	border-radius: 5px;
+	border: 3px solid rgb(87, 86, 86);
+}
+
+QPushButton {
+	background-color: rgb(245, 241, 235);
+	border: 0px solid rgb(87, 86, 86);
+}
+
+QMenuBar {
+	background-color: rgb(245, 241, 235);
+	color: rgb(87, 86, 86);
+}
+
+QMenuBar::item:selected {
+	background-color: rgb(87, 86, 86);
+	color: rgb(245, 241, 235);
+}
+
+QMenu {
+	background-color: rgb(235, 227, 215);
+	color: rgb(87, 86, 86);
+}
+
+QMenu::item:selected {
+	background-color: rgb(87, 86, 86);
+	color: rgb(245, 241, 235);
+}
+
+#controlPanel {
+	background-color: rgb(245, 241, 235)
+}</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMaximumSize</enum>
+      </property>
+      <item>
+       <layout class="QVBoxLayout" name="main">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="video">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap>../images/play-button.png</pixmap>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="textInteractionFlags">
+           <set>Qt::NoTextInteraction</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="controlPanel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>120</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="timeControl">
+               <property name="spacing">
+                <number>20</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="currentTime">
+                 <property name="minimumSize">
+                  <size>
+                   <width>32</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="statusTip">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>00:00</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="time">
+                 <property name="maximum">
+                  <number>60</number>
+                 </property>
+                 <property name="pageStep">
+                  <number>5</number>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="allTime">
+                 <property name="statusTip">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>00:00</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetDefaultConstraint</enum>
+               </property>
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::MinimumExpanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="sub">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/subtitles_FILL0_wght400_GRAD0_opsz48.png</normaloff>../images/icons/subtitles_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="audio">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/music_note_FILL0_wght400_GRAD0_opsz48.png</normaloff>../images/icons/music_note_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="fullscreen">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/fullscreen_FILL0_wght400_GRAD0_opsz48.png</normaloff>../images/icons/fullscreen_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="prev">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/skip_previous_FILL0_wght400_GRAD0_opsz48.png</normaloff>../images/icons/skip_previous_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="play">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="baseSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/play_arrow_FILL0_wght400_GRAD0_opsz48.png</normaloff>
+                   <disabledoff>images/icons/pause_FILL0_wght400_GRAD0_opsz48.png</disabledoff>../images/icons/play_arrow_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="next">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/skip_next_FILL0_wght400_GRAD0_opsz48.png</normaloff>../images/icons/skip_next_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="menu">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normaloff>../images/icons/list_FILL0_wght400_GRAD0_opsz48.png</normaloff>../images/icons/list_FILL0_wght400_GRAD0_opsz48.png</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>64</width>
+                   <height>64</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="volume">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>140</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="maximum">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>100</number>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="tickPosition">
+                  <enum>QSlider::NoTicks</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::MinimumExpanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QFrame" name="rightPanel">
+        <layout class="QVBoxLayout" name="frame_2">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <item>
+          <widget class="QFrame" name="info">
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QLabel" name="sourceInfo">
+              <property name="text">
+               <string>Info</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="mediaInfo">
+              <property name="text">
+               <string>Media info</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="fileList">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+        <zorder>fileList</zorder>
+        <zorder>info</zorder>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1302</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="action_Open_file"/>
+    <addaction name="action_Open_URL"/>
+    <addaction name="action_Open_folder"/>
+    <addaction name="action_Close"/>
+    <addaction name="separator"/>
+    <addaction name="action_Settings"/>
+    <addaction name="separator"/>
+    <addaction name="action_Exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_Playback">
+    <property name="title">
+     <string>Playback</string>
+    </property>
+    <widget class="QMenu" name="menu_Playback_speed">
+     <property name="title">
+      <string>Playback speed</string>
+     </property>
+     <addaction name="action_x025"/>
+     <addaction name="action_x05"/>
+     <addaction name="action_x075"/>
+     <addaction name="action_x10"/>
+     <addaction name="action_x125"/>
+     <addaction name="action_x15"/>
+     <addaction name="action_x175"/>
+     <addaction name="action_x20"/>
+     <addaction name="action_x225"/>
+     <addaction name="action_x25"/>
+     <addaction name="action_x275"/>
+     <addaction name="action_x30"/>
+    </widget>
+    <addaction name="action_Play_Pause"/>
+    <addaction name="menu_Playback_speed"/>
+    <addaction name="action_Playlist"/>
+    <addaction name="action_Zoom_in"/>
+    <addaction name="action_Zoom_out"/>
+    <addaction name="action_Volume_minus"/>
+    <addaction name="action_Volume_plus"/>
+    <addaction name="action_Rewind_minus"/>
+    <addaction name="action_Rewind_plus"/>
+    <addaction name="action_Take_a_screenshot"/>
+    <addaction name="separator"/>
+    <addaction name="action_Fullscreen"/>
+   </widget>
+   <widget class="QMenu" name="menu_Increasing_image_quality">
+    <property name="title">
+     <string>Increasing image quality</string>
+    </property>
+    <addaction name="action_Disable"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menu_Other">
+    <property name="title">
+     <string>Other</string>
+    </property>
+    <addaction name="action_Reference"/>
+    <addaction name="action_Create_config_Android"/>
+    <addaction name="action_Launch_parameters"/>
+    <addaction name="action_About"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Playback"/>
+   <addaction name="menu_Increasing_image_quality"/>
+   <addaction name="menu_Other"/>
+  </widget>
+  <action name="action_Open_file">
+   <property name="text">
+    <string>Open file</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_Open_URL">
+   <property name="text">
+    <string>Open URL</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+U</string>
+   </property>
+  </action>
+  <action name="action_Open_folder">
+   <property name="text">
+    <string>Open folder</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F2</string>
+   </property>
+  </action>
+  <action name="action_Close">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F4</string>
+   </property>
+  </action>
+  <action name="action_Settings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F5</string>
+   </property>
+  </action>
+  <action name="action_Exit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Alt+F4</string>
+   </property>
+  </action>
+  <action name="action_Play_Pause">
+   <property name="text">
+    <string>Play | Pause</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+  </action>
+  <action name="action_Take_a_screenshot">
+   <property name="text">
+    <string>Take a screenshot</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F12</string>
+   </property>
+  </action>
+  <action name="action_Fullscreen">
+   <property name="text">
+    <string>Fullscreen</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F11</string>
+   </property>
+  </action>
+  <action name="action_Disable">
+   <property name="text">
+    <string>Disable</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">D</string>
+   </property>
+  </action>
+  <action name="action_Reference">
+   <property name="text">
+    <string>Reference</string>
+   </property>
+  </action>
+  <action name="action_Create_config_Android">
+   <property name="text">
+    <string>Create config for Android</string>
+   </property>
+  </action>
+  <action name="action_Launch_parameters">
+   <property name="text">
+    <string>Launch parameters</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F1</string>
+   </property>
+  </action>
+  <action name="action_x025">
+   <property name="text">
+    <string>x0.25</string>
+   </property>
+  </action>
+  <action name="action_x05">
+   <property name="text">
+    <string>x0.5</string>
+   </property>
+  </action>
+  <action name="action_x075">
+   <property name="text">
+    <string>x0.75</string>
+   </property>
+  </action>
+  <action name="action_x10">
+   <property name="text">
+    <string>x1.0</string>
+   </property>
+  </action>
+  <action name="action_x125">
+   <property name="text">
+    <string>x1.25</string>
+   </property>
+  </action>
+  <action name="action_x15">
+   <property name="text">
+    <string>x1.5</string>
+   </property>
+  </action>
+  <action name="action_x175">
+   <property name="text">
+    <string>x1.75</string>
+   </property>
+  </action>
+  <action name="action_x20">
+   <property name="text">
+    <string>x2.0</string>
+   </property>
+  </action>
+  <action name="action_x225">
+   <property name="text">
+    <string>x2.25</string>
+   </property>
+  </action>
+  <action name="action_x25">
+   <property name="text">
+    <string>x2.5</string>
+   </property>
+  </action>
+  <action name="action_x275">
+   <property name="text">
+    <string>x2.75</string>
+   </property>
+  </action>
+  <action name="action_x30">
+   <property name="text">
+    <string>x3.0</string>
+   </property>
+  </action>
+  <action name="action_Rewind_plus">
+   <property name="text">
+    <string>Rewind +5 sec</string>
+   </property>
+   <property name="shortcut">
+    <string>Right</string>
+   </property>
+  </action>
+  <action name="action_Rewind_minus">
+   <property name="text">
+    <string>Rewind -5 sec</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="action_Volume_plus">
+   <property name="text">
+    <string>Volume +10</string>
+   </property>
+   <property name="shortcut">
+    <string>Up</string>
+   </property>
+  </action>
+  <action name="action_Volume_minus">
+   <property name="text">
+    <string>Volume -10</string>
+   </property>
+   <property name="shortcut">
+    <string>Down</string>
+   </property>
+  </action>
+  <action name="action_Zoom_in">
+   <property name="text">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="action_Zoom_out">
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
+   </property>
+  </action>
+  <action name="action_Playlist">
+   <property name="text">
+    <string>Playlist</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">F6</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

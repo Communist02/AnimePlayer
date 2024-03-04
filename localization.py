@@ -1,4 +1,5 @@
 import locale
+import ctypes
 
 en = {
     'lang': 'English',
@@ -19,7 +20,7 @@ en = {
     'Settings': 'Settings',
     'Quality': 'Quality',
     'Mode': 'Mode',
-    'About program': 'Media player written in Python programming language using PySimpleGUI library, mpv media player and Anime4K scaling algorithm\n\nSite: https://github.com/Communist02/AnimePlayer',
+    'About program': 'Media player written in Python programming language using PySide 6 library, mpv media player and Anime4K scaling algorithm\n\nSite: https://github.com/Communist02/AnimePlayer',
     'Activate SVP': 'Activate SVP',
     'Create config for Android': 'Create config for Android',
     'Play': 'Play',
@@ -33,8 +34,8 @@ en = {
     'Clear': 'Clear',
     'Select': 'Select',
     'Cancel': 'Cancel',
-    'Language selection': 'Language selection',
-    'On startup, open the last opened file': 'On startup, open the last opened file',
+    'Language selection': 'Language selection (restart required)',
+    'On startup open the last opened file': 'On startup open the last opened file',
     'Set the position of the last opened file': 'Set the position of the last opened file',
     'Dark theme': 'Dark theme',
     'Speed': 'Speed',
@@ -59,11 +60,18 @@ en = {
     'Enter folder path for screenshots': 'Enter folder path for screenshots',
     'Increase maximum volume up to 150%': 'Increase maximum volume up to 150%',
     'Launch parameters': 'Launch parameters',
-    'Manual launch parameters': 'Use the mpv manual https://mpv.io/manual/\nBut keep in mind that Python syntax is required.\nFor example, instead of --volume=50 use player.volume = 50',
+    'Manual launch parameters': 'Use the mpv manual https://mpv.io/manual/\nBut keep in mind that Python syntax is required.\nAccess the "player" variable.\nFor example, instead of --volume=50 use player.volume = 50',
     'Apply': 'Apply',
     'Save': 'Save',
     'Error': 'Error',
-    'Success': 'Success'
+    'Success': 'Success',
+    'Volume +10': 'Volume +10',
+    'Volume -10': 'Volume -10',
+    'Rewind +5 sec': 'Rewind +5 sec',
+    'Rewind -5 sec': 'Rewind -5 sec',
+    'Zoom in': 'Zoom in',
+    'Zoom out': 'Zoom out',
+    'Playlist': 'Playlist'
 }
 
 ru = {
@@ -85,7 +93,7 @@ ru = {
     'Settings': 'Настройки',
     'Quality': 'Качество',
     'Mode': 'Режим',
-    'About program': 'Видеоплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySimpleGUI, мультимедийного проигрывателя mpv и алгоритма масштабирования Anime4K\n\nСайт: https://github.com/Communist02/AnimePlayer',
+    'About program': 'Видеоплеер, написанный на языке программирования Python с использованием библиотеки графического пользовательского интерфейса PySide 6, мультимедийного проигрывателя mpv и алгоритма масштабирования Anime4K\n\nСайт: https://github.com/Communist02/AnimePlayer',
     'Activate SVP': 'Активировать SVP',
     'Create config for Android': 'Создать конфиг для Android',
     'Play': 'Играть',
@@ -99,8 +107,8 @@ ru = {
     'Clear': 'Очистить',
     'Select': 'Выбрать',
     'Cancel': 'Отмена',
-    'Language selection': 'Выбор языка',
-    'On startup, open the last opened file': 'При запуске открывать последний открытый файл',
+    'Language selection': 'Выбор языка (требуется перезапуск)',
+    'On startup open the last opened file': 'При запуске открывать последний открытый файл',
     'Set the position of the last opened file': 'Устанавливать позицию последнего открытого файла',
     'Dark theme': 'Темная тема',
     'Speed': 'Скорость',
@@ -113,7 +121,7 @@ ru = {
     'Opening a link': 'Открытие ссылки',
     'Select a folder': 'Выберите папку',
     'Opening a folder': 'Открытие папки',
-    'You can use this config to use the Anime4K algorithm in the mpv video player on android': 'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на андроид',
+    'You can use this config to use the Anime4K algorithm in the mpv video player on android': 'Этот конфиг вы можете использовать для использования алгоритма Anime4K в видеоплеере mpv на Android',
     'Enter the path to the shaders': 'Введите путь до шейдеров',
     'Select the algorithm configuration': 'Выберите конфигурацию алгоритма',
     'All': 'Все',
@@ -129,7 +137,14 @@ ru = {
     'Apply': 'Применить',
     'Save': 'Сохранить',
     'Error': 'Ошибка',
-    'Success': 'Успех'
+    'Success': 'Успех',
+    'Volume +10': 'Громкость +10',
+    'Volume -10': 'Громкость -10',
+    'Rewind +5 sec': 'Перемотка +5 сек',
+    'Rewind -5 sec': 'Перемотка -5 сек',
+    'Zoom in': 'Увеличить масштаб',
+    'Zoom out': 'Уменьшить масштаб',
+    'Playlist': 'Список воспроизведения'
 }
 
 match locale.getlocale()[0]:
@@ -146,9 +161,11 @@ def set_locale(lang):
             strings = ru
         case 'English':
             strings = en
-        case 'Auto':
-            match locale.getlocale()[0]:
-                case 'Russian_Russia':
+        case _:
+            windll = ctypes.windll.kernel32
+            windll.GetUserDefaultUILanguage()
+            match locale.windows_locale[windll.GetUserDefaultUILanguage()]:
+                case 'Russian_Russia' | 'ru_RU':
                     strings = ru
                 case _:
                     strings = en
