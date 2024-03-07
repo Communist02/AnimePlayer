@@ -229,6 +229,12 @@ QMenu::item:selected {
                </item>
                <item>
                 <widget class="QSlider" name="time">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
                  <property name="maximum">
                   <number>60</number>
                  </property>
@@ -494,7 +500,7 @@ QMenu::item:selected {
                  <property name="minimumSize">
                   <size>
                    <width>80</width>
-                   <height>0</height>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="maximumSize">
