@@ -21,7 +21,7 @@ import icons
 from config import ConfigManager
 
 name_program = 'Anime Player'
-version = '2.0 Beta'
+version = '2.0 Beta 2'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 
 config = ConfigManager('config.json')
@@ -440,6 +440,7 @@ class MainWindow(QMainWindow):
         self.ui.action_Zoom_in.setText(loc['Zoom in'])
         self.ui.action_Zoom_out.setText(loc['Zoom out'])
         self.ui.action_Playlist.setText(loc['Playlist'])
+        self.ui.sourceInfo.setText(loc['Information'])
 
         modes = []
         for quality in anime4k.qualities:
@@ -465,9 +466,21 @@ class MainWindow(QMainWindow):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
 
+        self.setAcceptDrops(True)
+
     def mouseMoveEvent(self, event):
         if Player.fullscreen:
             Player.update_fullscreen_layout(event.position().x(), event.position().y())
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        for url in event.mimeData().urls():
+            file_name = url.toLocalFile()
+            Player.open_file(file_name)
+            break
 
     def mouseDoubleClickEvent(self, event):
         Player.fullscreen_switch()
@@ -1084,6 +1097,10 @@ if __name__ == '__main__':
     window = MainWindow()
 
     screenshot_path = ''
+
+    if os.name != 'nt':
+        import locale
+        locale.setlocale(locale.LC_NUMERIC, 'C')
 
     player: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', hwdec='auto')
 

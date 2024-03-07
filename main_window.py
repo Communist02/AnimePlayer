@@ -282,6 +282,7 @@ class Ui_MainWindow(object):
 
         self.time = QSlider(self.controlPanel)
         self.time.setObjectName(u"time")
+        self.time.setMinimumSize(QSize(100, 30))
         self.time.setMaximum(60)
         self.time.setPageStep(5)
         self.time.setOrientation(Qt.Horizontal)
@@ -399,7 +400,7 @@ class Ui_MainWindow(object):
         self.volume.setObjectName(u"volume")
         sizePolicy1.setHeightForWidth(self.volume.sizePolicy().hasHeightForWidth())
         self.volume.setSizePolicy(sizePolicy1)
-        self.volume.setMinimumSize(QSize(80, 0))
+        self.volume.setMinimumSize(QSize(80, 30))
         self.volume.setMaximumSize(QSize(140, 16777215))
         self.volume.setMaximum(100)
         self.volume.setValue(100)

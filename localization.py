@@ -1,5 +1,6 @@
 import locale
 import ctypes
+import os
 
 en = {
     'lang': 'English',
@@ -162,9 +163,13 @@ def set_locale(lang):
         case 'English':
             strings = en
         case _:
-            windll = ctypes.windll.kernel32
-            windll.GetUserDefaultUILanguage()
-            match locale.windows_locale[windll.GetUserDefaultUILanguage()]:
+            if os.name == 'nt':
+                windll = ctypes.windll.kernel32
+                windll.GetUserDefaultUILanguage()
+                lang = locale.windows_locale[windll.GetUserDefaultUILanguage()]
+            else:
+                lang = locale.getlocale()[0]
+            match lang:
                 case 'Russian_Russia' | 'ru_RU':
                     strings = ru
                 case _:
