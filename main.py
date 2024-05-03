@@ -35,6 +35,8 @@ class AndroidConfigWindow(QDialog):
         self.ui = android_config_window.Ui_AndroidConfigWindow()
         self.ui.setupUi(self)
 
+        self.setStyleSheet('')
+
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
         self.setWindowTitle(loc['Create config for Android'])
@@ -73,6 +75,8 @@ class LaunchParametersWindow(QDialog):
         self.ui = launch_parameters_window.Ui_LaunchParemetersWindow()
         self.ui.setupUi(self)
 
+        self.setStyleSheet('')
+
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
         self.setWindowTitle(loc['Launch parameters'])
@@ -105,6 +109,8 @@ class ReferenceWindow(QDialog):
         self.ui = reference_window.Ui_ReferenceWindow()
         self.ui.setupUi(self)
 
+        self.setStyleSheet('')
+
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
         self.setWindowTitle(loc['Reference'])
@@ -125,6 +131,8 @@ class ScreenshotWindow(QDialog):
         super(ScreenshotWindow, self).__init__()
         self.ui = screenshot_window.Ui_ScreenshotWindow()
         self.ui.setupUi(self)
+
+        self.setStyleSheet('')
 
         self.setFixedSize(520, 120)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
@@ -163,12 +171,14 @@ class AboutWindow(QDialog):
         self.ui = about_window.Ui_AboutWindow()
         self.ui.setupUi(self)
 
+        self.setStyleSheet('')
+
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
         self.ui.image.setPixmap(QPixmap(f'{os.path.dirname(__file__) + os.sep}images{os.sep}anime-player-icon.png'))
 
         self.setWindowTitle(loc['About'])
         self.ui.label_2.setText(f'Anime Player v{version}')
-        self.ui.label_3.setText(loc['About program'])
+        self.ui.label_3.setText(f'{player.mpv_version}\n\n{loc['About program']}')
         self.ui.buttonBox.buttons()[0].setText(loc['Close'])
 
 
@@ -177,6 +187,8 @@ class SettingsWindow(QDialog):
         super(SettingsWindow, self).__init__()
         self.ui = settings_window.Ui_SettingsWindow()
         self.ui.setupUi(self)
+
+        self.setStyleSheet('')
 
         self.setFixedHeight(220)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
@@ -254,6 +266,8 @@ class OpenURLWindow(QDialog):
         self.ui = open_url_window.Ui_OpenURLWindow()
         self.ui.setupUi(self)
 
+        self.setStyleSheet('')
+
         self.setFixedSize(550, 120)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
@@ -292,6 +306,8 @@ class OpenFolderWindow(QDialog):
         super(OpenFolderWindow, self).__init__()
         self.ui = open_folder_window.Ui_OpenFolderWindow()
         self.ui.setupUi(self)
+
+        self.setStyleSheet('')
 
         self.setFixedSize(550, 120)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
@@ -338,6 +354,38 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # if os.name != 'nt':
+        self.setStyleSheet(u"#info {\n"
+                           "	border: 1px solid rgb(87, 86, 86);\n"
+                           "	border-radius:7px;\n"
+                           "}\n"
+                           "\n"
+                           "#controlPanel {\n"
+                           "	border: 1px solid rgb(87, 86, 86);\n"
+                           "	border-radius: 9px;\n"
+                           "	margin-top: 6px;\n"
+                           "	margin-bottom: 8px;\n"
+                           "	margin-left: 6px;\n"
+                           "	margin-right: 6px;\n"
+                           "}\n"
+                           "\n"
+                           "QSlider::groove:horizontal {\n"
+                           "    border: 1px solid rgb(87, 86, 86);\n"
+                           "    height: 16px;\n"
+                           "	border-radius: 5px;\n"
+                           "}\n"
+                           "\n"
+                           "QSlider::handle:horizontal {\n"
+                           "	width: 16px;\n"
+                           "	border-radius: 5px;\n"
+                           "	border: 3px solid rgb(87, 86, 86);\n"
+                           "}\n"
+                           "\n"
+                           "QPushButton {\n"
+                           "	border: 0px solid rgb(87, 86, 86);\n"
+                           "}\n"
+                           "\n")
 
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
@@ -485,18 +533,22 @@ class MainWindow(QMainWindow):
     def mouseDoubleClickEvent(self, event):
         Player.fullscreen_switch()
 
-    def screenshot(self):
+    @staticmethod
+    def screenshot():
         screenshot_win = ScreenshotWindow()
         screenshot_win.setModal(True)
         screenshot_win.exec()
 
-    def zoom(self, value):
+    @staticmethod
+    def zoom(value):
         player.video_zoom += value
 
-    def speed(self, speed):
+    @staticmethod
+    def speed(speed):
         player.speed = speed
 
-    def timer_update(self):
+    @staticmethod
+    def timer_update():
         Player.update_info()
         Player.update_cursor()
 
@@ -512,12 +564,14 @@ class MainWindow(QMainWindow):
         if file_name[0] is not None and file_name[0] != '':
             Player.open_file(file_name[0])
 
-    def open_folder(self):
+    @staticmethod
+    def open_folder():
         open_folder_win = OpenFolderWindow()
         open_folder_win.setModal(True)
         open_folder_win.exec()
 
-    def open_url(self):
+    @staticmethod
+    def open_url():
         open_url_win = OpenURLWindow()
         open_url_win.setModal(True)
         open_url_win.exec()
@@ -532,12 +586,14 @@ class MainWindow(QMainWindow):
         else:
             self.ui.volume.setMaximum(150)
 
-    def about(self):
+    @staticmethod
+    def about():
         about_win = AboutWindow()
         about_win.setModal(True)
         about_win.exec()
 
-    def reference(self):
+    @staticmethod
+    def reference():
         reference_win = ReferenceWindow()
         reference_win.setModal(True)
         reference_win.exec()
@@ -548,7 +604,8 @@ class MainWindow(QMainWindow):
         launch_parameters_win.exec()
         self.ui.volume.setValue(player.volume)
 
-    def android_config(self):
+    @staticmethod
+    def android_config():
         android_config_win = AndroidConfigWindow()
         android_config_win.setModal(True)
         android_config_win.exec()
@@ -600,13 +657,15 @@ class MainWindow(QMainWindow):
         self.ui.volume.setValue(player.volume)
         Player.volume_update(player.volume)
 
-    def rewind_plus(self):
+    @staticmethod
+    def rewind_plus():
         if player.time_pos is not None:
             player.seek(5)
             window.ui.time.setValue(player.time_pos)
             window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
 
-    def rewind_minus(self):
+    @staticmethod
+    def rewind_minus():
         if player.time_pos is not None:
             if player.time_pos > 5:
                 player.seek(-5)
@@ -1059,7 +1118,7 @@ class Player:
         if len(args) > 1:
             cls.configuration(open_prev=False)
             if os.path.isfile(args[1]):
-                file = config.get('opened')[1]
+                file = config.get('opened', [None, None])[1]
                 position = config.get('position')
 
                 if file is not None and file == args[1] and position is not None:
@@ -1100,9 +1159,10 @@ if __name__ == '__main__':
 
     if os.name != 'nt':
         import locale
+
         locale.setlocale(locale.LC_NUMERIC, 'C')
 
-    player: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', hwdec='auto')
+    player: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', ytdl=True, terminal='yes')
 
     window.show()
     Player.start_player(sys.argv)
