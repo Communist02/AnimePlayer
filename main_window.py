@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,45 +25,18 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1302, 634)
+        MainWindow.resize(1280, 720)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet(u"QMainWindow {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"#centralwidget {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"#info {\n"
+        MainWindow.setStyleSheet(u"#info {\n"
 "	border: 1px solid rgb(87, 86, 86);\n"
 "	border-radius:7px;\n"
 "}\n"
 "\n"
 "QListWidget {\n"
-"	color: rgb(87, 86, 86);\n"
-"	background-color: rgb(235, 227, 215);\n"
 "	border: 1px solid rgb(87, 86, 86);\n"
 "	border-radius: 3px;\n"
-"}\n"
-"\n"
-"QListView::item:selected {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QListView::item:selected:!active {\n"
-"	color: rgb(240, 240, 240);\n"
-"	background-color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QListView::item:hover {\n"
-"    background-color: rgb(180, 180, 180)\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
 "}\n"
 "\n"
 "#controlPanel {\n"
@@ -78,47 +51,18 @@ class Ui_MainWindow(object):
 "QSlider::groove:horizontal {\n"
 "    border: 1px solid rgb(87, 86, 86);\n"
 "    height: 16px;\n"
-""
-                        "    background: rgb(240, 240, 240);\n"
 "	border-radius: 5px;\n"
 "}\n"
 "\n"
 "QSlider::handle:horizontal {\n"
-"	background: rgb(240, 240, 240);\n"
 "	width: 16px;\n"
 "	border-radius: 5px;\n"
 "	border: 3px solid rgb(87, 86, 86);\n"
 "}\n"
 "\n"
 "QPushButton {\n"
-"	background-color: rgb(245, 241, 235);\n"
 "	border: 0px solid rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QMenuBar {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QMenuBar::item:selected {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QMenu {\n"
-"	background-color: rgb(235, 227, 215);\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QMenu::item:selected {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"#controlPanel {\n"
-"	background-color: rgb(245, 241, 235)\n"
 "}")
-        MainWindow.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
         self.action_Open_file = QAction(MainWindow)
         self.action_Open_file.setObjectName(u"action_Open_file")
 #if QT_CONFIG(shortcut)
@@ -233,7 +177,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setSizeConstraint(QLayout.SetMaximumSize)
+        self.horizontalLayout.setSizeConstraint(QLayout.SizeConstraint.SetMaximumSize)
         self.main = QVBoxLayout()
         self.main.setSpacing(0)
         self.main.setObjectName(u"main")
@@ -245,9 +189,9 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.video.sizePolicy().hasHeightForWidth())
         self.video.setSizePolicy(sizePolicy1)
         self.video.setPixmap(QPixmap(u"../images/play-button.png"))
-        self.video.setAlignment(Qt.AlignCenter)
+        self.video.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.video.setWordWrap(False)
-        self.video.setTextInteractionFlags(Qt.NoTextInteraction)
+        self.video.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
 
         self.main.addWidget(self.video)
 
@@ -259,14 +203,14 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.controlPanel.sizePolicy().hasHeightForWidth())
         self.controlPanel.setSizePolicy(sizePolicy2)
         self.controlPanel.setMinimumSize(QSize(0, 120))
-        self.controlPanel.setFrameShape(QFrame.StyledPanel)
-        self.controlPanel.setFrameShadow(QFrame.Raised)
+        self.controlPanel.setFrameShape(QFrame.Shape.StyledPanel)
+        self.controlPanel.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.controlPanel)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setSizeConstraint(QLayout.SetDefaultConstraint)
+        self.verticalLayout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.verticalLayout.setContentsMargins(-1, -1, 0, -1)
         self.timeControl = QHBoxLayout()
         self.timeControl.setSpacing(20)
@@ -285,7 +229,7 @@ class Ui_MainWindow(object):
         self.time.setMinimumSize(QSize(100, 30))
         self.time.setMaximum(60)
         self.time.setPageStep(5)
-        self.time.setOrientation(Qt.Horizontal)
+        self.time.setOrientation(Qt.Orientation.Horizontal)
 
         self.timeControl.addWidget(self.time)
 
@@ -302,58 +246,18 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.horizontalSpacer = QSpacerItem(10, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_3.addItem(self.horizontalSpacer)
-
-        self.sub = QPushButton(self.controlPanel)
-        self.sub.setObjectName(u"sub")
+        self.horizontalLayout_3.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
+        self.prev = QPushButton(self.controlPanel)
+        self.prev.setObjectName(u"prev")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.sub.sizePolicy().hasHeightForWidth())
-        self.sub.setSizePolicy(sizePolicy3)
-        self.sub.setMinimumSize(QSize(50, 50))
-        icon1 = QIcon()
-        icon1.addFile(u"../images/icons/subtitles_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.sub.setIcon(icon1)
-        self.sub.setIconSize(QSize(64, 64))
-
-        self.horizontalLayout_3.addWidget(self.sub)
-
-        self.audio = QPushButton(self.controlPanel)
-        self.audio.setObjectName(u"audio")
-        sizePolicy3.setHeightForWidth(self.audio.sizePolicy().hasHeightForWidth())
-        self.audio.setSizePolicy(sizePolicy3)
-        self.audio.setMinimumSize(QSize(50, 50))
-        icon2 = QIcon()
-        icon2.addFile(u"../images/icons/music_note_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.audio.setIcon(icon2)
-        self.audio.setIconSize(QSize(64, 64))
-
-        self.horizontalLayout_3.addWidget(self.audio)
-
-        self.fullscreen = QPushButton(self.controlPanel)
-        self.fullscreen.setObjectName(u"fullscreen")
-        sizePolicy3.setHeightForWidth(self.fullscreen.sizePolicy().hasHeightForWidth())
-        self.fullscreen.setSizePolicy(sizePolicy3)
-        self.fullscreen.setMinimumSize(QSize(50, 50))
-        icon3 = QIcon()
-        icon3.addFile(u"../images/icons/fullscreen_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.fullscreen.setIcon(icon3)
-        self.fullscreen.setIconSize(QSize(64, 64))
-
-        self.horizontalLayout_3.addWidget(self.fullscreen)
-
-        self.prev = QPushButton(self.controlPanel)
-        self.prev.setObjectName(u"prev")
         sizePolicy3.setHeightForWidth(self.prev.sizePolicy().hasHeightForWidth())
         self.prev.setSizePolicy(sizePolicy3)
         self.prev.setMinimumSize(QSize(50, 50))
-        icon4 = QIcon()
-        icon4.addFile(u"../images/icons/skip_previous_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.prev.setIcon(icon4)
+        icon1 = QIcon()
+        icon1.addFile(u"../images/icons/skip_previous_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.prev.setIcon(icon1)
         self.prev.setIconSize(QSize(64, 64))
 
         self.horizontalLayout_3.addWidget(self.prev)
@@ -364,10 +268,10 @@ class Ui_MainWindow(object):
         self.play.setSizePolicy(sizePolicy3)
         self.play.setMinimumSize(QSize(50, 50))
         self.play.setBaseSize(QSize(0, 0))
-        icon5 = QIcon()
-        icon5.addFile(u"../images/icons/play_arrow_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon5.addFile(u"images/icons/pause_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Disabled, QIcon.Off)
-        self.play.setIcon(icon5)
+        icon2 = QIcon()
+        icon2.addFile(u"../images/icons/play_arrow_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon2.addFile(u"images/icons/pause_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Disabled, QIcon.Off)
+        self.play.setIcon(icon2)
         self.play.setIconSize(QSize(64, 64))
 
         self.horizontalLayout_3.addWidget(self.play)
@@ -377,24 +281,12 @@ class Ui_MainWindow(object):
         sizePolicy3.setHeightForWidth(self.next.sizePolicy().hasHeightForWidth())
         self.next.setSizePolicy(sizePolicy3)
         self.next.setMinimumSize(QSize(50, 50))
-        icon6 = QIcon()
-        icon6.addFile(u"../images/icons/skip_next_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.next.setIcon(icon6)
+        icon3 = QIcon()
+        icon3.addFile(u"../images/icons/skip_next_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.next.setIcon(icon3)
         self.next.setIconSize(QSize(64, 64))
 
         self.horizontalLayout_3.addWidget(self.next)
-
-        self.menu = QPushButton(self.controlPanel)
-        self.menu.setObjectName(u"menu")
-        sizePolicy3.setHeightForWidth(self.menu.sizePolicy().hasHeightForWidth())
-        self.menu.setSizePolicy(sizePolicy3)
-        self.menu.setMinimumSize(QSize(50, 50))
-        icon7 = QIcon()
-        icon7.addFile(u"../images/icons/list_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.menu.setIcon(icon7)
-        self.menu.setIconSize(QSize(64, 64))
-
-        self.horizontalLayout_3.addWidget(self.menu)
 
         self.volume = QSlider(self.controlPanel)
         self.volume.setObjectName(u"volume")
@@ -404,14 +296,62 @@ class Ui_MainWindow(object):
         self.volume.setMaximumSize(QSize(140, 16777215))
         self.volume.setMaximum(100)
         self.volume.setValue(100)
-        self.volume.setOrientation(Qt.Horizontal)
-        self.volume.setTickPosition(QSlider.NoTicks)
+        self.volume.setOrientation(Qt.Orientation.Horizontal)
+        self.volume.setTickPosition(QSlider.TickPosition.NoTicks)
 
         self.horizontalLayout_3.addWidget(self.volume)
 
-        self.horizontalSpacer_2 = QSpacerItem(10, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer = QSpacerItem(10, 20, QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
+        self.horizontalLayout_3.addItem(self.horizontalSpacer)
+
+        self.sub = QPushButton(self.controlPanel)
+        self.sub.setObjectName(u"sub")
+        sizePolicy3.setHeightForWidth(self.sub.sizePolicy().hasHeightForWidth())
+        self.sub.setSizePolicy(sizePolicy3)
+        self.sub.setMinimumSize(QSize(50, 50))
+        icon4 = QIcon()
+        icon4.addFile(u"../images/icons/subtitles_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.sub.setIcon(icon4)
+        self.sub.setIconSize(QSize(64, 64))
+
+        self.horizontalLayout_3.addWidget(self.sub)
+
+        self.audio = QPushButton(self.controlPanel)
+        self.audio.setObjectName(u"audio")
+        sizePolicy3.setHeightForWidth(self.audio.sizePolicy().hasHeightForWidth())
+        self.audio.setSizePolicy(sizePolicy3)
+        self.audio.setMinimumSize(QSize(50, 50))
+        icon5 = QIcon()
+        icon5.addFile(u"../images/icons/music_note_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.audio.setIcon(icon5)
+        self.audio.setIconSize(QSize(64, 64))
+
+        self.horizontalLayout_3.addWidget(self.audio)
+
+        self.menu = QPushButton(self.controlPanel)
+        self.menu.setObjectName(u"menu")
+        sizePolicy3.setHeightForWidth(self.menu.sizePolicy().hasHeightForWidth())
+        self.menu.setSizePolicy(sizePolicy3)
+        self.menu.setMinimumSize(QSize(50, 50))
+        icon6 = QIcon()
+        icon6.addFile(u"../images/icons/list_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.menu.setIcon(icon6)
+        self.menu.setIconSize(QSize(64, 64))
+
+        self.horizontalLayout_3.addWidget(self.menu)
+
+        self.fullscreen = QPushButton(self.controlPanel)
+        self.fullscreen.setObjectName(u"fullscreen")
+        sizePolicy3.setHeightForWidth(self.fullscreen.sizePolicy().hasHeightForWidth())
+        self.fullscreen.setSizePolicy(sizePolicy3)
+        self.fullscreen.setMinimumSize(QSize(50, 50))
+        icon7 = QIcon()
+        icon7.addFile(u"../images/icons/fullscreen_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.fullscreen.setIcon(icon7)
+        self.fullscreen.setIconSize(QSize(64, 64))
+
+        self.horizontalLayout_3.addWidget(self.fullscreen)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -433,8 +373,8 @@ class Ui_MainWindow(object):
         self.info = QFrame(self.rightPanel)
         self.info.setObjectName(u"info")
         self.info.setMinimumSize(QSize(300, 30))
-        self.info.setFrameShape(QFrame.StyledPanel)
-        self.info.setFrameShadow(QFrame.Raised)
+        self.info.setFrameShape(QFrame.Shape.StyledPanel)
+        self.info.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.info)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.sourceInfo = QLabel(self.info)
@@ -444,8 +384,8 @@ class Ui_MainWindow(object):
 
         self.line = QFrame(self.info)
         self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.verticalLayout_3.addWidget(self.line)
 
@@ -478,7 +418,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1302, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1280, 33))
         self.menubar.setDefaultUp(False)
         self.menubar.setNativeMenuBar(True)
         self.menu_File = QMenu(self.menubar)
@@ -600,13 +540,13 @@ class Ui_MainWindow(object):
         self.video.setText("")
         self.currentTime.setText(QCoreApplication.translate("MainWindow", u"00:00", None))
         self.allTime.setText(QCoreApplication.translate("MainWindow", u"00:00", None))
-        self.sub.setText("")
-        self.audio.setText("")
-        self.fullscreen.setText("")
         self.prev.setText("")
         self.play.setText("")
         self.next.setText("")
+        self.sub.setText("")
+        self.audio.setText("")
         self.menu.setText("")
+        self.fullscreen.setText("")
         self.sourceInfo.setText(QCoreApplication.translate("MainWindow", u"Info", None))
         self.mediaInfo.setText(QCoreApplication.translate("MainWindow", u"Media info", None))
         self.menu_File.setTitle(QCoreApplication.translate("MainWindow", u"File", None))

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'reference_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -26,22 +26,6 @@ class Ui_ReferenceWindow(object):
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         ReferenceWindow.setWindowIcon(icon)
-        ReferenceWindow.setStyleSheet(u"QDialog {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}")
         self.verticalLayout = QVBoxLayout(ReferenceWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.plainTextEdit = QPlainTextEdit(ReferenceWindow)
@@ -50,7 +34,7 @@ class Ui_ReferenceWindow(object):
         font.setFamilies([u"Consolas"])
         font.setPointSize(10)
         self.plainTextEdit.setFont(font)
-        self.plainTextEdit.setInputMethodHints(Qt.ImhNone)
+        self.plainTextEdit.setInputMethodHints(Qt.InputMethodHint.ImhNone)
         self.plainTextEdit.setUndoRedoEnabled(False)
         self.plainTextEdit.setReadOnly(True)
 
@@ -58,8 +42,8 @@ class Ui_ReferenceWindow(object):
 
         self.buttonBox = QDialogButtonBox(ReferenceWindow)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Close)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Close)
 
         self.verticalLayout.addWidget(self.buttonBox)
 

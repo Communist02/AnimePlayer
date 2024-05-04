@@ -17,37 +17,6 @@
    <iconset>
     <normaloff>../favicon.ico</normaloff>../favicon.ico</iconset>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QDialog {
-	background-color: rgb(245, 241, 235);
-}
-
-QLabel {
-	color: rgb(87, 86, 86);
-}
-
-QCheckBox {
-	color: rgb(87, 86, 86);
-}
-
-QPushButton {
-	background-color: rgb(87, 86, 86);
-	color: rgb(245, 241, 235);
-}
-
-QLabel {
-	color: rgb(87, 86, 86);
-}
-
-QCheckBox {
-	color: rgb(87, 86, 86);
-}
-
-QPushButton {
-	background-color: rgb(87, 86, 86);
-	color: rgb(245, 241, 235);
-}</string>
-  </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -117,10 +86,10 @@ QPushButton {
         </sizepolicy>
        </property>
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
        </property>
       </widget>
      </item>

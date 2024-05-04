@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'settings_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,26 +23,10 @@ class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
         if not SettingsWindow.objectName():
             SettingsWindow.setObjectName(u"SettingsWindow")
-        SettingsWindow.resize(260, 202)
+        SettingsWindow.resize(254, 206)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         SettingsWindow.setWindowIcon(icon)
-        SettingsWindow.setStyleSheet(u"QDialog {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}")
         self.verticalLayout = QVBoxLayout(SettingsWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout = QHBoxLayout()
@@ -62,6 +46,24 @@ class Ui_SettingsWindow(object):
 
 
         self.verticalLayout.addLayout(self.horizontalLayout)
+
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.labelTheme = QLabel(SettingsWindow)
+        self.labelTheme.setObjectName(u"labelTheme")
+
+        self.horizontalLayout_2.addWidget(self.labelTheme)
+
+        self.theme = QComboBox(SettingsWindow)
+        self.theme.addItem("")
+        self.theme.addItem("")
+        self.theme.addItem("")
+        self.theme.setObjectName(u"theme")
+
+        self.horizontalLayout_2.addWidget(self.theme)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.openLastFile = QCheckBox(SettingsWindow)
         self.openLastFile.setObjectName(u"openLastFile")
@@ -83,15 +85,10 @@ class Ui_SettingsWindow(object):
 
         self.verticalLayout.addWidget(self.svp)
 
-        self.darkTheme = QCheckBox(SettingsWindow)
-        self.darkTheme.setObjectName(u"darkTheme")
-
-        self.verticalLayout.addWidget(self.darkTheme)
-
         self.buttonBox = QDialogButtonBox(SettingsWindow)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
 
         self.verticalLayout.addWidget(self.buttonBox)
 
@@ -110,10 +107,15 @@ class Ui_SettingsWindow(object):
         self.language.setItemText(1, QCoreApplication.translate("SettingsWindow", u"English", None))
         self.language.setItemText(2, QCoreApplication.translate("SettingsWindow", u"\u0420\u0443\u0441\u0441\u043a\u0438\u0439", None))
 
+        self.labelTheme.setText(QCoreApplication.translate("SettingsWindow", u"Theme", None))
+        self.theme.setItemText(0, QCoreApplication.translate("SettingsWindow", u"System", None))
+        self.theme.setItemText(1, QCoreApplication.translate("SettingsWindow", u"Light", None))
+        self.theme.setItemText(2, QCoreApplication.translate("SettingsWindow", u"Dark", None))
+
+        self.theme.setCurrentText(QCoreApplication.translate("SettingsWindow", u"System", None))
         self.openLastFile.setText(QCoreApplication.translate("SettingsWindow", u"On startup open the last opened file", None))
         self.posLastFile.setText(QCoreApplication.translate("SettingsWindow", u"Set the position of the last opened file", None))
         self.volumePlus.setText(QCoreApplication.translate("SettingsWindow", u"Increase maxumum volume up to 150%", None))
         self.svp.setText(QCoreApplication.translate("SettingsWindow", u"Activate SVP", None))
-        self.darkTheme.setText(QCoreApplication.translate("SettingsWindow", u"Dark theme", None))
     # retranslateUi
 

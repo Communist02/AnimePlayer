@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'launch_parameters_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,22 +27,6 @@ class Ui_LaunchParemetersWindow(object):
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         LaunchParemetersWindow.setWindowIcon(icon)
-        LaunchParemetersWindow.setStyleSheet(u"QDialog {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}")
         self.verticalLayout = QVBoxLayout(LaunchParemetersWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label = QLabel(LaunchParemetersWindow)
@@ -57,8 +41,8 @@ class Ui_LaunchParemetersWindow(object):
 
         self.buttonBox = QDialogButtonBox(LaunchParemetersWindow)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Apply|QDialogButtonBox.Cancel|QDialogButtonBox.Save)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Apply|QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Save)
 
         self.verticalLayout.addWidget(self.buttonBox)
 

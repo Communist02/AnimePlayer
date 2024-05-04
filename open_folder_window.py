@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'open_folder_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,35 +27,6 @@ class Ui_OpenFolderWindow(object):
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         OpenFolderWindow.setWindowIcon(icon)
-        OpenFolderWindow.setStyleSheet(u"QDialog {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}")
         self.horizontalLayout_2 = QHBoxLayout(OpenFolderWindow)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.verticalLayout = QVBoxLayout()
@@ -113,8 +84,8 @@ class Ui_OpenFolderWindow(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.buttonBox.sizePolicy().hasHeightForWidth())
         self.buttonBox.setSizePolicy(sizePolicy3)
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
 
         self.verticalLayout.addWidget(self.buttonBox)
 

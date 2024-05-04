@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'about_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,26 +23,10 @@ class Ui_AboutWindow(object):
     def setupUi(self, AboutWindow):
         if not AboutWindow.objectName():
             AboutWindow.setObjectName(u"AboutWindow")
-        AboutWindow.resize(520, 226)
+        AboutWindow.resize(520, 280)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         AboutWindow.setWindowIcon(icon)
-        AboutWindow.setStyleSheet(u"QDialog {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}")
         self.gridLayout = QGridLayout(AboutWindow)
         self.gridLayout.setObjectName(u"gridLayout")
         self.verticalLayout = QVBoxLayout()
@@ -64,7 +48,7 @@ class Ui_AboutWindow(object):
         sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
         self.label_3.setSizePolicy(sizePolicy)
         self.label_3.setMaximumSize(QSize(300, 16777215))
-        self.label_3.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
+        self.label_3.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
         self.label_3.setWordWrap(True)
 
         self.verticalLayout.addWidget(self.label_3)
@@ -85,8 +69,8 @@ class Ui_AboutWindow(object):
 
         self.buttonBox = QDialogButtonBox(AboutWindow)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Close)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Close)
 
         self.horizontalLayout_2.addWidget(self.buttonBox)
 

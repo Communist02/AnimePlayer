@@ -17,24 +17,6 @@
    <iconset>
     <normaloff>../favicon.ico</normaloff>../favicon.ico</iconset>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QDialog {
-	background-color: rgb(245, 241, 235);
-}
-
-QLabel {
-	color: rgb(87, 86, 86);
-}
-
-QCheckBox {
-	color: rgb(87, 86, 86);
-}
-
-QPushButton {
-	background-color: rgb(87, 86, 86);
-	color: rgb(245, 241, 235);
-}</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QPlainTextEdit" name="plainTextEdit">
@@ -45,7 +27,7 @@ QPushButton {
       </font>
      </property>
      <property name="inputMethodHints">
-      <set>Qt::ImhNone</set>
+      <set>Qt::InputMethodHint::ImhNone</set>
      </property>
      <property name="undoRedoEnabled">
       <bool>false</bool>
@@ -219,10 +201,10 @@ whether your GPU can keep up.
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::StandardButton::Close</set>
      </property>
     </widget>
    </item>
