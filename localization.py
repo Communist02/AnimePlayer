@@ -72,7 +72,11 @@ en = {
     'Rewind -5 sec': 'Rewind -5 sec',
     'Zoom in': 'Zoom in',
     'Zoom out': 'Zoom out',
-    'Playlist': 'Playlist'
+    'Playlist': 'Playlist',
+    'Theme': 'Theme',
+    'Light': 'Light',
+    'Dark': 'Dark',
+    'System': 'System'
 }
 
 ru = {
@@ -145,7 +149,11 @@ ru = {
     'Rewind -5 sec': 'Перемотка -5 сек',
     'Zoom in': 'Увеличить масштаб',
     'Zoom out': 'Уменьшить масштаб',
-    'Playlist': 'Список воспроизведения'
+    'Playlist': 'Список воспроизведения',
+    'Theme': 'Тема',
+    'Light': 'Светлая',
+    'Dark': 'Темная',
+    'System': 'Системная'
 }
 
 match locale.getlocale()[0]:

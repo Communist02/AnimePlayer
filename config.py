@@ -8,7 +8,7 @@ class ConfigManager:
         if os.name == 'nt':
             self.filepath = os.path.join(os.getenv('APPDATA'), 'Anime Player', filename)
         else:
-            self.filepath = os.path.join(os.getenv('HOME'), 'Anime Player', filename)
+            self.filepath = os.path.join(os.getenv('HOME'), '.anime_player', filename)
         self.config = {}
         self.load_config()
 

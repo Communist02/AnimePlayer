@@ -17,24 +17,6 @@
    <iconset>
     <normaloff>../favicon.ico</normaloff>../favicon.ico</iconset>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QDialog {
-	background-color: rgb(245, 241, 235);
-}
-
-QLabel {
-	color: rgb(87, 86, 86);
-}
-
-QCheckBox {
-	color: rgb(87, 86, 86);
-}
-
-QPushButton {
-	background-color: rgb(87, 86, 86);
-	color: rgb(245, 241, 235);
-}</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label">
@@ -76,7 +58,7 @@ QPushButton {
       </font>
      </property>
      <property name="inputMethodHints">
-      <set>Qt::ImhNone</set>
+      <set>Qt::InputMethodHint::ImhNone</set>
      </property>
      <property name="readOnly">
       <bool>true</bool>

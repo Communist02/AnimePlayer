@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>202</height>
+    <width>254</width>
+    <height>206</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,24 +16,6 @@
   <property name="windowIcon">
    <iconset>
     <normaloff>../favicon.ico</normaloff>../favicon.ico</iconset>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">QDialog {
-	background-color: rgb(245, 241, 235);
-}
-
-QLabel {
-	color: rgb(87, 86, 86);
-}
-
-QCheckBox {
-	color: rgb(87, 86, 86);
-}
-
-QPushButton {
-	background-color: rgb(87, 86, 86);
-	color: rgb(245, 241, 235);
-}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -60,6 +42,39 @@ QPushButton {
        <item>
         <property name="text">
          <string>Русский</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelTheme">
+       <property name="text">
+        <string>Theme</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="theme">
+       <property name="currentText">
+        <string>System</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>System</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Light</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Dark</string>
         </property>
        </item>
       </widget>
@@ -95,19 +110,12 @@ QPushButton {
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="darkTheme">
-     <property name="text">
-      <string>Dark theme</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>

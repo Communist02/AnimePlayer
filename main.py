@@ -1,28 +1,28 @@
-from PySide6.QtCore import QSize, Qt, QTimer
+import os
+import sys
+
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QIcon, QGuiApplication, QAction, QPixmap
 from PySide6.QtWidgets import QMainWindow, QApplication, QDialog, QMenu, QFileDialog
 
+import about_window
+import android_config_window
+import anime4k
+import icons
+import launch_parameters_window
+import localization
 import main_window
 import open_folder_window
 import open_url_window
-import settings_window
-import about_window
-import screenshot_window
 import reference_window
-import launch_parameters_window
-import android_config_window
-
-import os
-from mpv import MPV
-import anime4k
-import localization
-import sys
-import icons
+import screenshot_window
+import settings_window
 from config import ConfigManager
+from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.0 Beta 2'
-formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
+version = '2.0 Beta 3'
+formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 
 config = ConfigManager('config.json')
 localization.set_locale(config.get('language'))
@@ -34,8 +34,6 @@ class AndroidConfigWindow(QDialog):
         super(AndroidConfigWindow, self).__init__()
         self.ui = android_config_window.Ui_AndroidConfigWindow()
         self.ui.setupUi(self)
-
-        self.setStyleSheet('')
 
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
@@ -75,8 +73,6 @@ class LaunchParametersWindow(QDialog):
         self.ui = launch_parameters_window.Ui_LaunchParemetersWindow()
         self.ui.setupUi(self)
 
-        self.setStyleSheet('')
-
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
         self.setWindowTitle(loc['Launch parameters'])
@@ -109,8 +105,6 @@ class ReferenceWindow(QDialog):
         self.ui = reference_window.Ui_ReferenceWindow()
         self.ui.setupUi(self)
 
-        self.setStyleSheet('')
-
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
         self.setWindowTitle(loc['Reference'])
@@ -132,8 +126,6 @@ class ScreenshotWindow(QDialog):
         self.ui = screenshot_window.Ui_ScreenshotWindow()
         self.ui.setupUi(self)
 
-        self.setStyleSheet('')
-
         self.setFixedSize(520, 120)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
@@ -143,6 +135,8 @@ class ScreenshotWindow(QDialog):
         self.ui.label.setText(loc['Enter folder path for screenshots'])
         self.ui.select.setText(loc['Select'])
         self.ui.paste.setText(loc['Paste'])
+        self.ui.buttonBox.buttons()[0].setText(loc['Save'])
+        self.ui.buttonBox.buttons()[1].setText(loc['Close'])
 
         self.ui.paste.clicked.connect(lambda: self.ui.lineEdit.setText(QGuiApplication.clipboard().text()))
         self.ui.select.clicked.connect(self.select)
@@ -171,14 +165,12 @@ class AboutWindow(QDialog):
         self.ui = about_window.Ui_AboutWindow()
         self.ui.setupUi(self)
 
-        self.setStyleSheet('')
-
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
         self.ui.image.setPixmap(QPixmap(f'{os.path.dirname(__file__) + os.sep}images{os.sep}anime-player-icon.png'))
 
         self.setWindowTitle(loc['About'])
         self.ui.label_2.setText(f'Anime Player v{version}')
-        self.ui.label_3.setText(f'{player.mpv_version}\n\n{loc['About program']}')
+        self.ui.label_3.setText(f'{player.mpv_version}\n\n{loc["About program"]}')
         self.ui.buttonBox.buttons()[0].setText(loc['Close'])
 
 
@@ -187,8 +179,6 @@ class SettingsWindow(QDialog):
         super(SettingsWindow, self).__init__()
         self.ui = settings_window.Ui_SettingsWindow()
         self.ui.setupUi(self)
-
-        self.setStyleSheet('')
 
         self.setFixedHeight(220)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
@@ -201,14 +191,23 @@ class SettingsWindow(QDialog):
             case _:
                 self.lang = 'Auto'
 
+        match config.get('theme'):
+            case 'Light':
+                self.theme = 'Light'
+            case 'Dark':
+                self.theme = 'Dark'
+            case _:
+                self.theme = 'System'
+
         self.ui.language.setCurrentText(self.lang)
         self.ui.openLastFile.setChecked(config.get('onOpenLastFile', True))
         self.ui.posLastFile.setChecked(config.get('onPosLastFile', True))
         self.ui.volumePlus.setChecked(config.get('volumePlus', False))
         self.ui.svp.setChecked(config.get('SVP', False))
-        self.ui.darkTheme.setChecked(config.get('darkTheme', False))
+        self.ui.theme.setCurrentText(self.theme)
 
-        self.ui.darkTheme.setVisible(False)
+        self.ui.labelTheme.setVisible(False)
+        self.ui.theme.setVisible(False)
 
         self.ui.buttonBox.accepted.connect(self.ok)
 
@@ -219,6 +218,7 @@ class SettingsWindow(QDialog):
         self.ui.volumePlus.setText(loc['Increase maximum volume up to 150%'])
         self.ui.svp.setText(loc['Activate SVP'])
         self.ui.buttonBox.buttons()[1].setText(loc['Cancel'])
+        self.ui.labelTheme.setText(loc['Theme'])
 
     def ok(self):
         config.set('onOpenLastFile', self.ui.openLastFile.isChecked())
@@ -233,9 +233,9 @@ class SettingsWindow(QDialog):
             # window['-VOLUME-'].update(range=(0, 100 if not values['-VOLUME_PLUS-'] else 150))
             config.set('volumePlus', self.ui.volumePlus.isChecked())
 
-        if config.get('language', self.lang) != self.ui.language.currentText() or config.get('darkTheme', False) != self.ui.darkTheme.isChecked():
+        if config.get('language', self.lang) != self.ui.language.currentText() or config.get('theme', self.theme) != self.ui.theme.currentText():
             config.set('language', self.ui.language.currentText())
-            config.set('darkTheme', self.ui.darkTheme.isChecked())
+            config.set('theme', self.ui.theme.currentText())
             # player.wid = -1
             # player.vo = 'null'
             # player.vo = ''
@@ -265,8 +265,6 @@ class OpenURLWindow(QDialog):
         super(OpenURLWindow, self).__init__()
         self.ui = open_url_window.Ui_OpenURLWindow()
         self.ui.setupUi(self)
-
-        self.setStyleSheet('')
 
         self.setFixedSize(550, 120)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
@@ -306,8 +304,6 @@ class OpenFolderWindow(QDialog):
         super(OpenFolderWindow, self).__init__()
         self.ui = open_folder_window.Ui_OpenFolderWindow()
         self.ui.setupUi(self)
-
-        self.setStyleSheet('')
 
         self.setFixedSize(550, 120)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
@@ -354,38 +350,6 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
-
-        # if os.name != 'nt':
-        self.setStyleSheet(u"#info {\n"
-                           "	border: 1px solid rgb(87, 86, 86);\n"
-                           "	border-radius:7px;\n"
-                           "}\n"
-                           "\n"
-                           "#controlPanel {\n"
-                           "	border: 1px solid rgb(87, 86, 86);\n"
-                           "	border-radius: 9px;\n"
-                           "	margin-top: 6px;\n"
-                           "	margin-bottom: 8px;\n"
-                           "	margin-left: 6px;\n"
-                           "	margin-right: 6px;\n"
-                           "}\n"
-                           "\n"
-                           "QSlider::groove:horizontal {\n"
-                           "    border: 1px solid rgb(87, 86, 86);\n"
-                           "    height: 16px;\n"
-                           "	border-radius: 5px;\n"
-                           "}\n"
-                           "\n"
-                           "QSlider::handle:horizontal {\n"
-                           "	width: 16px;\n"
-                           "	border-radius: 5px;\n"
-                           "	border: 3px solid rgb(87, 86, 86);\n"
-                           "}\n"
-                           "\n"
-                           "QPushButton {\n"
-                           "	border: 0px solid rgb(87, 86, 86);\n"
-                           "}\n"
-                           "\n")
 
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
@@ -508,7 +472,7 @@ class MainWindow(QMainWindow):
             for mode in tabs[quality]:
                 action = QAction(self)
                 action.setText(mode)
-                action.triggered.connect(lambda q=quality, m=mode: Player.set_preset_quality(q, m))
+                action.triggered.connect(lambda ignore=False, q=quality, m=mode: Player.set_preset_quality(q, m))
                 menu.addAction(action)
 
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -532,6 +496,10 @@ class MainWindow(QMainWindow):
 
     def mouseDoubleClickEvent(self, event):
         Player.fullscreen_switch()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            Player.play()
 
     @staticmethod
     def screenshot():
@@ -948,9 +916,7 @@ class Player:
         """
         player.stop()
         player.pause = False
-        icon = QIcon()
-        icon.addFile(icons.play, QSize(), QIcon.Normal, QIcon.Off)
-        window.ui.play.setIcon(icon)
+        window.ui.play.setIcon(QIcon(icons.play))
         cls.folder = ''
         cls.filename = ''
         cls.files = []
@@ -996,14 +962,14 @@ class Player:
                 window.showMaximized()
             else:
                 window.showNormal()
-            window.ui.menubar.setFixedHeight(22)
+            window.ui.menubar.setFixedHeight(window.ui.menubar.sizeHint().height() + 1)
             window.ui.controlPanel.setVisible(True)
             window.ui.rightPanel.setVisible(cls.is_menu_visible)
             window.ui.video.unsetCursor()
             cls.cursor_timer = 0
 
     @classmethod
-    def update_fullscreen_layout(cls, x: int, y: int):
+    def update_fullscreen_layout(cls, x: float, y: float):
         if y > window.ui.centralwidget.size().height() - window.ui.controlPanel.height():
             window.ui.controlPanel.setVisible(True)
         elif x > window.ui.centralwidget.size().width() - window.ui.rightPanel.width() and Player.is_menu_visible:
@@ -1147,19 +1113,13 @@ class Player:
 
 
 if __name__ == '__main__':
-    # font = 'Balsamiq Sans Regular'
-    # fonts.load_font(f'{os.path.dirname(__file__) + os.sep}fonts{os.sep}BalsamiqSans-Regular.ttf')
-    # newFont = QFont("Balsamiq Sans", 10)
-
     app = QApplication()
-    # app.setFont(newFont)
     window = MainWindow()
 
     screenshot_path = ''
 
     if os.name != 'nt':
         import locale
-
         locale.setlocale(locale.LC_NUMERIC, 'C')
 
     player: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', ytdl=True, terminal='yes')

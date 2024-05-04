@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'android_config_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.6.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,22 +27,6 @@ class Ui_AndroidConfigWindow(object):
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
         AndroidConfigWindow.setWindowIcon(icon)
-        AndroidConfigWindow.setStyleSheet(u"QDialog {\n"
-"	background-color: rgb(245, 241, 235);\n"
-"}\n"
-"\n"
-"QLabel {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QCheckBox {\n"
-"	color: rgb(87, 86, 86);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(87, 86, 86);\n"
-"	color: rgb(245, 241, 235);\n"
-"}")
         self.verticalLayout = QVBoxLayout(AndroidConfigWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label = QLabel(AndroidConfigWindow)
@@ -76,7 +60,7 @@ class Ui_AndroidConfigWindow(object):
         font.setFamilies([u"Consolas"])
         font.setPointSize(10)
         self.plainTextEdit.setFont(font)
-        self.plainTextEdit.setInputMethodHints(Qt.ImhNone)
+        self.plainTextEdit.setInputMethodHints(Qt.InputMethodHint.ImhNone)
         self.plainTextEdit.setReadOnly(True)
 
         self.verticalLayout.addWidget(self.plainTextEdit)
