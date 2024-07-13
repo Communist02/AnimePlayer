@@ -1,8 +1,8 @@
 import os
 import sys
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QIcon, QGuiApplication, QAction, QPixmap
+from PySide6.QtCore import Qt, QTimer, QPoint
+from PySide6.QtGui import QIcon, QGuiApplication, QAction, QPixmap, QCursor
 from PySide6.QtWidgets import QMainWindow, QApplication, QDialog, QMenu, QFileDialog
 
 import about_window
@@ -21,7 +21,7 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.0 Beta 3'
+version = '2.0 Beta 4'
 formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 
 config = ConfigManager('config.json')
@@ -236,17 +236,6 @@ class SettingsWindow(QDialog):
         if config.get('language', self.lang) != self.ui.language.currentText() or config.get('theme', self.theme) != self.ui.theme.currentText():
             config.set('language', self.ui.language.currentText())
             config.set('theme', self.ui.theme.currentText())
-            # player.wid = -1
-            # player.vo = 'null'
-            # player.vo = ''
-            # window.close()
-            # window = make_window(title=f'{player.filename.rsplit("/", 1)[-1]} - {name_program}' if player.filename is not None or '' else name_program,
-            #                      is_pause=player.pause if player.duration is not None else True, files_list=window['-FILELIST-'].get_list_values(), filenum=Player.filenum,
-            #                      volume=player.volume, is_files_list_visible=window['-LIST-'].visible)
-            # player.wid = window['-VID_OUT-'].Widget.winfo_id()
-            # player.vo = 'null'
-            # player.vo = ''
-            # Player.update_tracks()
 
         if self.ui.svp.isChecked():
             if player.input_ipc_server != 'mpvpipe':
@@ -353,12 +342,6 @@ class MainWindow(QMainWindow):
 
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
-        self.menu_audio = QMenu(self.ui.centralwidget)
-        self.ui.audio.setMenu(self.menu_audio)
-
-        self.sub_audio = QMenu(self.ui.centralwidget)
-        self.ui.sub.setMenu(self.sub_audio)
-
         self.ui.rightPanel.setVisible(False)
 
         self.ui.play.setIcon(QIcon(icons.play))
@@ -375,6 +358,8 @@ class MainWindow(QMainWindow):
         self.ui.next.clicked.connect(lambda: Player.next())
         self.ui.fullscreen.clicked.connect(lambda: Player.fullscreen_switch())
         self.ui.menu.clicked.connect(self.right_panel_visible)
+        self.ui.sub.clicked.connect(lambda: Player.sub_view())
+        self.ui.audio.clicked.connect(lambda: Player.audio_view())
         self.ui.volume.valueChanged.connect(lambda: Player.volume_update(self.ui.volume.value()))
         self.ui.time.valueChanged.connect(lambda: self.change_time())
 
@@ -584,8 +569,8 @@ class MainWindow(QMainWindow):
         else:
             self.ui.rightPanel.setVisible(not self.ui.rightPanel.isVisible())
 
-    def show_context_menu(self, position):
-        menu = QMenu(self.ui.centralwidget)
+    def show_context_menu(self):
+        menu = QMenu()
         menu.addAction(self.ui.action_Open_file)
         menu.addAction(self.ui.action_Open_folder)
         menu.addAction(self.ui.action_Open_URL)
@@ -605,7 +590,7 @@ class MainWindow(QMainWindow):
         menu.addAction(self.ui.action_About)
         menu.addSeparator()
         menu.addAction(self.ui.action_Exit)
-        menu.exec(self.ui.video.mapToGlobal(position))
+        menu.exec(QCursor.pos())
 
     def volume_plus(self):
         if player.volume > 95 and self.ui.volume.maximum() == 100:
@@ -678,53 +663,60 @@ class Player:
         return [f'{i + 1}) ' + filenames[i] for i in range(len(filenames))]
 
     @classmethod
-    def update_tracks(cls):
-        cls.audio = {}
+    def sub_view(cls):
         cls.sub = {}
-        for track in player.track_list:
-            if track['type'] == 'audio':
-                if 'lang' in track.keys():
-                    cls.audio[track['id']] = f'{track["lang"]} - {track["codec"]}'
-                else:
-                    cls.audio[track['id']] = track['codec']
-            if track['type'] == 'sub':
-                if 'lang' in track.keys():
-                    cls.sub[track['id']] = f'{track["lang"]} - {track["codec"]}'
-                else:
-                    cls.sub[track['id']] = track['codec']
+        if player.track_list is not None:
+            for track in player.track_list:
+                if track['type'] == 'sub':
+                    if 'lang' in track.keys():
+                        cls.sub[track['id']] = f'{track["lang"]} - {track["codec"]}'
+                    else:
+                        cls.sub[track['id']] = track['codec']
 
-        def set_sub(index: int):
-            player.sid = index
+            def set_sub(index: int):
+                player.sid = index
 
-        def set_audio(index: int):
-            player.aid = index
-
-        window.ui.audio.menu().clear()
-        window.ui.sub.menu().clear()
-        if len(cls.audio) > 0:
-            action = QAction(window)
-            action.setText(loc['Disable'])
-            action.triggered.connect(lambda: set_audio(0))
-            window.ui.audio.menu().addAction(action)
-            window.ui.audio.menu().addSeparator()
-            for key, value in cls.audio.items():
+            menu_sub = QMenu()
+            if len(cls.sub) > 0:
                 action = QAction(window)
-                action.setText(f'{key}) {value}')
-                action.triggered.connect(lambda ignore=False, a=key: set_audio(a))
-                window.ui.audio.menu().addAction(action)
+                action.setText(loc['Disable'])
+                action.triggered.connect(lambda: set_sub(0))
+                menu_sub.addAction(action)
+                menu_sub.addSeparator()
+                for key, value in cls.sub.items():
+                    action = QAction(window)
+                    action.setText(f'{key}) {value}')
+                    action.triggered.connect(lambda ignore=False, x=key: set_sub(x))
+                    menu_sub.addAction(action)
+            menu_sub.exec(window.ui.sub.mapToGlobal(QPoint(0, 0)))
 
-        if len(cls.sub) > 0:
-            action = QAction(window)
-            action.setText(loc['Disable'])
-            action.triggered.connect(lambda: set_sub(0))
-            window.ui.sub.menu().addAction(action)
-            window.ui.sub.menu().addSeparator()
-            window.ui.sub.menu().addSeparator()
-            for key, value in cls.sub.items():
+    @classmethod
+    def audio_view(cls):
+        cls.audio = {}
+        if player.track_list is not None:
+            for track in player.track_list:
+                if track['type'] == 'audio':
+                    if 'lang' in track.keys():
+                        cls.audio[track['id']] = f'{track["lang"]} - {track["codec"]}'
+                    else:
+                        cls.audio[track['id']] = track['codec']
+
+            def set_audio(index: int):
+                player.aid = index
+
+            menu_audio = QMenu()
+            if len(cls.audio) > 0:
                 action = QAction(window)
-                action.setText(f'{key}) {value}')
-                action.triggered.connect(lambda ignore=False, x=key: set_sub(x))
-                window.ui.sub.menu().addAction(action)
+                action.setText(loc['Disable'])
+                action.triggered.connect(lambda: set_audio(0))
+                menu_audio.addAction(action)
+                menu_audio.addSeparator()
+                for key, value in cls.audio.items():
+                    action = QAction(window)
+                    action.setText(f'{key}) {value}')
+                    action.triggered.connect(lambda ignore=False, a=key: set_audio(a))
+                    menu_audio.addAction(action)
+            menu_audio.exec(window.ui.audio.mapToGlobal(QPoint(0, 0)))
 
     @classmethod
     def update_info(cls, no_update_fps=True):
@@ -768,15 +760,13 @@ class Player:
     @classmethod
     def play_file(cls, file: str, timeout=3, position: float = 0):
         player.play(file)
-        try:
-            player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
-        except TimeoutError:
-            pass
-        else:
-            if position > 0:
+        if position > 0:
+            try:
+                player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
+            except TimeoutError:
+                pass
+            else:
                 cls.new_position(position, slider_update=True)
-        finally:
-            cls.update_tracks()
 
     @classmethod
     def play(cls):
