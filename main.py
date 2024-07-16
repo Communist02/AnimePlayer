@@ -22,7 +22,9 @@ from mpv import MPV
 
 name_program = 'Anime Player'
 version = '2.0 Beta 4'
-formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg', 'm4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
+video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
+audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
+formats = video_formats + audio_formats
 
 config = ConfigManager('config.json')
 localization.set_locale(config.get('language'))
@@ -476,7 +478,12 @@ class MainWindow(QMainWindow):
     def dropEvent(self, event):
         for url in event.mimeData().urls():
             file_name = url.toLocalFile()
-            Player.open_file(file_name)
+            if os.path.isfile(file_name):
+                Player.open_file(file_name)
+            elif os.path.isdir(file_name):
+                Player.open_folder(file_name)
+            elif os.path.islink(file_name):
+                Player.open_url(file_name)
             break
 
     def mouseDoubleClickEvent(self, event):
@@ -513,7 +520,7 @@ class MainWindow(QMainWindow):
         Player.save_parameters()
 
     def open_file(self):
-        file_name = QFileDialog.getOpenFileName(self, filter=loc['All supported files'] + ' (' + ' '.join(['*.' + f for f in formats]) + ')')
+        file_name = QFileDialog.getOpenFileName(self, filter=f"{loc['All supported files']} ({' '.join(['*.' + f for f in formats])});;{loc['Video']} ({' '.join(['*.' + f for f in video_formats])});;{loc['Audio']} ({' '.join(['*.' + f for f in audio_formats])});;{loc['All files']} (*.*)")
         if file_name[0] is not None and file_name[0] != '':
             Player.open_file(file_name[0])
 
@@ -688,6 +695,10 @@ class Player:
                     action.setText(f'{key}) {value}')
                     action.triggered.connect(lambda ignore=False, x=key: set_sub(x))
                     menu_sub.addAction(action)
+            else:
+                action = QAction(window)
+                action.setText(loc['No video tracks'])
+                menu_sub.addAction(action)
             menu_sub.exec(window.ui.sub.mapToGlobal(QPoint(0, 0)))
 
     @classmethod
@@ -716,6 +727,10 @@ class Player:
                     action.setText(f'{key}) {value}')
                     action.triggered.connect(lambda ignore=False, a=key: set_audio(a))
                     menu_audio.addAction(action)
+            else:
+                action = QAction(window)
+                action.setText(loc['No audio tracks'])
+                menu_audio.addAction(action)
             menu_audio.exec(window.ui.audio.mapToGlobal(QPoint(0, 0)))
 
     @classmethod
@@ -1110,6 +1125,7 @@ if __name__ == '__main__':
 
     if os.name != 'nt':
         import locale
+
         locale.setlocale(locale.LC_NUMERIC, 'C')
 
     player: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', ytdl=True, terminal='yes')

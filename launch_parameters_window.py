@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'launch_parameters_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_LaunchParemetersWindow(object):
             LaunchParemetersWindow.setObjectName(u"LaunchParemetersWindow")
         LaunchParemetersWindow.resize(400, 300)
         icon = QIcon()
-        icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         LaunchParemetersWindow.setWindowIcon(icon)
         self.verticalLayout = QVBoxLayout(LaunchParemetersWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'android_config_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_AndroidConfigWindow(object):
             AndroidConfigWindow.setObjectName(u"AndroidConfigWindow")
         AndroidConfigWindow.resize(500, 340)
         icon = QIcon()
-        icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         AndroidConfigWindow.setWindowIcon(icon)
         self.verticalLayout = QVBoxLayout(AndroidConfigWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")

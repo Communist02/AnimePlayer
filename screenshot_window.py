@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'screenshot_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_ScreenshotWindow(object):
             ScreenshotWindow.setObjectName(u"ScreenshotWindow")
         ScreenshotWindow.resize(540, 120)
         icon = QIcon()
-        icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         ScreenshotWindow.setWindowIcon(icon)
         self.verticalLayout = QVBoxLayout(ScreenshotWindow)
         self.verticalLayout.setObjectName(u"verticalLayout")
