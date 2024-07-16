@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1280, 720)
         icon = QIcon()
-        icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet(u"#info {\n"
 "	border: 1px solid rgb(87, 86, 86);\n"
@@ -123,12 +123,18 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.action_x025 = QAction(MainWindow)
         self.action_x025.setObjectName(u"action_x025")
+#if QT_CONFIG(shortcut)
+        self.action_x025.setShortcut(u"0")
+#endif // QT_CONFIG(shortcut)
         self.action_x05 = QAction(MainWindow)
         self.action_x05.setObjectName(u"action_x05")
         self.action_x075 = QAction(MainWindow)
         self.action_x075.setObjectName(u"action_x075")
         self.action_x10 = QAction(MainWindow)
         self.action_x10.setObjectName(u"action_x10")
+#if QT_CONFIG(shortcut)
+        self.action_x10.setShortcut(u"1")
+#endif // QT_CONFIG(shortcut)
         self.action_x125 = QAction(MainWindow)
         self.action_x125.setObjectName(u"action_x125")
         self.action_x15 = QAction(MainWindow)
@@ -137,6 +143,9 @@ class Ui_MainWindow(object):
         self.action_x175.setObjectName(u"action_x175")
         self.action_x20 = QAction(MainWindow)
         self.action_x20.setObjectName(u"action_x20")
+#if QT_CONFIG(shortcut)
+        self.action_x20.setShortcut(u"2")
+#endif // QT_CONFIG(shortcut)
         self.action_x225 = QAction(MainWindow)
         self.action_x225.setObjectName(u"action_x225")
         self.action_x25 = QAction(MainWindow)
@@ -145,6 +154,9 @@ class Ui_MainWindow(object):
         self.action_x275.setObjectName(u"action_x275")
         self.action_x30 = QAction(MainWindow)
         self.action_x30.setObjectName(u"action_x30")
+#if QT_CONFIG(shortcut)
+        self.action_x30.setShortcut(u"3")
+#endif // QT_CONFIG(shortcut)
         self.action_Rewind_plus = QAction(MainWindow)
         self.action_Rewind_plus.setObjectName(u"action_Rewind_plus")
         self.action_Rewind_minus = QAction(MainWindow)
@@ -256,7 +268,7 @@ class Ui_MainWindow(object):
         self.prev.setSizePolicy(sizePolicy3)
         self.prev.setMinimumSize(QSize(50, 50))
         icon1 = QIcon()
-        icon1.addFile(u"../images/icons/skip_previous_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon1.addFile(u"../images/icons/skip_previous_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.prev.setIcon(icon1)
         self.prev.setIconSize(QSize(64, 64))
 
@@ -269,8 +281,8 @@ class Ui_MainWindow(object):
         self.play.setMinimumSize(QSize(50, 50))
         self.play.setBaseSize(QSize(0, 0))
         icon2 = QIcon()
-        icon2.addFile(u"../images/icons/play_arrow_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
-        icon2.addFile(u"images/icons/pause_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Disabled, QIcon.Off)
+        icon2.addFile(u"../images/icons/play_arrow_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u"images/icons/pause_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Disabled, QIcon.State.Off)
         self.play.setIcon(icon2)
         self.play.setIconSize(QSize(64, 64))
 
@@ -282,7 +294,7 @@ class Ui_MainWindow(object):
         self.next.setSizePolicy(sizePolicy3)
         self.next.setMinimumSize(QSize(50, 50))
         icon3 = QIcon()
-        icon3.addFile(u"../images/icons/skip_next_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon3.addFile(u"../images/icons/skip_next_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.next.setIcon(icon3)
         self.next.setIconSize(QSize(64, 64))
 
@@ -311,7 +323,7 @@ class Ui_MainWindow(object):
         self.sub.setSizePolicy(sizePolicy3)
         self.sub.setMinimumSize(QSize(50, 50))
         icon4 = QIcon()
-        icon4.addFile(u"../images/icons/subtitles_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon4.addFile(u"../images/icons/subtitles_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.sub.setIcon(icon4)
         self.sub.setIconSize(QSize(64, 64))
 
@@ -323,7 +335,7 @@ class Ui_MainWindow(object):
         self.audio.setSizePolicy(sizePolicy3)
         self.audio.setMinimumSize(QSize(50, 50))
         icon5 = QIcon()
-        icon5.addFile(u"../images/icons/music_note_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon5.addFile(u"../images/icons/music_note_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.audio.setIcon(icon5)
         self.audio.setIconSize(QSize(64, 64))
 
@@ -335,7 +347,7 @@ class Ui_MainWindow(object):
         self.menu.setSizePolicy(sizePolicy3)
         self.menu.setMinimumSize(QSize(50, 50))
         icon6 = QIcon()
-        icon6.addFile(u"../images/icons/list_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon6.addFile(u"../images/icons/list_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.menu.setIcon(icon6)
         self.menu.setIconSize(QSize(64, 64))
 
@@ -347,7 +359,7 @@ class Ui_MainWindow(object):
         self.fullscreen.setSizePolicy(sizePolicy3)
         self.fullscreen.setMinimumSize(QSize(50, 50))
         icon7 = QIcon()
-        icon7.addFile(u"../images/icons/fullscreen_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon7.addFile(u"../images/icons/fullscreen_FILL0_wght400_GRAD0_opsz48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.fullscreen.setIcon(icon7)
         self.fullscreen.setIconSize(QSize(64, 64))
 

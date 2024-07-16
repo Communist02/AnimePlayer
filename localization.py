@@ -76,7 +76,12 @@ en = {
     'Theme': 'Theme',
     'Light': 'Light',
     'Dark': 'Dark',
-    'System': 'System'
+    'System': 'System',
+    'All files': 'All files',
+    'Video': 'Video',
+    'Audio': 'Audio',
+    'No video tracks': 'No video tracks',
+    'No audio tracks': 'No audio tracks'
 }
 
 ru = {
@@ -153,7 +158,12 @@ ru = {
     'Theme': 'Тема',
     'Light': 'Светлая',
     'Dark': 'Темная',
-    'System': 'Системная'
+    'System': 'Системная',
+    'All files': 'Все файлы',
+    'Video': 'Видео',
+    'Audio': 'Аудио',
+    'No video tracks': 'Нет видео дорожек',
+    'No audio tracks': 'Нет аудио дорожек'
 }
 
 match locale.getlocale()[0]:

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'open_url_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.0
+## Created by: Qt User Interface Compiler version 6.7.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_OpenURLWindow(object):
             OpenURLWindow.setObjectName(u"OpenURLWindow")
         OpenURLWindow.resize(550, 120)
         icon = QIcon()
-        icon.addFile(u"../favicon.ico", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         OpenURLWindow.setWindowIcon(icon)
         self.verticalLayout_2 = QVBoxLayout(OpenURLWindow)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")

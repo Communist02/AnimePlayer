@@ -729,6 +729,9 @@ QPushButton {
    <property name="text">
     <string>x0.25</string>
    </property>
+   <property name="shortcut">
+    <string notr="true">0</string>
+   </property>
   </action>
   <action name="action_x05">
    <property name="text">
@@ -743,6 +746,9 @@ QPushButton {
   <action name="action_x10">
    <property name="text">
     <string>x1.0</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">1</string>
    </property>
   </action>
   <action name="action_x125">
@@ -764,6 +770,9 @@ QPushButton {
    <property name="text">
     <string>x2.0</string>
    </property>
+   <property name="shortcut">
+    <string notr="true">2</string>
+   </property>
   </action>
   <action name="action_x225">
    <property name="text">
@@ -783,6 +792,9 @@ QPushButton {
   <action name="action_x30">
    <property name="text">
     <string>x3.0</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">3</string>
    </property>
   </action>
   <action name="action_Rewind_plus">
