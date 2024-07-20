@@ -81,7 +81,8 @@ en = {
     'Video': 'Video',
     'Audio': 'Audio',
     'No video tracks': 'No video tracks',
-    'No audio tracks': 'No audio tracks'
+    'No audio tracks': 'No audio tracks',
+    'No subtitles': 'No subtitles'
 }
 
 ru = {
@@ -163,7 +164,8 @@ ru = {
     'Video': 'Видео',
     'Audio': 'Аудио',
     'No video tracks': 'Нет видео дорожек',
-    'No audio tracks': 'Нет аудио дорожек'
+    'No audio tracks': 'Нет аудио дорожек',
+    'No subtitles': 'Нет субтитров'
 }
 
 match locale.getlocale()[0]:

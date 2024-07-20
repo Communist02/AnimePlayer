@@ -697,7 +697,7 @@ class Player:
                     menu_sub.addAction(action)
             else:
                 action = QAction(window)
-                action.setText(loc['No video tracks'])
+                action.setText(loc['No subtitles'])
                 menu_sub.addAction(action)
             menu_sub.exec(window.ui.sub.mapToGlobal(QPoint(0, 0)))
 
