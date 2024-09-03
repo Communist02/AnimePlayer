@@ -21,9 +21,10 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.0 Beta 4'
+version = '2.0 Beta 5'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
+subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
 formats = video_formats + audio_formats
 
 config = ConfigManager('config.json')
@@ -675,7 +676,11 @@ class Player:
         if player.track_list is not None:
             for track in player.track_list:
                 if track['type'] == 'sub':
-                    if 'lang' in track.keys():
+                    if 'title' in track.keys():
+                        cls.sub[track['id']] = f'{track["title"]}'
+                        if 'lang' in track.keys():
+                            cls.sub[track['id']] = f'{track["lang"]} - ' + cls.sub[track['id']]
+                    elif 'lang' in track.keys():
                         cls.sub[track['id']] = f'{track["lang"]} - {track["codec"]}'
                     else:
                         cls.sub[track['id']] = track['codec']
@@ -683,12 +688,23 @@ class Player:
             def set_sub(index: int):
                 player.sid = index
 
+            def add_subtitles():
+                file_name = QFileDialog.getOpenFileName(filter=f"{loc['Subtitles']} ({' '.join(['*.' + f for f in subtitles_formats])});;{loc['All files']} (*.*)")
+                if file_name[0] is not None and file_name[0] != '':
+                    player.sub_add(file_name[0])
+
             menu_sub = QMenu()
             if len(cls.sub) > 0:
                 action = QAction(window)
                 action.setText(loc['Disable'])
                 action.triggered.connect(lambda: set_sub(0))
                 menu_sub.addAction(action)
+
+                action = QAction(window)
+                action.setText(loc['Add subtitles'])
+                action.triggered.connect(add_subtitles)
+                menu_sub.addAction(action)
+
                 menu_sub.addSeparator()
                 for key, value in cls.sub.items():
                     action = QAction(window)
@@ -697,8 +713,10 @@ class Player:
                     menu_sub.addAction(action)
             else:
                 action = QAction(window)
-                action.setText(loc['No subtitles'])
+                action.setText(loc['Add subtitles'])
+                action.triggered.connect(add_subtitles)
                 menu_sub.addAction(action)
+
             menu_sub.exec(window.ui.sub.mapToGlobal(QPoint(0, 0)))
 
     @classmethod
@@ -707,10 +725,13 @@ class Player:
         if player.track_list is not None:
             for track in player.track_list:
                 if track['type'] == 'audio':
-                    if 'lang' in track.keys():
-                        cls.audio[track['id']] = f'{track["lang"]} - {track["codec"]}'
-                    else:
-                        cls.audio[track['id']] = track['codec']
+                    if 'title' in track.keys():
+                        cls.audio[track['id']] = f'{track["title"]}'
+                        if 'lang' in track.keys():
+                            cls.audio[track['id']] = f'{track["lang"]} - ' + cls.audio[track['id']]
+                    elif 'lang' in track.keys():
+                        cls.audio[track['id']] = f'{track["lang"]}'
+                    cls.audio[track['id']] += f' ({track['codec']} {track['audio-channels']}ch {track['demux-samplerate']} Hz)'
 
             def set_audio(index: int):
                 player.aid = index

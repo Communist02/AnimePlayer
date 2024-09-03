@@ -2,7 +2,7 @@
 # vim: ts=4 sw=4 et
 #
 # Python MPV library module
-# Copyright (C) 2017-2022 Sebastian Götte <code@jaseg.net>
+# Copyright (C) 2017-2024 Sebastian Götte <code@jaseg.net>
 #
 # python-mpv inherits the underlying libmpv's license, which can be either GPLv2 or later (default) or LGPLv2.1 or
 # later. For details, see the mpv copyright page here: https://github.com/mpv-player/mpv/blob/master/Copyright
@@ -17,13 +17,14 @@
 #
 # You can find copies of the GPLv2 and LGPLv2.1 licenses in the project repository's LICENSE.GPL and LICENSE.LGPL files.
 
-__version__ = '1.0.6'
+__version__ = '1.0.7'
 
 from ctypes import *
 import ctypes.util
 import threading
 import queue
 import os
+import os.path
 import sys
 from warnings import warn
 from functools import partial, wraps
@@ -1039,30 +1040,38 @@ class MPV(object):
                 rv = cond(val)
                 if rv:
                     result.set_result(rv)
+
+            except InvalidStateError:
+                pass
+
             except Exception as e:
                 try:
                     result.set_exception(e)
-                except InvalidStateError:
+                except:
                     pass
-            except InvalidStateError:
-                pass
-        self.observe_property(name, observer)
-        err_unregister = self._set_error_handler(result)
 
         try:
             result.set_running_or_notify_cancel()
+
+            self.observe_property(name, observer)
+            err_unregister = self._set_error_handler(result)
             if catch_errors:
                 self._exception_futures.add(result)
 
             yield result
 
-            rv = cond(getattr(self, name.replace('-', '_')))
-            if level_sensitive and rv:
-                result.set_result(rv)
+            if level_sensitive:
+                rv = cond(getattr(self, name.replace('-', '_')))
+                if rv:
+                    result.set_result(rv)
+                    return
 
-            else:
-                self.check_core_alive()
-                result.result(timeout)
+            self.check_core_alive()
+            result.result(timeout)
+
+        except InvalidStateError:
+            pass
+
         finally:
             err_unregister()
             self.unobserve_property(name, observer)
@@ -1370,11 +1379,17 @@ class MPV(object):
 
     def quit(self, code=None):
         """Mapped mpv quit command, see man mpv(1)."""
-        self.command('quit', code)
+        if code is not None:
+            self.command('quit', code)
+        else:
+            self.command('quit')
 
     def quit_watch_later(self, code=None):
         """Mapped mpv quit_watch_later command, see man mpv(1)."""
-        self.command('quit_watch_later', code)
+        if code is not None:
+            self.command('quit_watch_later', code)
+        else:
+            self.command('quit_watch_later')
 
     def stop(self, keep_playlist=False):
         """Mapped mpv stop command, see man mpv(1)."""
@@ -1824,9 +1839,6 @@ class MPV(object):
                             pass
                     else:
                         warnings.warn(f'Unhandled exception {e} inside stream open callback for URI {uri}\n{traceback.format_exc()}')
-
-
-
                     return ErrorCode.LOADING_FAILED
 
                 cb_info.contents.cookie = None
@@ -2062,7 +2074,10 @@ class MPV(object):
     def _set_property(self, name, value):
         self.check_core_alive()
         ename = name.encode('utf-8')
-        if isinstance(value, (list, set, dict)):
+        if isinstance(value, dict):
+            _1, _2, _3, pointer = _make_node_str_map(value)
+            _mpv_set_property(self.handle, ename, MpvFormat.NODE, pointer)
+        elif isinstance(value, (list, set)):
             _1, _2, _3, pointer = _make_node_str_list(value)
             _mpv_set_property(self.handle, ename, MpvFormat.NODE, pointer)
         else:
