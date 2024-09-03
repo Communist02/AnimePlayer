@@ -725,13 +725,13 @@ class Player:
         if player.track_list is not None:
             for track in player.track_list:
                 if track['type'] == 'audio':
+                    cls.audio[track['id']] = f'{track['codec']} {track['audio-channels']}ch {track['demux-samplerate']} Hz'
                     if 'title' in track.keys():
-                        cls.audio[track['id']] = f'{track["title"]}'
+                        cls.audio[track['id']] = f'{track["title"]} (' + cls.audio[track['id']] + ')'
                         if 'lang' in track.keys():
                             cls.audio[track['id']] = f'{track["lang"]} - ' + cls.audio[track['id']]
                     elif 'lang' in track.keys():
-                        cls.audio[track['id']] = f'{track["lang"]}'
-                    cls.audio[track['id']] += f' ({track['codec']} {track['audio-channels']}ch {track['demux-samplerate']} Hz)'
+                        cls.audio[track['id']] = f'{track["lang"]} - {cls.audio[track['id']]}'
 
             def set_audio(index: int):
                 player.aid = index
