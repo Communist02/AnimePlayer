@@ -21,7 +21,7 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.0 Beta 5'
+version = '2.0'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
@@ -355,6 +355,15 @@ class MainWindow(QMainWindow):
         self.ui.sub.setIcon(QIcon(icons.sub))
         self.ui.menu.setIcon(QIcon(icons.menu))
         self.ui.video.setPixmap(QPixmap(f'{os.path.dirname(__file__) + os.sep}images{os.sep}play-button.png'))
+
+        self.ui.play.setToolTip(f'{loc['Play']} / {loc['Pause']}')
+        self.ui.prev.setToolTip(loc['Previous file'])
+        self.ui.next.setToolTip(loc['Next file'])
+        self.ui.fullscreen.setToolTip(loc['Fullscreen'])
+        self.ui.audio.setToolTip(loc['Soundtrack'])
+        self.ui.sub.setToolTip(loc['Subtitles'])
+        self.ui.menu.setToolTip(loc['Menu'])
+        self.ui.volume.setToolTip(loc['Volume level'])
 
         self.ui.play.clicked.connect(lambda: Player.play())
         self.ui.prev.clicked.connect(lambda: Player.prev())
