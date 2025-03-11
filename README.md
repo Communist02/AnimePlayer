@@ -8,7 +8,7 @@ This program is a video player written in the Python programming language using 
 The player also has support for frame interpolation using SVP (to work, you need to install [SVP](https://www.svp-team.com/) and [VapourSynth](https://github.com/vapoursynth/vapoursynth/releases )).
 <br clear="left"/>
 
-![Screenshot](doc/screenshot.jpg)
+![Screenshot](docs/screenshot.jpg)
 
 Anime4K has 3 major modes, as the small CNN networks cannot learn effectively every type of distribution shift
 and degradation seen in the wild. Human judgement will serve (for now) as the stopgap solution. Usually the correct
@@ -25,7 +25,7 @@ If you want increased perceptual quality, use the corresponding secondary mode.
 | B            | B+B                          |
 | C            | C+A                          |
 
-![Anime4K](doc/anime4k.webp)
+![Anime4K](docs/anime4k.webp)
 
 Видеоплеер с функцией улучшения качества рисованного изображения с помощью высокопроизводительного алгоритма масштабирования Anime4K.
 

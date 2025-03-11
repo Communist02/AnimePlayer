@@ -27,10 +27,8 @@ class Ui_OpenFolderWindow(object):
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         OpenFolderWindow.setWindowIcon(icon)
-        self.horizontalLayout_2 = QHBoxLayout(OpenFolderWindow)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout_2 = QVBoxLayout(OpenFolderWindow)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label = QLabel(OpenFolderWindow)
         self.label.setObjectName(u"label")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
@@ -39,7 +37,7 @@ class Ui_OpenFolderWindow(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
 
-        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout_2.addWidget(self.label)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -75,7 +73,7 @@ class Ui_OpenFolderWindow(object):
         self.horizontalLayout.addWidget(self.clear)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
 
         self.buttonBox = QDialogButtonBox(OpenFolderWindow)
         self.buttonBox.setObjectName(u"buttonBox")
@@ -87,10 +85,7 @@ class Ui_OpenFolderWindow(object):
         self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
 
-        self.verticalLayout.addWidget(self.buttonBox)
-
-
-        self.horizontalLayout_2.addLayout(self.verticalLayout)
+        self.verticalLayout_2.addWidget(self.buttonBox)
 
 
         self.retranslateUi(OpenFolderWindow)

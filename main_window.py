@@ -16,10 +16,11 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
-    QLayout, QListWidget, QListWidgetItem, QMainWindow,
-    QMenu, QMenuBar, QPushButton, QSizePolicy,
-    QSlider, QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QDockWidget, QFrame, QHBoxLayout,
+    QLabel, QLayout, QListWidget, QListWidgetItem,
+    QMainWindow, QMenu, QMenuBar, QPushButton,
+    QSizePolicy, QSlider, QSpacerItem, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -182,10 +183,10 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
-        self.horizontalLayout_4 = QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_4.setSpacing(0)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4 = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_4.setSpacing(0)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -377,14 +378,37 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addLayout(self.main)
 
-        self.rightPanel = QFrame(self.centralwidget)
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout)
+
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setObjectName(u"menubar")
+        self.menubar.setGeometry(QRect(0, 0, 1280, 33))
+        self.menubar.setDefaultUp(False)
+        self.menubar.setNativeMenuBar(True)
+        self.menu_File = QMenu(self.menubar)
+        self.menu_File.setObjectName(u"menu_File")
+        self.menu_Playback = QMenu(self.menubar)
+        self.menu_Playback.setObjectName(u"menu_Playback")
+        self.menu_Playback_speed = QMenu(self.menu_Playback)
+        self.menu_Playback_speed.setObjectName(u"menu_Playback_speed")
+        self.menu_Increasing_image_quality = QMenu(self.menubar)
+        self.menu_Increasing_image_quality.setObjectName(u"menu_Increasing_image_quality")
+        self.menu_Other = QMenu(self.menubar)
+        self.menu_Other.setObjectName(u"menu_Other")
+        MainWindow.setMenuBar(self.menubar)
+        self.rightPanel = QDockWidget(MainWindow)
         self.rightPanel.setObjectName(u"rightPanel")
-        self.frame_2 = QVBoxLayout(self.rightPanel)
-        self.frame_2.setSpacing(10)
-        self.frame_2.setObjectName(u"frame_2")
-        self.info = QFrame(self.rightPanel)
+        self.rightPanel.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
+        self.dockWidgetContents = QWidget()
+        self.dockWidgetContents.setObjectName(u"dockWidgetContents")
+        self.verticalLayout_5 = QVBoxLayout(self.dockWidgetContents)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(1, 1, 1, 1)
+        self.info = QFrame(self.dockWidgetContents)
         self.info.setObjectName(u"info")
-        self.info.setMinimumSize(QSize(300, 30))
+        self.info.setMinimumSize(QSize(0, 30))
         self.info.setFrameShape(QFrame.Shape.StyledPanel)
         self.info.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.info)
@@ -407,9 +431,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.mediaInfo)
 
 
-        self.frame_2.addWidget(self.info)
+        self.verticalLayout_5.addWidget(self.info)
 
-        self.fileList = QListWidget(self.rightPanel)
+        self.fileList = QListWidget(self.dockWidgetContents)
         self.fileList.setObjectName(u"fileList")
         sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         sizePolicy4.setHorizontalStretch(0)
@@ -417,33 +441,10 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.fileList.sizePolicy().hasHeightForWidth())
         self.fileList.setSizePolicy(sizePolicy4)
 
-        self.frame_2.addWidget(self.fileList)
+        self.verticalLayout_5.addWidget(self.fileList)
 
-        self.fileList.raise_()
-        self.info.raise_()
-
-        self.horizontalLayout.addWidget(self.rightPanel)
-
-
-        self.horizontalLayout_4.addLayout(self.horizontalLayout)
-
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1280, 33))
-        self.menubar.setDefaultUp(False)
-        self.menubar.setNativeMenuBar(True)
-        self.menu_File = QMenu(self.menubar)
-        self.menu_File.setObjectName(u"menu_File")
-        self.menu_Playback = QMenu(self.menubar)
-        self.menu_Playback.setObjectName(u"menu_Playback")
-        self.menu_Playback_speed = QMenu(self.menu_Playback)
-        self.menu_Playback_speed.setObjectName(u"menu_Playback_speed")
-        self.menu_Increasing_image_quality = QMenu(self.menubar)
-        self.menu_Increasing_image_quality.setObjectName(u"menu_Increasing_image_quality")
-        self.menu_Other = QMenu(self.menubar)
-        self.menu_Other.setObjectName(u"menu_Other")
-        MainWindow.setMenuBar(self.menubar)
+        self.rightPanel.setWidget(self.dockWidgetContents)
+        MainWindow.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.rightPanel)
 
         self.menubar.addAction(self.menu_File.menuAction())
         self.menubar.addAction(self.menu_Playback.menuAction())
@@ -559,12 +560,12 @@ class Ui_MainWindow(object):
         self.audio.setText("")
         self.menu.setText("")
         self.fullscreen.setText("")
-        self.sourceInfo.setText(QCoreApplication.translate("MainWindow", u"Info", None))
-        self.mediaInfo.setText(QCoreApplication.translate("MainWindow", u"Media info", None))
         self.menu_File.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menu_Playback.setTitle(QCoreApplication.translate("MainWindow", u"Playback", None))
         self.menu_Playback_speed.setTitle(QCoreApplication.translate("MainWindow", u"Playback speed", None))
         self.menu_Increasing_image_quality.setTitle(QCoreApplication.translate("MainWindow", u"Increasing image quality", None))
         self.menu_Other.setTitle(QCoreApplication.translate("MainWindow", u"Other", None))
+        self.sourceInfo.setText(QCoreApplication.translate("MainWindow", u"Info", None))
+        self.mediaInfo.setText(QCoreApplication.translate("MainWindow", u"Media info", None))
     # retranslateUi
 

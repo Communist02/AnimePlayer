@@ -3,7 +3,7 @@ import sys
 
 from PySide6.QtCore import Qt, QTimer, QPoint
 from PySide6.QtGui import QIcon, QGuiApplication, QAction, QPixmap, QCursor
-from PySide6.QtWidgets import QMainWindow, QApplication, QDialog, QMenu, QFileDialog
+from PySide6.QtWidgets import QMainWindow, QApplication, QDialog, QMenu, QFileDialog, QWidget
 
 import about_window
 import android_config_window
@@ -21,7 +21,7 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.0'
+version = '2.0.1'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
@@ -356,6 +356,8 @@ class MainWindow(QMainWindow):
         self.ui.menu.setIcon(QIcon(icons.menu))
         self.ui.video.setPixmap(QPixmap(f'{os.path.dirname(__file__) + os.sep}images{os.sep}play-button.png'))
 
+        self.ui.rightPanel.setTitleBarWidget(QWidget())
+
         self.ui.play.setToolTip(f'{loc['Play']} / {loc['Pause']}')
         self.ui.prev.setToolTip(loc['Previous file'])
         self.ui.next.setToolTip(loc['Next file'])
@@ -380,10 +382,12 @@ class MainWindow(QMainWindow):
         self.setMouseTracking(True)
         self.centralWidget().setMouseTracking(True)
 
-        self.timer = QTimer()
-        self.timer.setInterval(500)
+        self.timer = QTimer(interval=500)
         self.timer.timeout.connect(self.timer_update)
         self.timer.start()
+
+        self.timer_click = QTimer(interval=300)
+        self.timer_click.timeout.connect(self.timer_click.stop)
 
         self.ui.fileList.clicked.connect(lambda: Player.update_filelist(self.ui.fileList.currentItem().text()))
 
@@ -496,12 +500,14 @@ class MainWindow(QMainWindow):
                 Player.open_url(file_name)
             break
 
-    def mouseDoubleClickEvent(self, event):
-        Player.fullscreen_switch()
-
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             Player.play()
+            if self.timer_click.isActive():
+                Player.fullscreen_switch()
+                self.timer_click.stop()
+            else:
+                self.timer_click.start()
 
     @staticmethod
     def screenshot():
@@ -993,6 +999,7 @@ class Player:
             window.ui.rightPanel.setVisible(False)
         else:
             cls.fullscreen = False
+            window.ui.rightPanel.setFloating(False)
             if cls.is_maximized:
                 window.showMaximized()
             else:
@@ -1007,13 +1014,13 @@ class Player:
     def update_fullscreen_layout(cls, x: float, y: float):
         if y > window.ui.centralwidget.size().height() - window.ui.controlPanel.height():
             window.ui.controlPanel.setVisible(True)
-        elif x > window.ui.centralwidget.size().width() - window.ui.rightPanel.width() and Player.is_menu_visible:
+        elif x > window.ui.centralwidget.size().width() - window.ui.rightPanel.width() - 20 and Player.is_menu_visible and not window.ui.rightPanel.isVisible():
             window.ui.rightPanel.setVisible(True)
-            pass
+        elif x > window.ui.centralwidget.size().width() - 20 and Player.is_menu_visible and window.ui.rightPanel.isVisible():
+            window.ui.rightPanel.setVisible(True)
         else:
             window.ui.rightPanel.setVisible(False)
             window.ui.controlPanel.setVisible(False)
-            pass
 
         window.ui.video.unsetCursor()
         cls.cursor_last = (x, y)

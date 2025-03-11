@@ -23,7 +23,7 @@ class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
         if not SettingsWindow.objectName():
             SettingsWindow.setObjectName(u"SettingsWindow")
-        SettingsWindow.resize(254, 206)
+        SettingsWindow.resize(254, 210)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         SettingsWindow.setWindowIcon(icon)

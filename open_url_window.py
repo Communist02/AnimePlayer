@@ -29,8 +29,6 @@ class Ui_OpenURLWindow(object):
         OpenURLWindow.setWindowIcon(icon)
         self.verticalLayout_2 = QVBoxLayout(OpenURLWindow)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setObjectName(u"verticalLayout")
         self.label = QLabel(OpenURLWindow)
         self.label.setObjectName(u"label")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
@@ -39,7 +37,7 @@ class Ui_OpenURLWindow(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
 
-        self.verticalLayout.addWidget(self.label)
+        self.verticalLayout_2.addWidget(self.label)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -66,7 +64,7 @@ class Ui_OpenURLWindow(object):
         self.horizontalLayout.addWidget(self.clear)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
 
         self.buttonBox = QDialogButtonBox(OpenURLWindow)
         self.buttonBox.setObjectName(u"buttonBox")
@@ -78,10 +76,7 @@ class Ui_OpenURLWindow(object):
         self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
 
-        self.verticalLayout.addWidget(self.buttonBox)
-
-
-        self.verticalLayout_2.addLayout(self.verticalLayout)
+        self.verticalLayout_2.addWidget(self.buttonBox)
 
 
         self.retranslateUi(OpenURLWindow)
