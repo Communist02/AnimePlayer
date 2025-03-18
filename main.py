@@ -21,7 +21,7 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.0.1'
+version = '2.1'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
@@ -118,7 +118,7 @@ class ReferenceWindow(QDialog):
         else:
             reference_file_name = 'GLSL_Instructions_Advanced.txt'
 
-        with open(f'{os.path.dirname(__file__) + os.sep}doc{os.sep}{reference_file_name}', 'r', encoding='utf-8') as ref_data:
+        with open(f'{os.path.dirname(__file__) + os.sep}docs{os.sep}{reference_file_name}', 'r', encoding='utf-8') as ref_data:
             reference = ref_data.read()
             self.ui.plainTextEdit.setPlainText(reference)
 
@@ -357,6 +357,7 @@ class MainWindow(QMainWindow):
         self.ui.video.setPixmap(QPixmap(f'{os.path.dirname(__file__) + os.sep}images{os.sep}play-button.png'))
 
         self.ui.rightPanel.setTitleBarWidget(QWidget())
+        self.ui.controlPanel.setTitleBarWidget(QWidget())
 
         self.ui.play.setToolTip(f'{loc['Play']} / {loc['Pause']}')
         self.ui.prev.setToolTip(loc['Previous file'])
@@ -378,7 +379,6 @@ class MainWindow(QMainWindow):
         self.ui.time.valueChanged.connect(lambda: self.change_time())
 
         self.ui.video.setMouseTracking(True)
-        self.ui.controlPanel.setMouseTracking(True)
         self.setMouseTracking(True)
         self.centralWidget().setMouseTracking(True)
 
@@ -453,7 +453,7 @@ class MainWindow(QMainWindow):
         self.ui.action_Zoom_in.setText(loc['Zoom in'])
         self.ui.action_Zoom_out.setText(loc['Zoom out'])
         self.ui.action_Playlist.setText(loc['Playlist'])
-        self.ui.sourceInfo.setText(loc['Information'])
+        self.ui.sourceInfo.setText('')
 
         modes = []
         for quality in anime4k.qualities:
@@ -536,7 +536,8 @@ class MainWindow(QMainWindow):
         Player.save_parameters()
 
     def open_file(self):
-        file_name = QFileDialog.getOpenFileName(self, filter=f"{loc['All supported files']} ({' '.join(['*.' + f for f in formats])});;{loc['Video']} ({' '.join(['*.' + f for f in video_formats])});;{loc['Audio']} ({' '.join(['*.' + f for f in audio_formats])});;{loc['All files']} (*.*)")
+        file_name = QFileDialog.getOpenFileName(self,
+                                                filter=f"{loc['All supported files']} ({' '.join(['*.' + f for f in formats])});;{loc['Video']} ({' '.join(['*.' + f for f in video_formats])});;{loc['Audio']} ({' '.join(['*.' + f for f in audio_formats])});;{loc['All files']} (*.*)")
         if file_name[0] is not None and file_name[0] != '':
             Player.open_file(file_name[0])
 
@@ -793,20 +794,21 @@ class Player:
         if player.duration is not None and player.pause:
             window.ui.play.setIcon(QIcon(icons.play))
         # Обновление ползунка прокрутки и времени
-
-        if player.duration is not None and time_pos is not None:
+        if player.duration is not None:
             if cls.duration != player.duration:
                 cls.duration = player.duration
                 window.ui.time.setMaximum(cls.duration)
                 window.ui.allTime.setText('{:02d}:{:02d}'.format(*divmod(int(cls.duration), 60)))
+        else:
+            window.ui.time.setMaximum(0)
+            window.ui.allTime.setText('00:00')
 
+        if time_pos is not None:
             window.ui.time.setValue(time_pos)
             window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(time_pos), 60)))
         else:
-            window.ui.time.setMaximum(0)
-            window.ui.time.setValue(0)
             window.ui.currentTime.setText('00:00')
-            window.ui.allTime.setText('00:00')
+            window.ui.time.setValue(0)
 
     @classmethod
     def play_file(cls, file: str, timeout=3, position: float = 0):
@@ -963,9 +965,9 @@ class Player:
         cls.files = []
         cls.filenames_only = []
         cls.filenum = -1
+        cls.duration = 0
         window.ui.fileList.clear()
-        window.ui.sourceInfo.setText(loc['Information'])
-        # window['-AUDIO-'].update(menu_definition=['', []])
+        window.ui.sourceInfo.setText('')
         window.setWindowTitle(name_program)
         config.set('opened', ['', ''])
 
@@ -994,8 +996,10 @@ class Player:
             cls.is_maximized = window.isMaximized()
             window.showFullScreen()
             window.ui.menubar.setFixedHeight(0)
+            window.ui.controlPanel.setFloating(True)
             window.ui.controlPanel.setVisible(False)
             cls.is_menu_visible = window.ui.rightPanel.isVisible()
+            # window.ui.rightPanel.setFloating(True)
             window.ui.rightPanel.setVisible(False)
         else:
             cls.fullscreen = False
@@ -1009,11 +1013,13 @@ class Player:
             window.ui.rightPanel.setVisible(cls.is_menu_visible)
             window.ui.video.unsetCursor()
             cls.cursor_timer = 0
+            window.ui.controlPanel.setFloating(False)
 
     @classmethod
     def update_fullscreen_layout(cls, x: float, y: float):
         if y > window.ui.centralwidget.size().height() - window.ui.controlPanel.height():
             window.ui.controlPanel.setVisible(True)
+            window.ui.controlPanel.activateWindow()
         elif x > window.ui.centralwidget.size().width() - window.ui.rightPanel.width() - 20 and Player.is_menu_visible and not window.ui.rightPanel.isVisible():
             window.ui.rightPanel.setVisible(True)
         elif x > window.ui.centralwidget.size().width() - 20 and Player.is_menu_visible and window.ui.rightPanel.isVisible():
