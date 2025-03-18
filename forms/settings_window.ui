@@ -44,6 +44,11 @@
          <string>Русский</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Japanese</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

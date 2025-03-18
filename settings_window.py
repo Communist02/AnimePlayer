@@ -40,6 +40,7 @@ class Ui_SettingsWindow(object):
         self.language.addItem("")
         self.language.addItem("")
         self.language.addItem("")
+        self.language.addItem("")
         self.language.setObjectName(u"language")
 
         self.horizontalLayout.addWidget(self.language)
@@ -106,6 +107,7 @@ class Ui_SettingsWindow(object):
         self.language.setItemText(0, QCoreApplication.translate("SettingsWindow", u"Auto", None))
         self.language.setItemText(1, QCoreApplication.translate("SettingsWindow", u"English", None))
         self.language.setItemText(2, QCoreApplication.translate("SettingsWindow", u"\u0420\u0443\u0441\u0441\u043a\u0438\u0439", None))
+        self.language.setItemText(3, QCoreApplication.translate("SettingsWindow", u"Japanese", None))
 
         self.labelTheme.setText(QCoreApplication.translate("SettingsWindow", u"Theme", None))
         self.theme.setItemText(0, QCoreApplication.translate("SettingsWindow", u"System", None))
