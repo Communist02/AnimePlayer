@@ -170,11 +170,97 @@ ru = {
     'Add subtitles': 'Добавить субтитры'
 }
 
+ja = {
+    'lang': 'Japanese',
+    'File': 'ファイル',
+    'Open file': 'ファイルを開く',
+    'Open URL': 'URL を開く',
+    'Open folder': 'フォルダーを開く',
+    'Close': '閉じる',
+    'Exit': '終了',
+    'Playback': '再生',
+    'Play | Pause': '再生 | 一時停止',
+    'Fullscreen': '全画面',
+    'Increasing image quality': '画質の向上',
+    'Disable': '無効',
+    'Other': 'その他',
+    'Reference': '参考資料',
+    'About': 'Anime Player について',
+    'Settings': '設定',
+    'Quality': '品質',
+    'Mode': 'モード',
+    'About program': 'PySide 6 ライブラリ、mpv メディア プレーヤー、Anime4K スケーリング アルゴリズムを使用して Python プログラミング言語で記述されたメディア プレーヤー\n\nサイト : https://github.com/Communist02/AnimePlayer',
+    'Activate SVP': 'Activate SVP',
+    'Create config for Android': 'Android用の設定を作成',
+    'Play': '再生',
+    'Pause': '一時停止',
+    'Menu': 'メニュー',
+    'Next file': '次のファイル',
+    'Previous file': '前のファイル',
+    'Volume level': '音量レベル',
+    'Frames lost': '欠落フレーム',
+    'Information': '情報',
+    'Clear': '消去',
+    'Select': '選択',
+    'Cancel': 'キャンセル',
+    'Language selection': '言語の選択 (要再起動)',
+    'On startup open the last opened file': '起動時に最後に開いたファイルを開く',
+    'Set the position of the last opened file': '最後に開いたファイルの位置を設定',
+    'Dark theme': 'ダークテーマ',
+    'Speed': '再生速度',
+    'Playback speed': '再生速度',
+    'Subtitles': '字幕',
+    'Soundtrack': 'サウンドトラック',
+    'Choose file': 'ファイルの選択',
+    'All supported files': 'すべての対応ファイル',
+    'Enter the URL': 'URL の入力',
+    'Opening a link': 'リンクを開く',
+    'Select a folder': 'フォルダーの選択',
+    'Opening a folder': 'フォルダーを開く',
+    'You can use this config to use the Anime4K algorithm in the mpv video player on android': 'この設定を使用すると、AndroidのMPVビデオプレーヤーでAnime4Kアルゴリズムを使用できます。',
+    'Enter the path to the shaders': 'シェーダーへのパスを入力',
+    'Select the algorithm configuration': 'アルゴリズム設定の選択',
+    'All': 'すべて',
+    'Selected': '選択',
+    'Off': 'オフ',
+    'Paste': '貼り付け',
+    'Screenshot': 'スクリーンショット',
+    'Take a screenshot': 'スクリーンショットの取得',
+    'Enter folder path for screenshots': 'スクリーンショット用のパスを入力',
+    'Increase maximum volume up to 150%': '最大音量を 150% まで増加',
+    'Launch parameters': '起動パラメータ',
+    'Manual launch parameters': 'MPVマニュアルの使用 https://mpv.io/manual/\nただし、Python 構文が必要であることに注意してください。\n"player"変数にアクセス。\n例 : --volume=50 の代わりに player.volume = 50 を使用します',
+    'Apply': '適用',
+    'Save': '保存',
+    'Error': 'エラー',
+    'Success': '成功',
+    'Volume +10': '音量 +10',
+    'Volume -10': '音量 -10',
+    'Rewind +5 sec': '巻き戻し +5 秒',
+    'Rewind -5 sec': '巻き戻し -5 秒',
+    'Zoom in': 'ズームイン',
+    'Zoom out': 'ズームアウト',
+    'Playlist': '再生リスト',
+    'Theme': 'テーマ',
+    'Light': 'ライト',
+    'Dark': 'ダーク',
+    'System': 'システム',
+    'All files': 'すべてのファイル',
+    'Video': 'ビデオ',
+    'Audio': 'オーディオ',
+    'No video tracks': 'ビデオトラックなし',
+    'No audio tracks': 'オーディオトラックなし',
+    'No subtitles': '字幕なし',
+    'Add subtitles': '字幕の追加'
+}
+
 match locale.getlocale()[0]:
     case 'Russian_Russia':
         strings = ru
     case _:
         strings = en
+    case _:
+        strings = ja
 
 
 def set_locale(lang):
@@ -184,6 +270,8 @@ def set_locale(lang):
             strings = ru
         case 'English':
             strings = en
+        case 'Japanese':
+            strings = ja
         case _:
             if os.name == 'nt':
                 windll = ctypes.windll.kernel32
@@ -196,3 +284,5 @@ def set_locale(lang):
                     strings = ru
                 case _:
                     strings = en
+                case _:
+                    strings = ja
