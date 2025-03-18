@@ -109,7 +109,7 @@ class Ui_AboutWindow(object):
 
     def retranslateUi(self, AboutWindow):
         AboutWindow.setWindowTitle(QCoreApplication.translate("AboutWindow", u"About", None))
-        self.label_2.setText(QCoreApplication.translate("AboutWindow", u"Anime Player v2.0", None))
+        self.label_2.setText(QCoreApplication.translate("AboutWindow", u"Anime Player v2.1", None))
         self.label_3.setText(QCoreApplication.translate("AboutWindow", u"Media player written in Python programming language using PySide 6 library, mpv media player and Anime4K scaling algorithm\n"
 "\n"
 "Site: https://github.com/Communist02/AnimePlayer", None))
