@@ -80,7 +80,7 @@ Site: https://github.com/Communist02/AnimePlayer</string>
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Copyright © 2025 MazurDev</string>
+        <string>Copyright © 2025 Denis Mazur</string>
        </property>
       </widget>
      </item>

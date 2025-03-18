@@ -254,13 +254,7 @@ ja = {
     'Add subtitles': '字幕の追加'
 }
 
-match locale.getlocale()[0]:
-    case 'Russian_Russia':
-        strings = ru
-    case _:
-        strings = en
-    case _:
-        strings = ja
+strings = en
 
 
 def set_locale(lang):
@@ -275,14 +269,13 @@ def set_locale(lang):
         case _:
             if os.name == 'nt':
                 windll = ctypes.windll.kernel32
-                windll.GetUserDefaultUILanguage()
                 lang = locale.windows_locale[windll.GetUserDefaultUILanguage()]
             else:
                 lang = locale.getlocale()[0]
             match lang:
                 case 'Russian_Russia' | 'ru_RU':
                     strings = ru
+                case 'Japanese_Japan' | 'ja_JP':
+                    strings = ja
                 case _:
                     strings = en
-                case _:
-                    strings = ja

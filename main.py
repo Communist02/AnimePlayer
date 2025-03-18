@@ -191,6 +191,8 @@ class SettingsWindow(QDialog):
                 self.lang = 'Русский'
             case 'English':
                 self.lang = 'English'
+            case 'Japanese':
+                self.lang = 'Japanese'
             case _:
                 self.lang = 'Auto'
 
