@@ -1,5 +1,6 @@
 import os
 import sys
+import platform
 
 from PySide6.QtCore import Qt, QTimer, QPoint
 from PySide6.QtGui import QIcon, QGuiApplication, QAction, QPixmap, QCursor
@@ -1168,7 +1169,10 @@ if __name__ == '__main__':
 
     screenshot_path = ''
 
-    if os.name != 'nt':
+    if os.name == 'nt':
+        if platform.release() != '11':
+            app.setStyle('Fusion')
+    else:
         import locale
 
         locale.setlocale(locale.LC_NUMERIC, 'C')
