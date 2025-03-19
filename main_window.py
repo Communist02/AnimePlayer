@@ -340,8 +340,11 @@ class Ui_MainWindow(object):
 
         self.volume = QSlider(self.controlPanelFrame)
         self.volume.setObjectName(u"volume")
-        sizePolicy.setHeightForWidth(self.volume.sizePolicy().hasHeightForWidth())
-        self.volume.setSizePolicy(sizePolicy)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.volume.sizePolicy().hasHeightForWidth())
+        self.volume.setSizePolicy(sizePolicy5)
         self.volume.setMinimumSize(QSize(80, 30))
         self.volume.setMaximumSize(QSize(140, 16777215))
         self.volume.setMaximum(100)
