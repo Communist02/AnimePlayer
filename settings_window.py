@@ -23,7 +23,7 @@ class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
         if not SettingsWindow.objectName():
             SettingsWindow.setObjectName(u"SettingsWindow")
-        SettingsWindow.resize(254, 210)
+        SettingsWindow.resize(254, 242)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         SettingsWindow.setWindowIcon(icon)
@@ -65,6 +65,21 @@ class Ui_SettingsWindow(object):
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
+
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.label_style = QLabel(SettingsWindow)
+        self.label_style.setObjectName(u"label_style")
+
+        self.horizontalLayout_3.addWidget(self.label_style)
+
+        self.comboBox_style = QComboBox(SettingsWindow)
+        self.comboBox_style.setObjectName(u"comboBox_style")
+
+        self.horizontalLayout_3.addWidget(self.comboBox_style)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
 
         self.openLastFile = QCheckBox(SettingsWindow)
         self.openLastFile.setObjectName(u"openLastFile")
@@ -115,6 +130,7 @@ class Ui_SettingsWindow(object):
         self.theme.setItemText(2, QCoreApplication.translate("SettingsWindow", u"Dark", None))
 
         self.theme.setCurrentText(QCoreApplication.translate("SettingsWindow", u"System", None))
+        self.label_style.setText(QCoreApplication.translate("SettingsWindow", u"Style", None))
         self.openLastFile.setText(QCoreApplication.translate("SettingsWindow", u"On startup open the last opened file", None))
         self.posLastFile.setText(QCoreApplication.translate("SettingsWindow", u"Set the position of the last opened file", None))
         self.volumePlus.setText(QCoreApplication.translate("SettingsWindow", u"Increase maxumum volume up to 150%", None))

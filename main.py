@@ -4,7 +4,7 @@ import platform
 
 from PySide6.QtCore import Qt, QTimer, QPoint
 from PySide6.QtGui import QIcon, QGuiApplication, QAction, QPixmap, QCursor
-from PySide6.QtWidgets import QMainWindow, QApplication, QDialog, QMenu, QFileDialog, QWidget
+from PySide6.QtWidgets import QMainWindow, QApplication, QDialog, QMenu, QFileDialog, QWidget, QStyleFactory
 
 import about_window
 import android_config_window
@@ -22,7 +22,7 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.1'
+version = '2.1.1'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
@@ -184,7 +184,6 @@ class SettingsWindow(QDialog):
         self.ui = settings_window.Ui_SettingsWindow()
         self.ui.setupUi(self)
 
-        self.setFixedHeight(220)
         self.setWindowIcon(QIcon(f'{os.path.dirname(__file__) + os.sep}favicon.ico'))
 
         match config.get('language'):
@@ -211,6 +210,8 @@ class SettingsWindow(QDialog):
         self.ui.volumePlus.setChecked(config.get('volumePlus', False))
         self.ui.svp.setChecked(config.get('SVP', False))
         self.ui.theme.setCurrentText(self.theme)
+        self.ui.comboBox_style.addItems(QStyleFactory.keys())
+        self.ui.comboBox_style.setCurrentText(config.get('style', app.style().name()))
 
         self.ui.labelTheme.setVisible(False)
         self.ui.theme.setVisible(False)
@@ -225,18 +226,18 @@ class SettingsWindow(QDialog):
         self.ui.svp.setText(loc['Activate SVP'])
         self.ui.buttonBox.buttons()[1].setText(loc['Cancel'])
         self.ui.labelTheme.setText(loc['Theme'])
+        self.ui.label_style.setText(loc['Theme'])
 
     def ok(self):
         config.set('onOpenLastFile', self.ui.openLastFile.isChecked())
         config.set('onPosLastFile', self.ui.posLastFile.isChecked())
         config.set('SVP', self.ui.svp.isChecked())
         config.set('volumePlus', self.ui.volumePlus.isChecked())
+        config.set('style', self.ui.comboBox_style.currentText())
 
         if config.get('volumePlus', False) != self.ui.volumePlus.isChecked():
             if not self.ui.volumePlus.isChecked() and player.volume > 100:
                 player.volume = 100
-                # window['-VOLUME-'].update(value=100)
-            # window['-VOLUME-'].update(range=(0, 100 if not values['-VOLUME_PLUS-'] else 150))
             config.set('volumePlus', self.ui.volumePlus.isChecked())
 
         if config.get('language', self.lang) != self.ui.language.currentText() or config.get('theme', self.theme) != self.ui.theme.currentText():
@@ -253,6 +254,8 @@ class SettingsWindow(QDialog):
             player.input_ipc_server = ''
             player.hwdec = 'auto'
             player.hr_seek_framedrop = True
+
+        app.setStyle(self.ui.comboBox_style.currentText())
 
 
 class OpenURLWindow(QDialog):
@@ -1090,6 +1093,7 @@ class Player:
             on_pos_last_file = config.get('onPosLastFile')
             volume_plus = config.get('volumePlus', False)
             svp = config.get('SVP')
+            style = config.get('style')
             launch_parameters = config.get('launchParameters')
             if on_pos_last_file is not None and not on_pos_last_file or position is None:
                 position = 0
@@ -1121,6 +1125,8 @@ class Player:
                     config.set('volume', player.volume)
                 except Exception:
                     pass
+            if style is not None:
+                app.setStyle(style)
         except ValueError:
             config.delete('opened')
             config.delete('file')
