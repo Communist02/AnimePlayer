@@ -100,6 +100,9 @@
      <property name="title">
       <string>Playback speed</string>
      </property>
+     <property name="icon">
+      <iconset theme="media-seek-forward"/>
+     </property>
      <addaction name="action_x025"/>
      <addaction name="action_x05"/>
      <addaction name="action_x075"/>
@@ -118,10 +121,10 @@
     <addaction name="action_Playlist"/>
     <addaction name="action_Zoom_in"/>
     <addaction name="action_Zoom_out"/>
-    <addaction name="action_Volume_minus"/>
     <addaction name="action_Volume_plus"/>
-    <addaction name="action_Rewind_minus"/>
+    <addaction name="action_Volume_minus"/>
     <addaction name="action_Rewind_plus"/>
+    <addaction name="action_Rewind_minus"/>
     <addaction name="action_Take_a_screenshot"/>
     <addaction name="separator"/>
     <addaction name="action_Fullscreen"/>
@@ -633,6 +636,9 @@
    </widget>
   </widget>
   <action name="action_Open_file">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
    <property name="text">
     <string>Open file</string>
    </property>
@@ -641,6 +647,9 @@
    </property>
   </action>
   <action name="action_Open_URL">
+   <property name="icon">
+    <iconset theme="applications-internet"/>
+   </property>
    <property name="text">
     <string>Open URL</string>
    </property>
@@ -649,6 +658,9 @@
    </property>
   </action>
   <action name="action_Open_folder">
+   <property name="icon">
+    <iconset theme="folder-open"/>
+   </property>
    <property name="text">
     <string>Open folder</string>
    </property>
@@ -657,6 +669,9 @@
    </property>
   </action>
   <action name="action_Close">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
    <property name="text">
     <string>Close</string>
    </property>
@@ -665,6 +680,9 @@
    </property>
   </action>
   <action name="action_Settings">
+   <property name="icon">
+    <iconset theme="applications-development"/>
+   </property>
    <property name="text">
     <string>Settings</string>
    </property>
@@ -673,6 +691,9 @@
    </property>
   </action>
   <action name="action_Exit">
+   <property name="icon">
+    <iconset theme="application-exit"/>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
@@ -681,6 +702,9 @@
    </property>
   </action>
   <action name="action_Play_Pause">
+   <property name="icon">
+    <iconset theme="media-playback-start"/>
+   </property>
    <property name="text">
     <string>Play | Pause</string>
    </property>
@@ -689,6 +713,9 @@
    </property>
   </action>
   <action name="action_Take_a_screenshot">
+   <property name="icon">
+    <iconset theme="camera-photo"/>
+   </property>
    <property name="text">
     <string>Take a screenshot</string>
    </property>
@@ -697,6 +724,9 @@
    </property>
   </action>
   <action name="action_Fullscreen">
+   <property name="icon">
+    <iconset theme="zoom-fit-best"/>
+   </property>
    <property name="text">
     <string>Fullscreen</string>
    </property>
@@ -705,6 +735,9 @@
    </property>
   </action>
   <action name="action_Disable">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
    <property name="text">
     <string>Disable</string>
    </property>
@@ -713,21 +746,33 @@
    </property>
   </action>
   <action name="action_Reference">
+   <property name="icon">
+    <iconset theme="help-faq"/>
+   </property>
    <property name="text">
     <string>Reference</string>
    </property>
   </action>
   <action name="action_Create_config_Android">
+   <property name="icon">
+    <iconset theme="accessories-calculator"/>
+   </property>
    <property name="text">
     <string>Create config for Android</string>
    </property>
   </action>
   <action name="action_Launch_parameters">
+   <property name="icon">
+    <iconset theme="utilities-terminal"/>
+   </property>
    <property name="text">
     <string>Launch parameters</string>
    </property>
   </action>
   <action name="action_About">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -808,6 +853,9 @@
    </property>
   </action>
   <action name="action_Rewind_plus">
+   <property name="icon">
+    <iconset theme="media-skip-forward"/>
+   </property>
    <property name="text">
     <string>Rewind +5 sec</string>
    </property>
@@ -816,6 +864,9 @@
    </property>
   </action>
   <action name="action_Rewind_minus">
+   <property name="icon">
+    <iconset theme="media-skip-backward"/>
+   </property>
    <property name="text">
     <string>Rewind -5 sec</string>
    </property>
@@ -824,6 +875,9 @@
    </property>
   </action>
   <action name="action_Volume_plus">
+   <property name="icon">
+    <iconset theme="audio-volume-high"/>
+   </property>
    <property name="text">
     <string>Volume +10</string>
    </property>
@@ -832,6 +886,9 @@
    </property>
   </action>
   <action name="action_Volume_minus">
+   <property name="icon">
+    <iconset theme="audio-volume-low"/>
+   </property>
    <property name="text">
     <string>Volume -10</string>
    </property>
@@ -840,6 +897,9 @@
    </property>
   </action>
   <action name="action_Zoom_in">
+   <property name="icon">
+    <iconset theme="zoom-in"/>
+   </property>
    <property name="text">
     <string>Zoom in</string>
    </property>
@@ -848,6 +908,9 @@
    </property>
   </action>
   <action name="action_Zoom_out">
+   <property name="icon">
+    <iconset theme="zoom-out"/>
+   </property>
    <property name="text">
     <string>Zoom out</string>
    </property>
@@ -856,6 +919,9 @@
    </property>
   </action>
   <action name="action_Playlist">
+   <property name="icon">
+    <iconset theme="user-bookmarks"/>
+   </property>
    <property name="text">
     <string>Playlist</string>
    </property>
