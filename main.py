@@ -493,7 +493,8 @@ class MainWindow(QMainWindow):
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
-            event.acceptProposedAction()
+            event.setDropAction(Qt.DropAction.MoveAction)
+            event.accept()
 
     def dropEvent(self, event):
         for url in event.mimeData().urls():
