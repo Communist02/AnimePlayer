@@ -22,7 +22,7 @@ from config import ConfigManager
 from mpv import MPV
 
 name_program = 'Anime Player'
-version = '2.1.1'
+version = '2.1.2'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
@@ -97,7 +97,7 @@ class LaunchParametersWindow(QDialog):
         try:
             exec(self.ui.plainTextEdit.toPlainText())
             config.set('launchParameters', self.ui.plainTextEdit.toPlainText())
-            Player.volume_update(player.volume)
+            Player.volume_update(mpv.volume)
             self.setWindowTitle(loc['Success'])
         except Exception:
             self.setWindowTitle(loc['Error'])
@@ -155,10 +155,10 @@ class ScreenshotWindow(QDialog):
         global screenshot_path
         screenshot_path = self.ui.lineEdit.text().strip()
         if screenshot_path is not None and screenshot_path != '':
-            player.screenshot_directory = screenshot_path
-            player.screenshot_jpeg_quality = 100
+            mpv.screenshot_directory = screenshot_path
+            mpv.screenshot_jpeg_quality = 100
             try:
-                player.screenshot()
+                mpv.screenshot()
             except SystemError:
                 self.ui.label.setText(loc['Error'])
 
@@ -174,7 +174,7 @@ class AboutWindow(QDialog):
 
         self.setWindowTitle(loc['About'])
         self.ui.label_2.setText(f'Anime Player v{version}')
-        self.ui.label_3.setText(f'{player.mpv_version}\n\n{loc["About program"]}')
+        self.ui.label_3.setText(f'{mpv.mpv_version}\n\n{loc["About program"]}')
         self.ui.buttonBox.buttons()[0].setText(loc['Close'])
 
 
@@ -236,8 +236,8 @@ class SettingsWindow(QDialog):
         config.set('style', self.ui.comboBox_style.currentText())
 
         if config.get('volumePlus', False) != self.ui.volumePlus.isChecked():
-            if not self.ui.volumePlus.isChecked() and player.volume > 100:
-                player.volume = 100
+            if not self.ui.volumePlus.isChecked() and mpv.volume > 100:
+                mpv.volume = 100
             config.set('volumePlus', self.ui.volumePlus.isChecked())
 
         if config.get('language', self.lang) != self.ui.language.currentText() or config.get('theme', self.theme) != self.ui.theme.currentText():
@@ -245,15 +245,15 @@ class SettingsWindow(QDialog):
             config.set('theme', self.ui.theme.currentText())
 
         if self.ui.svp.isChecked():
-            if player.input_ipc_server != 'mpvpipe':
-                player.input_ipc_server = 'mpvpipe'
-                player.hwdec = 'auto-copy'
-                player.hwdec_codecs = 'all'
-                player.hr_seek_framedrop = False
+            if mpv.input_ipc_server != 'mpvpipe':
+                mpv.input_ipc_server = 'mpvpipe'
+                mpv.hwdec = 'auto-copy'
+                mpv.hwdec_codecs = 'all'
+                mpv.hr_seek_framedrop = False
         else:
-            player.input_ipc_server = ''
-            player.hwdec = 'auto'
-            player.hr_seek_framedrop = True
+            mpv.input_ipc_server = ''
+            mpv.hwdec = 'auto'
+            mpv.hr_seek_framedrop = True
 
         app.setStyle(self.ui.comboBox_style.currentText())
 
@@ -294,7 +294,7 @@ class OpenURLWindow(QDialog):
                 self.links_history.remove(new_link)
             self.links_history.insert(0, new_link)
             config.set('linksHistory', self.links_history)
-            Player.open_url(new_link)
+            player.open_url(new_link)
 
 
 class OpenFolderWindow(QDialog):
@@ -335,7 +335,7 @@ class OpenFolderWindow(QDialog):
                 self.folders_history.remove(new_folder)
             self.folders_history.insert(0, new_folder)
             config.set('foldersHistory', self.folders_history)
-            Player.open_folder(new_folder)
+            player.open_folder(new_folder)
 
     def select(self):
         folder_name = QFileDialog.getExistingDirectory()
@@ -374,14 +374,14 @@ class MainWindow(QMainWindow):
         self.ui.menu.setToolTip(loc['Menu'])
         self.ui.volume.setToolTip(loc['Volume level'])
 
-        self.ui.play.clicked.connect(lambda: Player.play())
-        self.ui.prev.clicked.connect(lambda: Player.prev())
-        self.ui.next.clicked.connect(lambda: Player.next())
-        self.ui.fullscreen.clicked.connect(lambda: Player.fullscreen_switch())
+        self.ui.play.clicked.connect(lambda: player.play())
+        self.ui.prev.clicked.connect(lambda: player.prev())
+        self.ui.next.clicked.connect(lambda: player.next())
+        self.ui.fullscreen.clicked.connect(lambda: player.fullscreen_switch())
         self.ui.menu.clicked.connect(self.right_panel_visible)
-        self.ui.sub.clicked.connect(lambda: Player.sub_view())
-        self.ui.audio.clicked.connect(lambda: Player.audio_view())
-        self.ui.volume.valueChanged.connect(lambda: Player.volume_update(self.ui.volume.value()))
+        self.ui.sub.clicked.connect(lambda: player.sub_view())
+        self.ui.audio.clicked.connect(lambda: player.audio_view())
+        self.ui.volume.valueChanged.connect(lambda: player.volume_update(self.ui.volume.value()))
         self.ui.time.valueChanged.connect(lambda: self.change_time())
 
         self.ui.video.setMouseTracking(True)
@@ -395,11 +395,11 @@ class MainWindow(QMainWindow):
         self.timer_click = QTimer(interval=300)
         self.timer_click.timeout.connect(self.timer_click.stop)
 
-        self.ui.fileList.clicked.connect(lambda: Player.update_filelist(self.ui.fileList.currentItem().text()))
+        self.ui.fileList.clicked.connect(lambda: player.update_filelist(self.ui.fileList.currentIndex().row()))
 
         # Верхнее меню
         self.ui.action_Exit.triggered.connect(lambda: self.close())
-        self.ui.action_Close.triggered.connect(lambda: Player.close())
+        self.ui.action_Close.triggered.connect(lambda: player.close())
         self.ui.action_Open_file.triggered.connect(self.open_file)
         self.ui.action_Open_folder.triggered.connect(self.open_folder)
         self.ui.action_Open_URL.triggered.connect(self.open_url)
@@ -407,9 +407,9 @@ class MainWindow(QMainWindow):
         self.ui.action_Reference.triggered.connect(self.reference)
         self.ui.action_Launch_parameters.triggered.connect(self.launch_parameters)
         self.ui.action_Create_config_Android.triggered.connect(self.android_config)
-        self.ui.action_Fullscreen.triggered.connect(lambda: Player.fullscreen_switch())
-        self.ui.action_Play_Pause.triggered.connect(lambda: Player.play())
-        self.ui.action_Disable.triggered.connect(lambda: Player.disable_anime4k())
+        self.ui.action_Fullscreen.triggered.connect(lambda: player.fullscreen_switch())
+        self.ui.action_Play_Pause.triggered.connect(lambda: player.play())
+        self.ui.action_Disable.triggered.connect(lambda: player.disable_anime4k())
         self.ui.action_Volume_plus.triggered.connect(self.volume_plus)
         self.ui.action_Volume_minus.triggered.connect(self.volume_minus)
         self.ui.action_Rewind_plus.triggered.connect(self.rewind_plus)
@@ -479,17 +479,17 @@ class MainWindow(QMainWindow):
             for mode in tabs[quality]:
                 action = QAction(self)
                 action.setText(mode)
-                action.triggered.connect(lambda ignore=False, q=quality, m=mode: Player.set_preset_quality(q, m))
+                action.triggered.connect(lambda ignore=False, q=quality, m=mode: player.set_preset_quality(q, m))
                 menu.addAction(action)
 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
 
         self.setAcceptDrops(True)
 
     def mouseMoveEvent(self, event):
-        if Player.fullscreen:
-            Player.update_fullscreen_layout(event.position().x(), event.position().y())
+        if player.fullscreen:
+            player.update_fullscreen_layout(event.position().x(), event.position().y())
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -497,19 +497,25 @@ class MainWindow(QMainWindow):
             event.accept()
 
     def dropEvent(self, event):
+        is_new = True
         for url in event.mimeData().urls():
             file_name = url.toLocalFile()
             if os.path.isfile(file_name):
-                Player.open_file(file_name)
+                if is_new:
+                    player.open_file(file_name)
+                    is_new = False
+                else:
+                    player.add_file(file_name)
             elif os.path.isdir(file_name):
-                Player.open_folder(file_name)
+                player.open_folder(file_name)
+                break
             elif os.path.islink(file_name):
-                Player.open_url(file_name)
-            break
+                player.open_url(file_name)
+                break
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            Player.play()
+            player.play()
             if self.timer_click.isActive():
                 Player.fullscreen_switch()
                 self.timer_click.stop()
@@ -524,29 +530,29 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def zoom(value):
-        player.video_zoom += value
+        mpv.video_zoom += value
 
     @staticmethod
     def speed(speed):
-        player.speed = speed
+        mpv.speed = speed
 
     @staticmethod
     def timer_update():
-        Player.update_info()
-        Player.update_cursor()
+        player.update_info()
+        player.update_cursor()
 
     def change_time(self):
-        if player.time_pos is not None and int(player.time_pos) != self.ui.time.value():
-            Player.new_position(self.ui.time.value())
+        if mpv.time_pos is not None and int(mpv.time_pos) != self.ui.time.value():
+            player.new_position(self.ui.time.value())
 
     def closeEvent(self, event):
-        Player.save_parameters()
+        player.save_parameters()
 
     def open_file(self):
         file_name = QFileDialog.getOpenFileName(self,
                                                 filter=f"{loc['All supported files']} ({' '.join(['*.' + f for f in formats])});;{loc['Video']} ({' '.join(['*.' + f for f in video_formats])});;{loc['Audio']} ({' '.join(['*.' + f for f in audio_formats])});;{loc['All files']} (*.*)")
         if file_name[0] is not None and file_name[0] != '':
-            Player.open_file(file_name[0])
+            player.open_file(file_name[0])
 
     @staticmethod
     def open_folder():
@@ -565,7 +571,7 @@ class MainWindow(QMainWindow):
         settings_win.setModal(True)
         settings_win.exec()
         if not config.get('volumePlus', False):
-            self.ui.volume.setValue(player.volume)
+            self.ui.volume.setValue(mpv.volume)
             self.ui.volume.setMaximum(100)
         else:
             self.ui.volume.setMaximum(150)
@@ -586,7 +592,7 @@ class MainWindow(QMainWindow):
         launch_parameters_win = LaunchParametersWindow()
         launch_parameters_win.setModal(True)
         launch_parameters_win.exec()
-        self.ui.volume.setValue(player.volume)
+        self.ui.volume.setValue(mpv.volume)
 
     @staticmethod
     def android_config():
@@ -624,50 +630,47 @@ class MainWindow(QMainWindow):
         menu.exec(QCursor.pos())
 
     def volume_plus(self):
-        if player.volume > 95 and self.ui.volume.maximum() == 100:
-            player.volume = 100
-        elif player.volume > 145 and self.ui.volume.maximum() == 150:
-            player.volume = 150
+        if mpv.volume > 95 and self.ui.volume.maximum() == 100:
+            mpv.volume = 100
+        elif mpv.volume > 145 and self.ui.volume.maximum() == 150:
+            mpv.volume = 150
         else:
-            player.volume += 5
-        self.ui.volume.setValue(player.volume)
-        Player.volume_update(player.volume)
+            mpv.volume += 5
+        self.ui.volume.setValue(mpv.volume)
+        Player.volume_update(mpv.volume)
 
     def volume_minus(self):
-        if player.volume < 5:
-            player.volume = 0
+        if mpv.volume < 5:
+            mpv.volume = 0
         else:
-            player.volume -= 5
-        self.ui.volume.setValue(player.volume)
-        Player.volume_update(player.volume)
+            mpv.volume -= 5
+        self.ui.volume.setValue(mpv.volume)
+        Player.volume_update(mpv.volume)
 
     @staticmethod
     def rewind_plus():
-        if player.time_pos is not None:
-            player.seek(5)
-            window.ui.time.setValue(player.time_pos)
-            window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
+        if mpv.time_pos is not None:
+            mpv.seek(5)
+            window.ui.time.setValue(mpv.time_pos)
+            window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(mpv.time_pos), 60)))
 
     @staticmethod
     def rewind_minus():
-        if player.time_pos is not None:
-            if player.time_pos > 5:
-                player.seek(-5)
+        if mpv.time_pos is not None:
+            if mpv.time_pos > 5:
+                mpv.seek(-5)
             else:
-                player.time_pos = 0
-            window.ui.time.setValue(player.time_pos)
-            window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
+                mpv.time_pos = 0
+            window.ui.time.setValue(mpv.time_pos)
+            window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(mpv.time_pos), 60)))
 
 
 class Player:
     """
     Управление плеером
     """
-    folder: str = ''
-    filename: str = ''
     files: list = []
     filenames_only: list = []
-    filenum: int = -1
     fullscreen: bool = False
     is_menu_visible: bool = True
     is_maximized: bool = False
@@ -684,40 +687,39 @@ class Player:
     cursor_last: tuple = (0, 0)
     cursor_timer: int = 0
 
-    @classmethod
-    def list_files(cls):
-        return [os.path.join(cls.folder, f) for f in os.listdir(cls.folder) if (f.split('.')[-1].lower() in formats)]
+    @staticmethod
+    def list_files(folder: str):
+        return [os.path.join(folder, f) for f in os.listdir(folder) if (f.split('.')[-1].lower() in formats)]
 
-    @classmethod
-    def list_filenames(cls):
-        filenames = [f for f in os.listdir(cls.folder) if (f.split('.')[-1].lower() in formats)]
+    @staticmethod
+    def list_filenames(folder: str):
+        filenames = [f for f in os.listdir(folder) if (f.split('.')[-1].lower() in formats)]
         return [f'{i + 1}) ' + filenames[i] for i in range(len(filenames))]
 
-    @classmethod
-    def sub_view(cls):
-        cls.sub = {}
-        if player.track_list is not None:
-            for track in player.track_list:
+    def sub_view(self):
+        self.sub = {}
+        if mpv.track_list is not None:
+            for track in mpv.track_list:
                 if track['type'] == 'sub':
                     if 'title' in track.keys():
-                        cls.sub[track['id']] = f'{track["title"]}'
+                        self.sub[track['id']] = f'{track["title"]}'
                         if 'lang' in track.keys():
-                            cls.sub[track['id']] = f'{track["lang"]} - ' + cls.sub[track['id']]
+                            self.sub[track['id']] = f'{track["lang"]} - ' + self.sub[track['id']]
                     elif 'lang' in track.keys():
-                        cls.sub[track['id']] = f'{track["lang"]} - {track["codec"]}'
+                        self.sub[track['id']] = f'{track["lang"]} - {track["codec"]}'
                     else:
-                        cls.sub[track['id']] = track['codec']
+                        self.sub[track['id']] = track['codec']
 
             def set_sub(index: int):
-                player.sid = index
+                mpv.sid = index
 
             def add_subtitles():
                 file_name = QFileDialog.getOpenFileName(filter=f"{loc['Subtitles']} ({' '.join(['*.' + f for f in subtitles_formats])});;{loc['All files']} (*.*)")
                 if file_name[0] is not None and file_name[0] != '':
-                    player.sub_add(file_name[0])
+                    mpv.sub_add(file_name[0])
 
             menu_sub = QMenu()
-            if len(cls.sub) > 0:
+            if len(self.sub) > 0:
                 action = QAction(window)
                 action.setText(loc['Disable'])
                 action.triggered.connect(lambda: set_sub(0))
@@ -729,7 +731,7 @@ class Player:
                 menu_sub.addAction(action)
 
                 menu_sub.addSeparator()
-                for key, value in cls.sub.items():
+                for key, value in self.sub.items():
                     action = QAction(window)
                     action.setText(f'{key}) {value}')
                     action.triggered.connect(lambda ignore=False, x=key: set_sub(x))
@@ -742,31 +744,30 @@ class Player:
 
             menu_sub.exec(window.ui.sub.mapToGlobal(QPoint(0, 0)))
 
-    @classmethod
-    def audio_view(cls):
-        cls.audio = {}
-        if player.track_list is not None:
-            for track in player.track_list:
+    def audio_view(self):
+        self.audio = {}
+        if mpv.track_list is not None:
+            for track in mpv.track_list:
                 if track['type'] == 'audio':
-                    cls.audio[track['id']] = f'{track['codec']} {track['audio-channels']}ch {track['demux-samplerate']} Hz'
+                    self.audio[track['id']] = f'{track['codec']} {track['audio-channels']}ch {track['demux-samplerate']} Hz'
                     if 'title' in track.keys():
-                        cls.audio[track['id']] = f'{track["title"]} (' + cls.audio[track['id']] + ')'
+                        self.audio[track['id']] = f'{track["title"]} (' + self.audio[track['id']] + ')'
                         if 'lang' in track.keys():
-                            cls.audio[track['id']] = f'{track["lang"]} - ' + cls.audio[track['id']]
+                            self.audio[track['id']] = f'{track["lang"]} - ' + self.audio[track['id']]
                     elif 'lang' in track.keys():
-                        cls.audio[track['id']] = f'{track["lang"]} - {cls.audio[track['id']]}'
+                        self.audio[track['id']] = f'{track["lang"]} - {self.audio[track['id']]}'
 
             def set_audio(index: int):
-                player.aid = index
+                mpv.aid = index
 
             menu_audio = QMenu()
-            if len(cls.audio) > 0:
+            if len(self.audio) > 0:
                 action = QAction(window)
                 action.setText(loc['Disable'])
                 action.triggered.connect(lambda: set_audio(0))
                 menu_audio.addAction(action)
                 menu_audio.addSeparator()
-                for key, value in cls.audio.items():
+                for key, value in self.audio.items():
                     action = QAction(window)
                     action.setText(f'{key}) {value}')
                     action.triggered.connect(lambda ignore=False, a=key: set_audio(a))
@@ -777,15 +778,14 @@ class Player:
                 menu_audio.addAction(action)
             menu_audio.exec(window.ui.audio.mapToGlobal(QPoint(0, 0)))
 
-    @classmethod
-    def update_info(cls, no_update_fps=True):
+    def update_info(self, no_update_fps=True):
         # duration = player.duration
-        time_pos = player.time_pos
-        Player.info['codec'] = player.video_format if player.video_format is not None else player.audio_codec_name
-        Player.info['resolution'] = (player.width, player.height)
+        time_pos = mpv.time_pos
+        Player.info['codec'] = mpv.video_format if mpv.video_format is not None else mpv.audio_codec_name
+        Player.info['resolution'] = (mpv.width, mpv.height)
         if no_update_fps:
-            Player.info['fps'] = player.estimated_vf_fps
-        Player.info['frame_drop'] = player.frame_drop_count
+            Player.info['fps'] = mpv.estimated_vf_fps
+        Player.info['frame_drop'] = mpv.frame_drop_count
 
         # Обновление информации о разрешении, FPS, кодеке и потерянных кадрах
         str_info = {
@@ -798,14 +798,14 @@ class Player:
 
         window.ui.mediaInfo.setText(' | '.join([string for string in str_info.values() if string != '']))
         # Обновление кнопки ИГРАТЬ
-        if player.duration is not None and player.pause:
+        if mpv.duration is not None and mpv.pause:
             window.ui.play.setIcon(QIcon(icons.play))
         # Обновление ползунка прокрутки и времени
-        if player.duration is not None:
-            if cls.duration != player.duration:
-                cls.duration = player.duration
-                window.ui.time.setMaximum(cls.duration)
-                window.ui.allTime.setText('{:02d}:{:02d}'.format(*divmod(int(cls.duration), 60)))
+        if mpv.duration is not None:
+            if self.duration != mpv.duration:
+                self.duration = mpv.duration
+                window.ui.time.setMaximum(self.duration)
+                window.ui.allTime.setText('{:02d}:{:02d}'.format(*divmod(int(self.duration), 60)))
         else:
             window.ui.time.setMaximum(0)
             window.ui.allTime.setText('00:00')
@@ -817,58 +817,51 @@ class Player:
             window.ui.currentTime.setText('00:00')
             window.ui.time.setValue(0)
 
-    @classmethod
-    def play_file(cls, file: str, timeout=3, position: float = 0):
-        player.play(file)
+    def play_file(self, file: str, timeout=3, position: float = 0):
+        mpv.play(file)
         if position > 0:
             try:
-                player.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
+                mpv.wait_for_property('duration', lambda val: val is not None, timeout=timeout)
             except TimeoutError:
                 pass
             else:
-                cls.new_position(position, slider_update=True)
+                self.new_position(position, slider_update=True)
 
-    @classmethod
-    def play(cls):
+    def play(self):
         """Воспроизведение / Пауза"""
-        if cls.filename != '':
-            if player.duration is None:
-                Player.play_file(cls.filename)
-                player.pause = False
+        if window.ui.fileList.currentIndex().row() >= 0:
+            if mpv.duration is None:
+                self.play_file(self.files[window.ui.fileList.currentIndex().row()])
+                mpv.pause = False
                 window.ui.play.setIcon(QIcon(icons.pause))
-            elif not player.pause:
-                player.pause = True
+            elif not mpv.pause:
+                mpv.pause = True
                 window.ui.play.setIcon(QIcon(icons.play))
             else:
-                player.pause = False
+                mpv.pause = False
                 window.ui.play.setIcon(QIcon(icons.pause))
 
-    @classmethod
-    def next(cls):
+    def next(self):
         """Переход к следующему файлу"""
-        if cls.filenum < len(cls.files) - 1:
-            cls.filenum += 1
-            cls.filename = cls.files[cls.filenum]
-            window.ui.fileList.setCurrentRow(cls.filenum)
-            window.setWindowTitle(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            Player.play_file(cls.filename)
+        current_index = window.ui.fileList.currentIndex().row()
+        if current_index < len(self.files) - 1:
+            window.ui.fileList.setCurrentRow(current_index + 1)
+            window.setWindowTitle(f'{self.filenames_only[current_index]} - {name_program}')
+            self.play_file(self.files[current_index])
 
-    @classmethod
-    def prev(cls):
+    def prev(self):
         """Переход к предыдущему файлу"""
-        if cls.filenum > 0:
-            cls.filenum -= 1
-            cls.filename = cls.files[cls.filenum]
-            window.ui.fileList.setCurrentRow(cls.filenum)
-            window.setWindowTitle(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            Player.play_file(cls.filename)
+        if window.ui.fileList.currentIndex().row() > 0:
+            file_num = window.ui.fileList.currentIndex().row() - 1
+            file = self.files[file_num]
+            window.ui.fileList.setCurrentRow(file_num)
+            window.setWindowTitle(f'{file.rsplit(os.sep, 1)[-1]} - {name_program}')
+            self.play_file(file)
         else:
-            cls.filenum = 0
-            window.ui.fileList.setCurrentRow(cls.filenum)
-            window.setWindowTitle(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
+            window.ui.fileList.setCurrentRow(0)
+            window.setWindowTitle(f'{self.files[0].rsplit(os.sep, 1)[-1]} - {name_program}')
 
-    @classmethod
-    def open_file(cls, file: str, pause: bool = False, position: float = 0):
+    def open_file(self, file: str, pause: bool = False, position: float = 0):
         """
         Открытие файла
         :param file: путь к файлу
@@ -876,54 +869,54 @@ class Player:
         :param position: позиция
         """
         file = file.replace('/', os.sep)
-        player.stop()
-        player.pause = pause
+        mpv.stop()
+        mpv.pause = pause
         if pause:
             window.ui.play.setIcon(QIcon(icons.play))
         else:
             window.ui.play.setIcon(QIcon(icons.pause))
-        cls.folder = file.rsplit(os.sep, 1)[0]
-        cls.files = [file]
-        cls.filenames_only = [file.split(os.sep)[-1]]
-        cls.filenum = 0
-        cls.filename = file
+        folder = file.rsplit(os.sep, 1)[0]
+        self.files = [file]
+        self.filenames_only = [file.split(os.sep)[-1]]
         window.ui.fileList.clear()
-        window.ui.fileList.addItems(cls.filenames_only)
-        window.ui.fileList.setCurrentRow(cls.filenum)
-        window.ui.sourceInfo.setText(cls.folder)
-        window.setWindowTitle(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-        Player.play_file(cls.filename, position=position)
+        window.ui.fileList.addItems(self.filenames_only)
+        window.ui.fileList.setCurrentRow(0)
+        window.ui.sourceInfo.setText(folder)
+        window.setWindowTitle(f'{self.filenames_only[window.ui.fileList.currentIndex().row()]} - {name_program}')
+        self.play_file(self.files[window.ui.fileList.currentIndex().row()], position=position)
         config.set('opened', ['file', file])
 
-    @classmethod
-    def open_url(cls, link: str, pause: bool = False, position: float = 0):
+    def add_file(self, file: str):
+        file = file.replace('/', os.sep)
+        self.files.append(file)
+        self.filenames_only.append(file.split(os.sep)[-1])
+        window.ui.fileList.addItem(file.split(os.sep)[-1])
+
+    def open_url(self, link: str, pause: bool = False, position: float = 0):
         """
         Открытие с помощью URL-адреса
         :param link: URL-адрес
         :param pause: должна ли стоять пауза после открытия
         :param position: позиция
         """
-        player.stop()
-        player.pause = pause
+        mpv.stop()
+        mpv.pause = pause
         if pause:
             window.ui.play.setIcon(QIcon(icons.play))
         else:
             window.ui.play.setIcon(QIcon(icons.pause))
-        cls.folder = 'URL'
-        cls.files = [link]
-        cls.filenames_only = []
-        cls.filenum = 0
-        cls.filename = link
+        folder = 'URL'
+        self.files = [link]
+        self.filenames_only = [link.rsplit("/", 1)[-1]]
         window.ui.fileList.clear()
-        window.ui.fileList.addItems(cls.files)
-        window.ui.fileList.setCurrentRow(cls.filenum)
-        window.ui.sourceInfo.setText(cls.folder)
-        window.setWindowTitle(f'{cls.filename.rsplit("/", 1)[-1]} - {name_program}')
-        Player.play_file(cls.filename, position=position, timeout=5)
+        window.ui.fileList.addItems(self.files)
+        window.ui.fileList.setCurrentRow(0)
+        window.ui.sourceInfo.setText(folder)
+        window.setWindowTitle(f'{link.rsplit("/", 1)[-1]} - {name_program}')
+        self.play_file(link, position=position, timeout=5)
         config.set('opened', ['url', link])
 
-    @classmethod
-    def open_folder(cls, folder: str, pause: bool = True, file: str = '', position: float = 0):
+    def open_folder(self, folder: str, pause: bool = True, file: str = '', position: float = 0):
         """
         Открытие папки
         :param file:
@@ -932,66 +925,56 @@ class Player:
         :param file: полное имя файла
         :param position: позиция
         """
-        cls.folder = folder.replace('/', os.sep)
-        player.stop()
-        player.pause = pause
+        folder = folder.replace('/', os.sep)
+        mpv.stop()
+        mpv.pause = pause
         if pause:
             window.ui.play.setIcon(QIcon(icons.play))
         else:
             window.ui.play.setIcon(QIcon(icons.pause))
-        cls.files = cls.list_files()
-        cls.filenames_only = cls.list_filenames()
+        self.files = self.list_files(folder)
+        self.filenames_only = self.list_filenames(folder)
         if file != '' and os.path.exists(file):
-            cls.filenum = cls.files.index(file)
+            file_num = self.files.index(file)
         else:
-            cls.filenum = 0
-        if len(cls.files) != 0:
-            cls.filename = cls.files[cls.filenum]
-            window.setWindowTitle(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
-            Player.play_file(cls.filename, position=position)
+            file_num = 0
+        if len(self.files) != 0:
+            file_name = self.files[file_num]
+            window.setWindowTitle(f'{file_name.rsplit(os.sep, 1)[-1]} - {name_program}')
+            self.play_file(file_name, position=position)
         else:
-            cls.filename = ''
             window.setWindowTitle(name_program)
         window.ui.fileList.clear()
-        window.ui.fileList.addItems(cls.filenames_only)
-        window.ui.fileList.setCurrentRow(cls.filenum)
+        window.ui.fileList.addItems(self.filenames_only)
+        window.ui.fileList.setCurrentRow(file_num)
         window.ui.rightPanel.setVisible(True)
-        window.ui.sourceInfo.setText(cls.folder)
+        window.ui.sourceInfo.setText(folder)
         config.set('opened', ['folder', folder])
 
-    @classmethod
-    def close(cls):
+    def close(self):
         """
         Закрытие открытых фалов и переход в изначальное состояние
         """
-        player.stop()
-        player.pause = False
+        mpv.stop()
+        mpv.pause = False
         window.ui.play.setIcon(QIcon(icons.play))
-        cls.folder = ''
-        cls.filename = ''
-        cls.files = []
-        cls.filenames_only = []
-        cls.filenum = -1
-        cls.duration = 0
+        self.files = []
+        self.filenames_only = []
+        self.duration = 0
         window.ui.fileList.clear()
         window.ui.sourceInfo.setText('')
         window.setWindowTitle(name_program)
         config.set('opened', ['', ''])
 
-    @classmethod
-    def update_filelist(cls, file_name_in_list: str):
+    def update_filelist(self, index: int):
         """
         Обновление списка файлов
-        :param file_name_in_list: Имя файла в списке файлов (вместе с номером)
+        :param index: Номер файла в списке файлов
         """
-        if len(cls.filenames_only) >= 1:
-            if len(cls.filenames_only) > 1 or len(file_name_in_list) > 1 and file_name_in_list[1] == ')':
-                filename_temp = os.path.join(cls.folder, file_name_in_list.split(' ', 1)[-1])
-                if cls.filename != filename_temp or cls.filenum < 0:
-                    cls.filename = filename_temp
-                    cls.filenum = cls.files.index(cls.filename)
-                    Player.play_file(cls.filename)
-                    window.setWindowTitle(f'{cls.filename.rsplit(os.sep, 1)[-1]} - {name_program}')
+        if len(self.filenames_only) >= 1:
+            # if cls.filename != filename_temp or cls.filenum < 0:
+            self.play_file(self.files[index])
+            window.setWindowTitle(f'{self.files[index].rsplit(os.sep, 1)[-1]} - {name_program}')
 
     @classmethod
     def fullscreen_switch(cls):
@@ -1006,7 +989,6 @@ class Player:
             window.ui.controlPanel.setFloating(True)
             window.ui.controlPanel.setVisible(False)
             cls.is_menu_visible = window.ui.rightPanel.isVisible()
-            # window.ui.rightPanel.setFloating(True)
             window.ui.rightPanel.setVisible(False)
         else:
             cls.fullscreen = False
@@ -1022,8 +1004,7 @@ class Player:
             cls.cursor_timer = 0
             window.ui.controlPanel.setFloating(False)
 
-    @classmethod
-    def update_fullscreen_layout(cls, x: float, y: float):
+    def update_fullscreen_layout(self, x: float, y: float):
         if y > window.ui.centralwidget.size().height() - window.ui.controlPanel.height():
             window.ui.controlPanel.setVisible(True)
             window.ui.controlPanel.activateWindow()
@@ -1036,15 +1017,14 @@ class Player:
             window.ui.controlPanel.setVisible(False)
 
         window.ui.video.unsetCursor()
-        cls.cursor_last = (x, y)
-        cls.cursor_timer = 0
+        self.cursor_last = (x, y)
+        self.cursor_timer = 0
 
-    @classmethod
-    def update_cursor(cls):
+    def update_cursor(self):
         if not window.ui.controlPanel.isVisible() and not window.ui.rightPanel.isVisible():
-            cls.cursor_timer += 1
-            if cls.cursor_timer > 3:
-                window.ui.video.setCursor(Qt.BlankCursor)
+            self.cursor_timer += 1
+            if self.cursor_timer > 3:
+                window.ui.video.setCursor(Qt.CursorShape.BlankCursor)
 
     @staticmethod
     def new_position(position: float, slider_update: bool = False):
@@ -1053,25 +1033,24 @@ class Player:
         :param position: позиция
         :param slider_update: обновлять ли слайдер
         """
-        if player.duration is not None:
-            player.time_pos = position
-            window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(player.time_pos), 60)))
-            window.ui.allTime.setText('{:02d}:{:02d}'.format(*divmod(int(player.duration), 60)))
+        if mpv.duration is not None:
+            mpv.time_pos = position
+            window.ui.currentTime.setText('{:02d}:{:02d}'.format(*divmod(int(mpv.time_pos), 60)))
+            window.ui.allTime.setText('{:02d}:{:02d}'.format(*divmod(int(mpv.duration), 60)))
             if slider_update:
-                window.ui.time.setMaximum(player.duration)
-                window.ui.time.setValue(player.time_pos)
+                window.ui.time.setMaximum(mpv.duration)
+                window.ui.time.setValue(mpv.time_pos)
 
     @staticmethod
     def volume_update(volume: int):
         """Изменение громкости"""
-        player.volume = volume
+        mpv.volume = volume
         config.set('volume', volume)
 
-    @classmethod
-    def save_parameters(cls):
+    def save_parameters(self):
         """Сохранение текущего открытого файла и позиции"""
-        file = cls.filename
-        position = player.time_pos
+        file = self.filenames_only[window.ui.fileList.currentIndex().row()]
+        position = mpv.time_pos
         config.set('file', file)
         if position is not None and position >= 10:
             config.set('position', position)
@@ -1079,8 +1058,7 @@ class Player:
             config.set('position', None)
         config.save_config()
 
-    @classmethod
-    def configuration(cls, open_prev: bool = True):
+    def configuration(self, open_prev: bool = True):
         """
         Начальная настройка плеера
         :param open_prev: открывать ли предыдущий файл
@@ -1099,7 +1077,7 @@ class Player:
             if on_pos_last_file is not None and not on_pos_last_file or position is None:
                 position = 0
             if volume is not None:
-                player.volume = volume
+                mpv.volume = volume
                 window.ui.volume.setValue(volume)
             if volume_plus:
                 window.ui.volume.setMaximum(150)
@@ -1107,23 +1085,23 @@ class Player:
                 match opened[0]:
                     case 'file':
                         if os.path.exists(opened[1]):
-                            cls.open_file(opened[1], pause=True, position=position)
+                            self.open_file(opened[1], pause=True, position=position)
                     case 'url':
                         if on_pos_last_file is None or on_pos_last_file:
-                            cls.open_url(opened[1], pause=True, position=position)
+                            self.open_url(opened[1], pause=True, position=position)
                     case 'folder':
                         if os.path.exists(opened[1]):
-                            cls.open_folder(opened[1], pause=True, file=file, position=position)
+                            self.open_folder(opened[1], pause=True, file=file, position=position)
             if svp is not None and svp:
-                player.input_ipc_server = 'mpvpipe'
-                player.hwdec = 'auto-copy'
-                player.hwdec_codecs = 'all'
-                player.hr_seek_framedrop = False
+                mpv.input_ipc_server = 'mpvpipe'
+                mpv.hwdec = 'auto-copy'
+                mpv.hwdec_codecs = 'all'
+                mpv.hr_seek_framedrop = False
             if launch_parameters is not None and launch_parameters != '':
                 try:
                     exec(launch_parameters)
-                    window.ui.volume.setValue(player.volume)
-                    config.set('volume', player.volume)
+                    window.ui.volume.setValue(mpv.volume)
+                    config.set('volume', mpv.volume)
                 except Exception:
                     pass
             if style is not None:
@@ -1133,40 +1111,38 @@ class Player:
             config.delete('file')
             config.delete('position')
 
-    @classmethod
-    def start_player(cls, args: list):
+    def start_player(self, args: list):
         """
         Начальные действия при открытии плеера
         :param args: аргументы командной строки
         """
         if len(args) > 1:
-            cls.configuration(open_prev=False)
+            self.configuration(open_prev=False)
             if os.path.isfile(args[1]):
                 file = config.get('opened', [None, None])[1]
                 position = config.get('position')
 
                 if file is not None and file == args[1] and position is not None:
-                    cls.open_file(args[1], position=position)
+                    self.open_file(args[1], position=position)
                 else:
-                    cls.open_file(args[1])
+                    self.open_file(args[1])
             elif os.path.isdir(args[1]):
-                cls.open_folder(args[1])
+                self.open_folder(args[1])
         else:
-            cls.configuration(open_prev=True)
+            self.configuration(open_prev=True)
 
-    @classmethod
-    def set_preset_quality(cls, quality: str, mode: str):
+    def set_preset_quality(self, quality: str, mode: str):
         if quality == f'{loc["Quality"]} HQ':
-            player.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[mode.split(' ', 1)[-1]], mode + ' (HQ)')
-            Player.info['preset'] = anime4k.current_preset
+            mpv.glsl_shaders = anime4k.to_string(anime4k.ultra_hq_presets[mode.split(' ', 1)[-1]], mode + ' (HQ)')
+            self.info['preset'] = anime4k.current_preset
         else:
-            player.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality.split(' ', 1)[-1], mode.split(' ', 1)[-1]), mode + f' ({quality.split(" ", 1)[-1]})')
-            Player.info['preset'] = anime4k.current_preset
+            mpv.glsl_shaders = anime4k.to_string(anime4k.create_preset(quality.split(' ', 1)[-1], mode.split(' ', 1)[-1]), mode + f' ({quality.split(" ", 1)[-1]})')
+            self.info['preset'] = anime4k.current_preset
 
-    @classmethod
-    def disable_anime4k(cls):
+    @staticmethod
+    def disable_anime4k():
         anime4k.current_preset = ''
-        player.glsl_shaders = ''
+        mpv.glsl_shaders = ''
         Player.info['preset'] = ''
 
 
@@ -1178,14 +1154,15 @@ if __name__ == '__main__':
 
     if os.name == 'nt':
         if platform.release() != '11':
-            app.setStyle('Fusion')
+            app.setStyle('windows11')
     else:
         import locale
 
         locale.setlocale(locale.LC_NUMERIC, 'C')
 
-    player: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', ytdl=True, terminal='yes')
+    mpv: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', ytdl=True, terminal='yes')
 
     window.show()
-    Player.start_player(sys.argv)
+    player = Player()
+    player.start_player(sys.argv)
     sys.exit(app.exec())

@@ -285,9 +285,6 @@
        <property name="frameShape">
         <enum>QFrame::Shape::StyledPanel</enum>
        </property>
-       <property name="frameShadow">
-        <enum>QFrame::Shadow::Raised</enum>
-       </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="timeControl">
