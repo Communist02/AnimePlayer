@@ -210,7 +210,10 @@ class SettingsWindow(QDialog):
         self.ui.volumePlus.setChecked(config.get('volumePlus', False))
         self.ui.svp.setChecked(config.get('SVP', False))
         self.ui.theme.setCurrentText(self.theme)
-        self.ui.comboBox_style.addItems(QStyleFactory.keys())
+        styles = QStyleFactory.keys()
+        for i in range(len(styles)):
+            styles[i] = styles[i].lower()
+        self.ui.comboBox_style.addItems(styles)
         self.ui.comboBox_style.setCurrentText(config.get('style', app.style().name()))
 
         self.ui.labelTheme.setVisible(False)
@@ -482,7 +485,6 @@ class MainWindow(QMainWindow):
                 action.triggered.connect(lambda ignore=False, q=quality, m=mode: player.set_preset_quality(q, m))
                 menu.addAction(action)
 
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
 
         self.setAcceptDrops(True)
@@ -857,7 +859,7 @@ class Player:
             window.ui.fileList.setCurrentRow(file_num)
             window.setWindowTitle(f'{file.rsplit(os.sep, 1)[-1]} - {name_program}')
             self.play_file(file)
-        else:
+        elif window.ui.fileList.count() > 0:
             window.ui.fileList.setCurrentRow(0)
             window.setWindowTitle(f'{self.files[0].rsplit(os.sep, 1)[-1]} - {name_program}')
 
@@ -1045,11 +1047,15 @@ class Player:
     def volume_update(volume: int):
         """Изменение громкости"""
         mpv.volume = volume
+        window.ui.volume.setToolTip(f'{volume}%')
         config.set('volume', volume)
 
     def save_parameters(self):
         """Сохранение текущего открытого файла и позиции"""
-        file = self.filenames_only[window.ui.fileList.currentIndex().row()]
+        if window.ui.fileList.count() > 0:
+            file = self.files[window.ui.fileList.currentIndex().row()]
+        else:
+            file = None
         position = mpv.time_pos
         config.set('file', file)
         if position is not None and position >= 10:
@@ -1079,6 +1085,7 @@ class Player:
             if volume is not None:
                 mpv.volume = volume
                 window.ui.volume.setValue(volume)
+                window.ui.volume.setToolTip(f'{volume}%')
             if volume_plus:
                 window.ui.volume.setMaximum(150)
             if opened is not None and open_prev and (open_last is None or open_last):
