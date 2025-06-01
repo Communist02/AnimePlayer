@@ -61,7 +61,7 @@ en = {
     'Enter folder path for screenshots': 'Enter folder path for screenshots',
     'Increase maximum volume up to 150%': 'Increase maximum volume up to 150%',
     'Launch parameters': 'Launch parameters',
-    'Manual launch parameters': 'Use the mpv manual https://mpv.io/manual/\nBut keep in mind that Python syntax is required.\nAccess the "player" variable.\nFor example, instead of --volume=50 use player.volume = 50',
+    'Manual launch parameters': 'Use the mpv manual https://mpv.io/manual/\nBut keep in mind that Python syntax is required.\nAccess the "mpv" variable.\nFor example, instead of --volume=50 use mpv.volume = 50',
     'Apply': 'Apply',
     'Save': 'Save',
     'Error': 'Error',
@@ -145,7 +145,7 @@ ru = {
     'Enter folder path for screenshots': 'Введите путь до папки для скриншотов',
     'Increase maximum volume up to 150%': 'Увеличить максимальную громкость до 150%',
     'Launch parameters': 'Параметры запуска',
-    'Manual launch parameters': 'Используйте руководство mpv https://mpv.io/manual/\nНо имейте ввиду, что требуется синтаксис языка Python.\nОбращайтесь к переменной player.\nНапример, вместо --volume=50 используйте player.volume = 50',
+    'Manual launch parameters': 'Используйте руководство mpv https://mpv.io/manual/\nНо имейте ввиду, что требуется синтаксис языка Python.\nОбращайтесь к переменной mpv.\nНапример, вместо --volume=50 используйте mpv.volume = 50',
     'Apply': 'Применить',
     'Save': 'Сохранить',
     'Error': 'Ошибка',
@@ -229,7 +229,7 @@ ja = {
     'Enter folder path for screenshots': 'スクリーンショット用のパスを入力',
     'Increase maximum volume up to 150%': '最大音量を 150% まで増加',
     'Launch parameters': '起動パラメータ',
-    'Manual launch parameters': 'MPVマニュアルの使用 https://mpv.io/manual/\nただし、Python 構文が必要であることに注意してください。\n"player"変数にアクセス。\n例 : --volume=50 の代わりに player.volume = 50 を使用します',
+    'Manual launch parameters': 'MPVマニュアルの使用 https://mpv.io/manual/\nただし、Python 構文が必要であることに注意してください。\n"mpv"変数にアクセス。\n例 : --volume=50 の代わりに mpv.volume = 50 を使用します',
     'Apply': '適用',
     'Save': '保存',
     'Error': 'エラー',
@@ -257,7 +257,7 @@ ja = {
 strings = en
 
 
-def set_locale(lang):
+def set_locale(lang: str):
     global strings
     match lang:
         case 'Русский':
