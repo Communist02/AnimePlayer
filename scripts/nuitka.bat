@@ -1,0 +1,2 @@
+cd ../
+"./venv/scripts/python" -m nuitka --enable-plugin=pyside6 --output-file=anime_player --windows-icon-from-ico=favicon.ico --include-data-files=favicon.ico=favicon.ico --include-data-files=libmpv-2.dll=libmpv-2.dll --include-data-files=docs/GLSL_Instructions_Advanced.txt=docs/GLSL_Instructions_Advanced.txt --include-data-files=docs/GLSL_Instructions_Advanced_ru.txt=docs/GLSL_Instructions_Advanced_ru.txt --include-data-dir=images=images --include-data-dir=shaders=shaders --windows-console-mode=attach --product-name="Anime Player" --product-version=2 --standalone main.py

@@ -83,7 +83,8 @@ en = {
     'No video tracks': 'No video tracks',
     'No audio tracks': 'No audio tracks',
     'No subtitles': 'No subtitles',
-    'Add subtitles': 'Add subtitles'
+    'Add subtitles': 'Add subtitles',
+    'Palette': 'Palette'
 }
 
 ru = {
@@ -167,7 +168,8 @@ ru = {
     'No video tracks': 'Нет видео дорожек',
     'No audio tracks': 'Нет аудио дорожек',
     'No subtitles': 'Нет субтитров',
-    'Add subtitles': 'Добавить субтитры'
+    'Add subtitles': 'Добавить субтитры',
+    'Palette': 'Цветовая палитра'
 }
 
 ja = {
@@ -251,8 +253,13 @@ ja = {
     'No video tracks': 'ビデオトラックなし',
     'No audio tracks': 'オーディオトラックなし',
     'No subtitles': '字幕なし',
-    'Add subtitles': '字幕の追加'
+    'Add subtitles': '字幕の追加',
+    'Palette': '— カラー パレット'
 }
+
+for key, value in en.items():
+    ru[key] = ru.get(key, value)
+    ja[key] = ja.get(key, value)
 
 strings = en
 

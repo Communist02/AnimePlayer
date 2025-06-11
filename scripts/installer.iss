@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Anime Player"
-#define MyAppVersion "2.1.2"
-#define MyAppPublisher "MazurDev"
+#define MyAppVersion "2.2"
+#define MyAppPublisher "Denis Mazur"
 #define MyAppURL "https://github.com/Communist02/AnimePlayer"
-#define MyAppExeName "AnimePlayer.exe"
+#define MyAppExeName "anime_player.exe"
 #define MyAppAssocName MyAppName + " File"
 
 #define mp4AssocExt ".mp4"
@@ -70,10 +70,8 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=Installer
-OutputBaseFilename=anime-player-setup
-SetupIconFile=AnimePlayer\_internal\favicon.ico
-Compression=lzma
+OutputBaseFilename=anime_player_x64_setup
+SetupIconFile=..\favicon.ico
 SolidCompression=yes
 WizardStyle=modern
 
@@ -86,11 +84,13 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "AnimePlayer\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "AnimePlayer\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\main.dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\main.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "{#MyAppName}"; Flags: uninsdeletekey
+
 Root: HKA; Subkey: "Software\Classes\{#mp4AssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#mp4AssocKey}"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\{#mp4AssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
 Root: HKA; Subkey: "Software\Classes\{#mp4AssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"

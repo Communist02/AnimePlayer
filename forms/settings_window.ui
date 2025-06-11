@@ -54,39 +54,6 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="labelTheme">
-       <property name="text">
-        <string>Theme</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="theme">
-       <property name="currentText">
-        <string>System</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>System</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Light</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Dark</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_style">
@@ -97,6 +64,24 @@
      </item>
      <item>
       <widget class="QComboBox" name="comboBox_style"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_palette">
+       <property name="text">
+        <string>Palette</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_palette">
+       <property name="currentText">
+        <string/>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

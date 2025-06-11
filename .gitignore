@@ -6,3 +6,7 @@ libmpv-2.dll
 build
 dist
 *.spec
+main.build
+main.dist
+nuitka-crash-report.xml
+output
