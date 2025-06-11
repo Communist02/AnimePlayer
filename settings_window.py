@@ -48,24 +48,6 @@ class Ui_SettingsWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.labelTheme = QLabel(SettingsWindow)
-        self.labelTheme.setObjectName(u"labelTheme")
-
-        self.horizontalLayout_2.addWidget(self.labelTheme)
-
-        self.theme = QComboBox(SettingsWindow)
-        self.theme.addItem("")
-        self.theme.addItem("")
-        self.theme.addItem("")
-        self.theme.setObjectName(u"theme")
-
-        self.horizontalLayout_2.addWidget(self.theme)
-
-
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.label_style = QLabel(SettingsWindow)
@@ -80,6 +62,21 @@ class Ui_SettingsWindow(object):
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
+
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_palette = QLabel(SettingsWindow)
+        self.label_palette.setObjectName(u"label_palette")
+
+        self.horizontalLayout_2.addWidget(self.label_palette)
+
+        self.comboBox_palette = QComboBox(SettingsWindow)
+        self.comboBox_palette.setObjectName(u"comboBox_palette")
+
+        self.horizontalLayout_2.addWidget(self.comboBox_palette)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.openLastFile = QCheckBox(SettingsWindow)
         self.openLastFile.setObjectName(u"openLastFile")
@@ -124,13 +121,9 @@ class Ui_SettingsWindow(object):
         self.language.setItemText(2, QCoreApplication.translate("SettingsWindow", u"\u0420\u0443\u0441\u0441\u043a\u0438\u0439", None))
         self.language.setItemText(3, QCoreApplication.translate("SettingsWindow", u"Japanese", None))
 
-        self.labelTheme.setText(QCoreApplication.translate("SettingsWindow", u"Theme", None))
-        self.theme.setItemText(0, QCoreApplication.translate("SettingsWindow", u"System", None))
-        self.theme.setItemText(1, QCoreApplication.translate("SettingsWindow", u"Light", None))
-        self.theme.setItemText(2, QCoreApplication.translate("SettingsWindow", u"Dark", None))
-
-        self.theme.setCurrentText(QCoreApplication.translate("SettingsWindow", u"System", None))
         self.label_style.setText(QCoreApplication.translate("SettingsWindow", u"Style", None))
+        self.label_palette.setText(QCoreApplication.translate("SettingsWindow", u"Palette", None))
+        self.comboBox_palette.setCurrentText("")
         self.openLastFile.setText(QCoreApplication.translate("SettingsWindow", u"On startup open the last opened file", None))
         self.posLastFile.setText(QCoreApplication.translate("SettingsWindow", u"Set the position of the last opened file", None))
         self.volumePlus.setText(QCoreApplication.translate("SettingsWindow", u"Increase maxumum volume up to 150%", None))

@@ -20,9 +20,10 @@ import screenshot_window
 import settings_window
 from config import ConfigManager
 from mpv import MPV
+from palettes import palettes
 
 name_program = 'Anime Player'
-version = '2.1.2'
+version = '2.2'
 video_formats = ('mp4', 'mkv', 'webm', 'avi', 'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
@@ -196,28 +197,30 @@ class SettingsWindow(QDialog):
             case _:
                 self.lang = 'Auto'
 
-        match config.get('theme'):
-            case 'Light':
-                self.theme = 'Light'
-            case 'Dark':
-                self.theme = 'Dark'
-            case _:
-                self.theme = 'System'
+        styles = QStyleFactory.keys()
+        for i in range(len(styles)):
+            styles[i] = styles[i].lower()
+        self.ui.comboBox_style.addItems(styles)
+        self.ui.comboBox_style.setCurrentText(config.get('style', self.style().name()))
+
+        palettes_list: list = list(palettes.keys())
+        for i in range(len(palettes_list)):
+            palettes_list[i] = palettes_list[i].replace(' Dark', '').replace(' Light', '')
+
+        unique_list = []
+        for palette in palettes_list:
+            if palette not in unique_list:
+                unique_list.append(palette)
+
+        self.ui.comboBox_palette.addItems(unique_list)
+        self.ui.comboBox_palette.setCurrentText(
+            config.get('palette', 'System'))
 
         self.ui.language.setCurrentText(self.lang)
         self.ui.openLastFile.setChecked(config.get('onOpenLastFile', True))
         self.ui.posLastFile.setChecked(config.get('onPosLastFile', True))
         self.ui.volumePlus.setChecked(config.get('volumePlus', False))
         self.ui.svp.setChecked(config.get('SVP', False))
-        self.ui.theme.setCurrentText(self.theme)
-        styles = QStyleFactory.keys()
-        for i in range(len(styles)):
-            styles[i] = styles[i].lower()
-        self.ui.comboBox_style.addItems(styles)
-        self.ui.comboBox_style.setCurrentText(config.get('style', app.style().name()))
-
-        self.ui.labelTheme.setVisible(False)
-        self.ui.theme.setVisible(False)
 
         self.ui.buttonBox.accepted.connect(self.ok)
 
@@ -228,7 +231,7 @@ class SettingsWindow(QDialog):
         self.ui.volumePlus.setText(loc['Increase maximum volume up to 150%'])
         self.ui.svp.setText(loc['Activate SVP'])
         self.ui.buttonBox.buttons()[1].setText(loc['Cancel'])
-        self.ui.labelTheme.setText(loc['Theme'])
+        self.ui.label_palette.setText(loc['Palette'])
         self.ui.label_style.setText(loc['Theme'])
 
     def ok(self):
@@ -237,15 +240,15 @@ class SettingsWindow(QDialog):
         config.set('SVP', self.ui.svp.isChecked())
         config.set('volumePlus', self.ui.volumePlus.isChecked())
         config.set('style', self.ui.comboBox_style.currentText())
+        config.set('palette', self.ui.comboBox_palette.currentText())
 
         if config.get('volumePlus', False) != self.ui.volumePlus.isChecked():
             if not self.ui.volumePlus.isChecked() and mpv.volume > 100:
                 mpv.volume = 100
             config.set('volumePlus', self.ui.volumePlus.isChecked())
 
-        if config.get('language', self.lang) != self.ui.language.currentText() or config.get('theme', self.theme) != self.ui.theme.currentText():
+        if config.get('language', self.lang) != self.ui.language.currentText():
             config.set('language', self.ui.language.currentText())
-            config.set('theme', self.ui.theme.currentText())
 
         if self.ui.svp.isChecked():
             if mpv.input_ipc_server != 'mpvpipe':
@@ -259,6 +262,13 @@ class SettingsWindow(QDialog):
             mpv.hr_seek_framedrop = True
 
         app.setStyle(self.ui.comboBox_style.currentText())
+
+        palette = self.ui.comboBox_palette.currentText()
+        if app.styleHints().colorScheme() == Qt.ColorScheme.Light:
+            palette += ' Light'
+        else:
+            palette += ' Dark'
+        app.setPalette(palettes.get(palette, palettes['System']))
 
 
 class OpenURLWindow(QDialog):
@@ -1155,7 +1165,14 @@ class Player:
 
 if __name__ == '__main__':
     app = QApplication()
-    window = MainWindow()
+
+    palette = config.get('palette', 'System')
+    if palette not in palettes.keys():
+        if app.styleHints().colorScheme() == Qt.ColorScheme.Light:
+            palette += ' Light'
+        else:
+            palette += ' Dark'
+    app.setPalette(palettes.get(palette, palettes['System']))
 
     screenshot_path = ''
 
@@ -1167,8 +1184,8 @@ if __name__ == '__main__':
 
         locale.setlocale(locale.LC_NUMERIC, 'C')
 
+    window = MainWindow()
     mpv: MPV = MPV(wid=window.ui.video.winId(), keep_open=True, profile='gpu-hq', ytdl=True, terminal='yes')
-
     window.show()
     player = Player()
     player.start_player(sys.argv)
