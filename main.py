@@ -946,7 +946,7 @@ class Player:
             window.ui.play.setIcon(QIcon(icons.pause))
         self.files = self.list_files(folder)
         self.filenames_only = self.list_filenames(folder)
-        if file != '' and os.path.exists(file):
+        if file is not None and file != '' and os.path.exists(file):
             file_num = self.files.index(file)
         else:
             file_num = 0

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Anime Player
+Exec=anime_player
+Terminal=false
+Type=Application
+Comment=Video player with the function of improving the quality
+Icon=com.mazur.anime_player
+Categories=AudioVideo;

@@ -1,0 +1,45 @@
+id: com.mazur.AnimePlayer
+runtime: org.kde.Platform
+runtime-version: '6.9'
+sdk: org.kde.Sdk
+command: anime_player
+
+finish-args:
+  - --socket=x11
+  - --socket=pulseaudio
+  - --share=ipc
+  - --share=network
+  - --filesystem=home
+  - --device=dri
+
+build-options:
+  append-ld-library-path: /app/lib
+
+modules:
+  - name: xcb-libs
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib
+      - cp -a /usr/lib/x86_64-linux-gnu/libxcb-cursor.so* /app/lib/
+    sources: []
+
+  - name: mpv-libs
+    buildsystem: simple
+    sources:
+      - type: dir
+        path: /var/lib/flatpak/app/io.mpv.Mpv/x86_64/stable/active/files/
+    build-commands:
+      - cp -r lib /app/
+
+  - name: main
+    buildsystem: simple
+    sources:
+      - type: dir
+        path: .
+    build-commands:
+      - mkdir -p /app/bin
+      - cp -r main.dist/* /app/bin/
+      - mkdir -p /app/share/applications
+      - cp -r com.mazur.AnimePlayer.desktop /app/share/applications/
+      - mkdir -p /app/share/icons/hicolor/512x512/apps/
+      - cp -r images/anime-player-icon.png /app/share/icons/hicolor/512x512/apps/com.mazur.AnimePlayer.png
