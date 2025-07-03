@@ -1058,7 +1058,8 @@ class Player:
             cls.is_maximized = window.isMaximized()
             window.showFullScreen()
             window.ui.menubar.setFixedHeight(0)
-            # window.ui.controlPanel.setFloating(True)
+            if os.name == 'nt':
+                window.ui.controlPanel.setFloating(True)
             window.ui.controlPanel.setVisible(False)
             cls.is_menu_visible = window.ui.rightPanel.isVisible()
             window.ui.rightPanel.setVisible(False)
@@ -1080,6 +1081,8 @@ class Player:
     def update_fullscreen_layout(self, x: float, y: float):
         if y > window.ui.centralwidget.size().height() - window.ui.controlPanel.height():
             window.ui.controlPanel.setVisible(True)
+            if os.name != 'nt':
+                window.ui.controlPanel.setFloating(True)
             window.ui.controlPanel.activateWindow()
         elif x > window.ui.centralwidget.size().width() - window.ui.rightPanel.width() - 20 and Player.is_menu_visible and not window.ui.rightPanel.isVisible():
             window.ui.rightPanel.setVisible(True)
