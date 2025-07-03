@@ -186,10 +186,10 @@ class Ui_MainWindow(object):
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setEnabled(True)
-        self.verticalLayout_4 = QVBoxLayout(self.centralwidget)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_video = QVBoxLayout(self.centralwidget)
+        self.verticalLayout_video.setSpacing(0)
+        self.verticalLayout_video.setObjectName(u"verticalLayout_video")
+        self.verticalLayout_video.setContentsMargins(0, 0, 0, 0)
         self.video = QLabel(self.centralwidget)
         self.video.setObjectName(u"video")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -202,7 +202,7 @@ class Ui_MainWindow(object):
         self.video.setWordWrap(False)
         self.video.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
 
-        self.verticalLayout_4.addWidget(self.video)
+        self.verticalLayout_video.addWidget(self.video)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)

@@ -4,5 +4,5 @@ Exec=anime_player
 Terminal=false
 Type=Application
 Comment=Video player with the function of improving the quality
-Icon=com.mazur.anime_player
+Icon=com.mazur.AnimePlayer
 Categories=AudioVideo;

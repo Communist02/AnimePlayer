@@ -17,7 +17,7 @@
 #
 # You can find copies of the GPLv2 and LGPLv2.1 licenses in the project repository's LICENSE.GPL and LICENSE.LGPL files.
 
-__version__ = '1.0.7'
+__version__ = '1.0.8'
 
 from ctypes import *
 import ctypes.util
@@ -56,7 +56,6 @@ if os.name == 'nt':
         else:
             raise OSError(f'ctypes.find_library found mpv.dll at {dll}, but ctypes.CDLL could not load it.') from e
     fs_enc = 'utf-8'
-
 else:
     import locale
     lc, enc = locale.getlocale(locale.LC_NUMERIC)
@@ -1526,7 +1525,7 @@ class MPV(object):
         self.command('overlay_remove', overlay_id)
 
     def osd_overlay(self, overlay_id, data, res_x=0, res_y=720, z=0, hidden=False):
-        self.command('osd_overlay', id=overlay_id, data=data, res_x=res_x, res_y=res_Y, z=z, hidden=hidden,
+        self.command('osd_overlay', id=overlay_id, data=data, res_x=res_x, res_y=res_y, z=z, hidden=hidden,
         format='ass-events')
 
     def osd_overlay_remove(self, overlay_id):
@@ -2200,4 +2199,3 @@ class MpvRenderContext:
 
     def report_swap(self):
         _mpv_render_context_report_swap(self._handle)
-

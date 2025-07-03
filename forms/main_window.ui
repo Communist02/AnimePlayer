@@ -24,7 +24,7 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <layout class="QVBoxLayout" name="verticalLayout_video">
     <property name="spacing">
      <number>0</number>
     </property>
