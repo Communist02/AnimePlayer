@@ -3,9 +3,8 @@ runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 command: anime_player
-version: 2.2.1
-license: 'GPL-3.0-or-later'
-homepage: 'https://github.com/Communist02/AnimePlayer'
+base: io.mpv.Mpv
+base-version: 'stable'
 
 finish-args:
   - --socket=x11
@@ -16,10 +15,19 @@ finish-args:
   - --filesystem=xdg-config/kdeglobals:ro
   - --device=dri
 
+cleanup:
+  - '/app/lib/python3.12'
+
 build-options:
   append-ld-library-path: /app/lib
 
 modules:
+  - name: mpv-libs
+    buildsystem: simple
+    sources: []
+    build-commands:
+      - find /app -mindepth 1 -maxdepth 1 -not -name "lib" -exec rm -rf {} +
+
   - name: xcb-libs
     buildsystem: simple
     build-commands:
@@ -27,23 +35,39 @@ modules:
       - cp -a /usr/lib/x86_64-linux-gnu/libxcb-cursor.so* /app/lib/
     sources: []
 
-  - name: mpv-libs
+  - name: python-requirements
+    cleanup:
+      - '*'
     buildsystem: simple
-    sources:
-      - type: dir
-        path: /var/lib/flatpak/app/io.mpv.Mpv/x86_64/stable/active/files/
+    build-options:
+      build-args:
+        - '--share=network'
     build-commands:
-      - cp -r lib /app/
-
-  - name: main
-    buildsystem: simple
+      - pip install --no-cache-dir --prefix=/app -r requirements.txt
+      - pip install --no-cache-dir --prefix=/app nuitka
+      - pip install --no-cache-dir --prefix=/app patchelf
     sources:
       - type: dir
         path: .
+
+  - name: nuitka
+    buildsystem: simple
     build-commands:
-      - mkdir -p /app/bin
-      - cp -r main.dist/* /app/bin/
+      - nuitka --enable-plugin=pyside6 --output-file=anime_player --include-data-files=docs/GLSL_Instructions_Advanced.txt=docs/GLSL_Instructions_Advanced.txt --include-data-files=docs/GLSL_Instructions_Advanced_ru.txt=docs/GLSL_Instructions_Advanced_ru.txt --include-data-dir=images=images --include-data-dir=shaders=shaders --product-name="Anime Player" --product-version=2 --standalone --output-dir=/app/bin main.py
+      - rm -r /app/bin/main.build
+      - mv /app/bin/main.dist/* /app/bin
+      - rm -r /app/bin/main.dist
+    sources:
+      - type: dir
+        path: .
+
+  - name: main
+    buildsystem: simple
+    build-commands:
       - mkdir -p /app/share/applications
       - cp -r com.mazur.AnimePlayer.desktop /app/share/applications/
       - mkdir -p /app/share/icons/hicolor/512x512/apps/
       - cp -r images/anime-player-icon.png /app/share/icons/hicolor/512x512/apps/com.mazur.AnimePlayer.png
+    sources:
+      - type: dir
+        path: .
