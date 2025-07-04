@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Anime Player"
-#define MyAppVersion "2.2"
+#define MyAppVersion "2.2.1"
 #define MyAppPublisher "Denis Mazur"
 #define MyAppURL "https://github.com/Communist02/AnimePlayer"
 #define MyAppExeName "anime_player.exe"
@@ -172,4 +172,3 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

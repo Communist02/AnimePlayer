@@ -343,9 +343,6 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.prev.sizePolicy().hasHeightForWidth())
         self.prev.setSizePolicy(sizePolicy4)
         self.prev.setMinimumSize(QSize(64, 64))
-        icon22 = QIcon()
-        icon22.addFile(u"../images/icons/skip_previous_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.prev.setIcon(icon22)
         self.prev.setIconSize(QSize(40, 40))
         self.prev.setFlat(True)
 
@@ -357,9 +354,6 @@ class Ui_MainWindow(object):
         self.play.setSizePolicy(sizePolicy4)
         self.play.setMinimumSize(QSize(64, 64))
         self.play.setBaseSize(QSize(0, 0))
-        icon23 = QIcon()
-        icon23.addFile(u"../images/icons/play_arrow_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.play.setIcon(icon23)
         self.play.setIconSize(QSize(40, 40))
         self.play.setFlat(True)
 
@@ -370,9 +364,6 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.next.sizePolicy().hasHeightForWidth())
         self.next.setSizePolicy(sizePolicy4)
         self.next.setMinimumSize(QSize(64, 64))
-        icon24 = QIcon()
-        icon24.addFile(u"../images/icons/skip_next_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.next.setIcon(icon24)
         self.next.setIconSize(QSize(40, 40))
         self.next.setFlat(True)
 
@@ -403,9 +394,6 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.sub.sizePolicy().hasHeightForWidth())
         self.sub.setSizePolicy(sizePolicy4)
         self.sub.setMinimumSize(QSize(64, 64))
-        icon25 = QIcon()
-        icon25.addFile(u"../images/icons/subtitles_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.sub.setIcon(icon25)
         self.sub.setIconSize(QSize(40, 40))
         self.sub.setFlat(True)
 
@@ -416,9 +404,6 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.audio.sizePolicy().hasHeightForWidth())
         self.audio.setSizePolicy(sizePolicy4)
         self.audio.setMinimumSize(QSize(64, 64))
-        icon26 = QIcon()
-        icon26.addFile(u"../images/icons/music_note_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.audio.setIcon(icon26)
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setFlat(True)
 
@@ -429,9 +414,6 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.menu.sizePolicy().hasHeightForWidth())
         self.menu.setSizePolicy(sizePolicy4)
         self.menu.setMinimumSize(QSize(64, 64))
-        icon27 = QIcon()
-        icon27.addFile(u"../images/icons/format_list_bulleted_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.menu.setIcon(icon27)
         self.menu.setIconSize(QSize(40, 40))
         self.menu.setFlat(True)
 
@@ -442,9 +424,6 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.fullscreen.sizePolicy().hasHeightForWidth())
         self.fullscreen.setSizePolicy(sizePolicy4)
         self.fullscreen.setMinimumSize(QSize(64, 64))
-        icon28 = QIcon()
-        icon28.addFile(u"../images/icons/fullscreen_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.fullscreen.setIcon(icon28)
         self.fullscreen.setIconSize(QSize(40, 40))
         self.fullscreen.setFlat(True)
 
