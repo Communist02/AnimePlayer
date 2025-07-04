@@ -357,10 +357,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/skip_previous_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/skip_previous_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>40</width>
@@ -395,10 +391,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/play_arrow_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/play_arrow_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>40</width>
@@ -426,10 +418,6 @@
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/skip_next_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/skip_next_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -509,10 +497,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/subtitles_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/subtitles_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>40</width>
@@ -540,10 +524,6 @@
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/music_note_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/music_note_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -573,10 +553,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/format_list_bulleted_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/format_list_bulleted_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>40</width>
@@ -604,10 +580,6 @@
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../images/icons/fullscreen_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</normaloff>../images/icons/fullscreen_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

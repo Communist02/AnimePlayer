@@ -24,7 +24,7 @@ from mpv import MPV, MpvRenderContext, MpvGlGetProcAddressFn
 from palettes import palettes
 
 name_program = 'Anime Player'
-version = '2.2'
+version = '2.2.1'
 video_formats = ('mp4', 'mkv', 'webm', 'avi',
                  'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
@@ -881,6 +881,9 @@ class Player:
             window.ui.time.setValue(0)
 
     def play_file(self, file: str, timeout=3, position: float = 0):
+        if os.name != 'nt':
+            window.ui.video.hide()
+            video.show()
         mpv.play(file)
         if position > 0:
             try:
@@ -1007,6 +1010,9 @@ class Player:
         if file is not None and file != '' and os.path.exists(file):
             file_num = self.files.index(file)
         else:
+            if os.name != 'nt':
+                video.hide()
+                window.ui.video.show()
             file_num = 0
         if len(self.files) != 0:
             file_name = self.files[file_num]
@@ -1027,6 +1033,9 @@ class Player:
         Закрытие открытых фалов и переход в изначальное состояние
         """
         mpv.stop()
+        if os.name != 'nt':
+            video.hide()
+            window.ui.video.show()
         mpv.pause = False
         window.ui.play.setIcon(QIcon(icons.play))
         self.files = []
@@ -1237,7 +1246,6 @@ class Player:
 def get_process_address(_, name):
     glctx = QOpenGLContext.currentContext()
     address = int(glctx.getProcAddress(QByteArray(name)))
-    # return ctypes.cast(address, ctypes.c_void_p).value
     return address
 
 
@@ -1285,9 +1293,6 @@ class Video(QOpenGLWidget):
     def on_update(self):
         self.onUpdate.emit()
 
-    def play(self, url):
-        self.mpv.play(url)
-
     def closeEvent(self, event: QCloseEvent) -> None:
         """free mpv_context and terminate player brofre closing the widget"""
         self.ctx.free()
@@ -1318,11 +1323,11 @@ if __name__ == '__main__':
     else:
         import locale
         locale.setlocale(locale.LC_NUMERIC, 'C')
-        window.ui.video.hide()
-        mpv: MPV = MPV(keep_open=True, vo='libmpv', profile='gpu-hq', ytdl=True, terminal='yes')
+        mpv: MPV = MPV(keep_open=True, vo='libmpv', profile='gpu-hq', terminal='yes')
         video = Video(window.ui.centralwidget, mpv)
         video.setMouseTracking(True)
         window.ui.verticalLayout_video.addWidget(video)
+        video.hide()
 
     window.show()
     player = Player()

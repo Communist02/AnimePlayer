@@ -1,8 +1,11 @@
 id: com.mazur.AnimePlayer
-runtime: org.kde.Platform
-runtime-version: '6.9'
-sdk: org.kde.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
 command: anime_player
+version: 2.2.1
+license: 'GPL-3.0-or-later'
+homepage: 'https://github.com/Communist02/AnimePlayer'
 
 finish-args:
   - --socket=x11
@@ -10,6 +13,7 @@ finish-args:
   - --share=ipc
   - --share=network
   - --filesystem=home
+  - --filesystem=xdg-config/kdeglobals:ro
   - --device=dri
 
 build-options:
