@@ -24,7 +24,7 @@ from mpv import MPV, MpvRenderContext, MpvGlGetProcAddressFn
 from palettes import palettes
 
 name_program = 'Anime Player'
-version = '2.2.1'
+version = '2.3.0'
 video_formats = ('mp4', 'mkv', 'webm', 'avi',
                  'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
@@ -819,12 +819,24 @@ class Player:
             def set_audio(index: int):
                 mpv.aid = index
 
+            def add_audio():
+                file_name = QFileDialog.getOpenFileName(
+                    filter=f"{loc['Soundtrack']} ({' '.join(['*.' + f for f in audio_formats + video_formats])});;{loc['All files']} (*.*)")
+                if file_name[0] is not None and file_name[0] != '':
+                    mpv.audio_add(file_name[0])
+
             menu_audio = QMenu()
             if len(self.audio) > 0:
                 action = QAction(window)
                 action.setText(loc['Disable'])
                 action.triggered.connect(lambda: set_audio(0))
                 menu_audio.addAction(action)
+
+                action = QAction(window)
+                action.setText(loc['Add audio track'])
+                action.triggered.connect(add_audio)
+                menu_audio.addAction(action)
+
                 menu_audio.addSeparator()
                 for key, value in self.audio.items():
                     action = QAction(window)
@@ -834,8 +846,10 @@ class Player:
                     menu_audio.addAction(action)
             else:
                 action = QAction(window)
-                action.setText(loc['No audio tracks'])
+                action.setText(loc['Add audio track'])
+                action.triggered.connect(add_audio)
                 menu_audio.addAction(action)
+            
             menu_audio.exec(window.ui.audio.mapToGlobal(QPoint(0, 0)))
 
     def update_info(self, no_update_fps=True):

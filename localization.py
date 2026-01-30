@@ -84,6 +84,7 @@ en = {
     'No audio tracks': 'No audio tracks',
     'No subtitles': 'No subtitles',
     'Add subtitles': 'Add subtitles',
+    'Add audio track': 'Add audio track',
     'Palette': 'Palette'
 }
 
@@ -169,6 +170,7 @@ ru = {
     'No audio tracks': 'Нет аудио дорожек',
     'No subtitles': 'Нет субтитров',
     'Add subtitles': 'Добавить субтитры',
+    'Add audio track': 'Добавить аудио дорожку',
     'Palette': 'Цветовая палитра'
 }
 
@@ -254,6 +256,7 @@ ja = {
     'No audio tracks': 'オーディオトラックなし',
     'No subtitles': '字幕なし',
     'Add subtitles': '字幕の追加',
+    'Add audio track': 'Add audio track',
     'Palette': '— カラー パレット'
 }
 
