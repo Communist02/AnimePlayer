@@ -85,7 +85,8 @@ en = {
     'No subtitles': 'No subtitles',
     'Add subtitles': 'Add subtitles',
     'Add audio track': 'Add audio track',
-    'Palette': 'Palette'
+    'Palette': 'Palette',
+    'Sound offset': 'Sound offset (seconds)'
 }
 
 ru = {
@@ -171,7 +172,8 @@ ru = {
     'No subtitles': 'Нет субтитров',
     'Add subtitles': 'Добавить субтитры',
     'Add audio track': 'Добавить аудио дорожку',
-    'Palette': 'Цветовая палитра'
+    'Palette': 'Цветовая палитра',
+    'Sound offset': 'Задержка звука (секунды)'
 }
 
 ja = {
@@ -257,7 +259,8 @@ ja = {
     'No subtitles': '字幕なし',
     'Add subtitles': '字幕の追加',
     'Add audio track': 'Add audio track',
-    'Palette': '— カラー パレット'
+    'Palette': '— カラー パレット',
+    'Sound offset': 'Sound offset (seconds)'
 }
 
 for key, value in en.items():

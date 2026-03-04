@@ -10,3 +10,5 @@ main.build
 main.dist
 nuitka-crash-report.xml
 output
+anime-player-repo
+anime_player_x86_64.flatpak
