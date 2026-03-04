@@ -24,7 +24,7 @@ from mpv import MPV, MpvRenderContext, MpvGlGetProcAddressFn
 from palettes import palettes
 
 name_program = 'Anime Player'
-version = '2.3.0'
+version = '2.3.1'
 video_formats = ('mp4', 'mkv', 'webm', 'avi',
                  'mov', 'wmv', '3gp', 'ts', 'mpeg')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
@@ -237,6 +237,7 @@ class SettingsWindow(QDialog):
         self.ui.posLastFile.setChecked(config.get('onPosLastFile', True))
         self.ui.volumePlus.setChecked(config.get('volumePlus', False))
         self.ui.svp.setChecked(config.get('SVP', False))
+        self.ui.doubleSpinBox_sound_offset.setValue(config.get('soundOffset', 0))
 
         self.ui.buttonBox.accepted.connect(self.ok)
 
@@ -251,6 +252,7 @@ class SettingsWindow(QDialog):
         self.ui.buttonBox.buttons()[1].setText(loc['Cancel'])
         self.ui.label_palette.setText(loc['Palette'])
         self.ui.label_style.setText(loc['Theme'])
+        self.ui.label_sound_offset.setText(loc['Sound offset'])
 
     def ok(self):
         config.set('onOpenLastFile', self.ui.openLastFile.isChecked())
@@ -259,6 +261,7 @@ class SettingsWindow(QDialog):
         config.set('volumePlus', self.ui.volumePlus.isChecked())
         config.set('style', self.ui.comboBox_style.currentText())
         config.set('palette', self.ui.comboBox_palette.currentText())
+        config.set('soundOffset', self.ui.doubleSpinBox_sound_offset.value())
 
         if config.get('volumePlus', False) != self.ui.volumePlus.isChecked():
             if not self.ui.volumePlus.isChecked() and mpv.volume > 100:
@@ -267,6 +270,9 @@ class SettingsWindow(QDialog):
 
         if config.get('language', self.lang) != self.ui.language.currentText():
             config.set('language', self.ui.language.currentText())
+
+        if mpv.audio_delay != self.ui.doubleSpinBox_sound_offset.value():
+            mpv.audio_delay = self.ui.doubleSpinBox_sound_offset.value()
 
         if self.ui.svp.isChecked():
             if mpv.input_ipc_server != 'mpvpipe':
@@ -1178,6 +1184,7 @@ class Player:
             volume_plus = config.get('volumePlus', False)
             svp = config.get('SVP')
             style = config.get('style')
+            sound_offset = config.get('soundOffset')
             launch_parameters = config.get('launchParameters')
             if on_pos_last_file is not None and not on_pos_last_file or position is None:
                 position = 0
@@ -1215,6 +1222,8 @@ class Player:
                     pass
             if style is not None:
                 app.setStyle(style)
+            if sound_offset and sound_offset != 0:
+                mpv.audio_delay = sound_offset
         except ValueError:
             config.delete('opened')
             config.delete('file')

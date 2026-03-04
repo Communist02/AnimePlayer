@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'settings_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.3
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,14 +16,14 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QCheckBox, QComboBox,
-    QDialog, QDialogButtonBox, QHBoxLayout, QLabel,
-    QSizePolicy, QVBoxLayout, QWidget)
+    QDialog, QDialogButtonBox, QDoubleSpinBox, QHBoxLayout,
+    QLabel, QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
         if not SettingsWindow.objectName():
             SettingsWindow.setObjectName(u"SettingsWindow")
-        SettingsWindow.resize(254, 242)
+        SettingsWindow.resize(285, 297)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         SettingsWindow.setWindowIcon(icon)
@@ -78,6 +78,24 @@ class Ui_SettingsWindow(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.label_sound_offset = QLabel(SettingsWindow)
+        self.label_sound_offset.setObjectName(u"label_sound_offset")
+
+        self.horizontalLayout_4.addWidget(self.label_sound_offset)
+
+        self.doubleSpinBox_sound_offset = QDoubleSpinBox(SettingsWindow)
+        self.doubleSpinBox_sound_offset.setObjectName(u"doubleSpinBox_sound_offset")
+        self.doubleSpinBox_sound_offset.setMinimum(-100.000000000000000)
+        self.doubleSpinBox_sound_offset.setMaximum(100.000000000000000)
+        self.doubleSpinBox_sound_offset.setSingleStep(0.010000000000000)
+
+        self.horizontalLayout_4.addWidget(self.doubleSpinBox_sound_offset)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
+
         self.openLastFile = QCheckBox(SettingsWindow)
         self.openLastFile.setObjectName(u"openLastFile")
 
@@ -124,6 +142,7 @@ class Ui_SettingsWindow(object):
         self.label_style.setText(QCoreApplication.translate("SettingsWindow", u"Style", None))
         self.label_palette.setText(QCoreApplication.translate("SettingsWindow", u"Palette", None))
         self.comboBox_palette.setCurrentText("")
+        self.label_sound_offset.setText(QCoreApplication.translate("SettingsWindow", u"Sound offset (second)", None))
         self.openLastFile.setText(QCoreApplication.translate("SettingsWindow", u"On startup open the last opened file", None))
         self.posLastFile.setText(QCoreApplication.translate("SettingsWindow", u"Set the position of the last opened file", None))
         self.volumePlus.setText(QCoreApplication.translate("SettingsWindow", u"Increase maxumum volume up to 150%", None))
