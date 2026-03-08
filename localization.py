@@ -258,9 +258,9 @@ ja = {
     'No audio tracks': 'オーディオトラックなし',
     'No subtitles': '字幕なし',
     'Add subtitles': '字幕の追加',
-    'Add audio track': 'Add audio track',
+    'Add audio track': 'オーディオトラックの追加',
     'Palette': '— カラー パレット',
-    'Sound offset': 'Sound offset (seconds)'
+    'Sound offset': 'サウンドオフセット (秒)'
 }
 
 for key, value in en.items():
