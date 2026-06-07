@@ -24,12 +24,13 @@ from mpv import MPV, MpvRenderContext, MpvGlGetProcAddressFn
 from palettes import palettes
 
 name_program = 'Anime Player'
-version = '2.3.1'
+version = '2.3.2'
 video_formats = ('mp4', 'mkv', 'webm', 'avi',
-                 'mov', 'wmv', '3gp', 'ts', 'mpeg')
+                 'mov', 'wmv', '3gp', 'ts', 'mpeg', 'gif')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
 subtitles_formats = ('ass', 'idx', 'srt', 'ssa', 'sub', 'ttml', 'vtt')
 formats = video_formats + audio_formats
+TIME_SCALE = 10
 
 config = ConfigManager('config.json')
 localization.set_locale(config.get('language'))
@@ -208,6 +209,8 @@ class SettingsWindow(QDialog):
                 self.lang = 'English'
             case 'Japanese':
                 self.lang = 'Japanese'
+            case 'Português (Brasil)':
+                self.lang = 'Português (Brasil)'
             case _:
                 self.lang = 'Auto'
 
@@ -405,7 +408,6 @@ class MainWindow(QMainWindow):
         self.ui.video.setPixmap(
             QPixmap(f'{os.path.dirname(__file__) + os.sep}images{os.sep}play-button.png'))
 
-        self.ui.rightPanel.setTitleBarWidget(QWidget())
         self.ui.controlPanel.setTitleBarWidget(QWidget())
 
         self.ui.play.setToolTip(f'{loc['Play']} / {loc['Pause']}')
@@ -426,13 +428,14 @@ class MainWindow(QMainWindow):
         self.ui.audio.clicked.connect(lambda: player.audio_view())
         self.ui.volume.valueChanged.connect(
             lambda: player.volume_update(self.ui.volume.value()))
-        self.ui.time.valueChanged.connect(lambda: self.change_time())
+        self.ui.horizontalSlider_playtime.valueChanged.connect(lambda: self.change_time())
 
         self.ui.video.setMouseTracking(True)
         self.setMouseTracking(True)
         self.centralWidget().setMouseTracking(True)
+        self.ui.splitter.setMouseTracking(True)
 
-        self.timer = QTimer(interval=500)
+        self.timer = QTimer(interval=100)
         self.timer.timeout.connect(self.timer_update)
         self.timer.start()
 
@@ -596,8 +599,8 @@ class MainWindow(QMainWindow):
         player.update_cursor()
 
     def change_time(self):
-        if mpv.time_pos is not None and int(mpv.time_pos) != self.ui.time.value():
-            player.new_position(self.ui.time.value())
+        if mpv.time_pos is not None and int(mpv.time_pos * TIME_SCALE) != self.ui.horizontalSlider_playtime.value():
+            player.new_position(self.ui.horizontalSlider_playtime.value() / TIME_SCALE)
 
     def closeEvent(self, event):
         player.save_parameters()
@@ -705,7 +708,7 @@ class MainWindow(QMainWindow):
     def rewind_plus():
         if mpv.time_pos is not None:
             mpv.seek(5)
-            window.ui.time.setValue(mpv.time_pos)
+            window.ui.horizontalSlider_playtime.setValue(int(mpv.time_pos * TIME_SCALE))
             window.ui.currentTime.setText(
                 '{:02d}:{:02d}'.format(*divmod(int(mpv.time_pos), 60)))
 
@@ -716,7 +719,7 @@ class MainWindow(QMainWindow):
                 mpv.seek(-5)
             else:
                 mpv.time_pos = 0
-            window.ui.time.setValue(mpv.time_pos)
+            window.ui.horizontalSlider_playtime.setValue(int(mpv.time_pos * TIME_SCALE))
             window.ui.currentTime.setText(
                 '{:02d}:{:02d}'.format(*divmod(int(mpv.time_pos), 60)))
 
@@ -885,20 +888,20 @@ class Player:
         if mpv.duration is not None:
             if self.duration != mpv.duration:
                 self.duration = mpv.duration
-                window.ui.time.setMaximum(self.duration)
+                window.ui.horizontalSlider_playtime.setMaximum(int(self.duration * TIME_SCALE))
                 window.ui.allTime.setText('{:02d}:{:02d}'.format(
                     *divmod(int(self.duration), 60)))
         else:
-            window.ui.time.setMaximum(0)
+            window.ui.horizontalSlider_playtime.setMaximum(0)
             window.ui.allTime.setText('00:00')
 
         if time_pos is not None:
-            window.ui.time.setValue(time_pos)
+            window.ui.horizontalSlider_playtime.setValue(int(time_pos * TIME_SCALE))
             window.ui.currentTime.setText(
                 '{:02d}:{:02d}'.format(*divmod(int(time_pos), 60)))
         else:
             window.ui.currentTime.setText('00:00')
-            window.ui.time.setValue(0)
+            window.ui.horizontalSlider_playtime.setValue(0)
 
     def play_file(self, file: str, timeout=3, position: float = 0):
         if os.name != 'nt':
@@ -933,10 +936,11 @@ class Player:
         """Переход к следующему файлу"""
         current_index = window.ui.fileList.currentIndex().row()
         if current_index < len(self.files) - 1:
-            window.ui.fileList.setCurrentRow(current_index + 1)
+            next_index = current_index + 1
+            window.ui.fileList.setCurrentRow(next_index)
             window.setWindowTitle(
-                f'{self.filenames_only[current_index]} - {name_program}')
-            self.play_file(self.files[current_index])
+                f'{self.filenames_only[next_index]} - {name_program}')
+            self.play_file(self.files[next_index])
 
     def prev(self):
         """Переход к предыдущему файлу"""
@@ -1094,7 +1098,6 @@ class Player:
             window.ui.rightPanel.setVisible(False)
         else:
             cls.fullscreen = False
-            window.ui.rightPanel.setFloating(False)
             if cls.is_maximized:
                 window.showMaximized()
             else:
@@ -1108,18 +1111,20 @@ class Player:
             window.ui.controlPanel.setFloating(False)
 
     def update_fullscreen_layout(self, x: float, y: float):
-        if y > window.ui.centralwidget.size().height() - window.ui.controlPanel.height():
+        video_x_end = window.ui.centralwidget.pos().x() + window.ui.centralwidget.size().width()
+        video_y_end = window.ui.centralwidget.pos().y() + window.ui.centralwidget.size().height()
+        if y > video_y_end - window.ui.controlPanel.height():
             window.ui.controlPanel.setVisible(True)
             if os.name != 'nt':
                 window.ui.controlPanel.setFloating(True)
             window.ui.controlPanel.activateWindow()
-        elif x > window.ui.centralwidget.size().width() - window.ui.rightPanel.width() - 20 and Player.is_menu_visible and not window.ui.rightPanel.isVisible():
-            window.ui.rightPanel.setVisible(True)
-        elif x > window.ui.centralwidget.size().width() - 20 and Player.is_menu_visible and window.ui.rightPanel.isVisible():
+            window.ui.controlPanel.move(window.ui.centralwidget.pos().x(), video_y_end - window.ui.controlPanel.height())
+        elif x > video_x_end - window.ui.rightPanel.width() - 20 and Player.is_menu_visible and x < video_x_end:
             window.ui.rightPanel.setVisible(True)
         else:
             window.ui.rightPanel.setVisible(False)
             window.ui.controlPanel.setVisible(False)
+        
 
         window.ui.video.unsetCursor()
         self.cursor_last = (x, y)
@@ -1145,8 +1150,8 @@ class Player:
             window.ui.allTime.setText(
                 '{:02d}:{:02d}'.format(*divmod(int(mpv.duration), 60)))
             if slider_update:
-                window.ui.time.setMaximum(mpv.duration)
-                window.ui.time.setValue(mpv.time_pos)
+                window.ui.horizontalSlider_playtime.setMaximum(int(mpv.duration * TIME_SCALE))
+                window.ui.horizontalSlider_playtime.setValue(int(mpv.time_pos * TIME_SCALE))
 
     @staticmethod
     def volume_update(volume: int):
@@ -1208,6 +1213,11 @@ class Player:
                         if os.path.exists(opened[1]):
                             self.open_folder(
                                 opened[1], pause=True, file=file, position=position)
+                    case _:
+                        if os.name != 'nt':
+                            video.hide()
+            elif os.name != 'nt':
+                video.hide()
             if svp is not None and svp:
                 mpv.input_ipc_server = 'mpvpipe'
                 mpv.hwdec = 'auto-copy'
@@ -1318,7 +1328,8 @@ class Video(QOpenGLWidget):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """free mpv_context and terminate player brofre closing the widget"""
-        self.ctx.free()
+        if self.ctx:
+            self.ctx.free()
         self.mpv.terminate()
         event.accept()
 
@@ -1347,11 +1358,11 @@ if __name__ == '__main__':
         import locale
         locale.setlocale(locale.LC_NUMERIC, 'C')
         mpv: MPV = MPV(keep_open=True, vo='libmpv', profile='gpu-hq', terminal='yes')
-        video = Video(window.ui.centralwidget, mpv)
+        video = Video(window.ui.splitter, mpv)
         video.setMouseTracking(True)
-        window.ui.verticalLayout_video.addWidget(video)
-        video.hide()
+        window.ui.splitter.insertWidget(0, video)
 
+    window.ui.splitter.setStretchFactor(0, 1)
     window.show()
     player = Player()
     player.start_player(sys.argv)

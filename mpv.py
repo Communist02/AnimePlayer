@@ -26,6 +26,7 @@ import queue
 import os
 import os.path
 import sys
+from typing import Any
 from warnings import warn
 from functools import partial, wraps
 from contextlib import contextmanager
@@ -2108,7 +2109,7 @@ class MPV(object):
         else:
             _mpv_set_property_string(self.handle, ename, _mpv_coax_proptype(value))
 
-    def __getattr__(self, name):
+    def __getattr__(self, name) -> Any:
         return self._get_property(_py_to_mpv(name), lazy_decoder)
 
     def __setattr__(self, name, value):

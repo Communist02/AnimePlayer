@@ -1,4 +1,5 @@
 import os
+from typing import LiteralString
 
 standard_presets = {
     'A (Fast)': (
@@ -85,7 +86,7 @@ sec_qualities = {'S': 'S', 'M': 'S', 'L': 'M', 'VL': 'M', 'UL': 'L'}
 current_preset = ''
 
 
-def create_preset(quality, mode):
+def create_preset(quality: str, mode: str) -> tuple:
     created_presets = {
         'A': (
             'Anime4K_Clamp_Highlights.glsl', f'Anime4K_Restore_CNN_{quality}.glsl',
@@ -124,9 +125,10 @@ def create_preset(quality, mode):
     return created_presets[mode]
 
 
-def to_string(preset, preset_name=''):
+def to_string(preset, preset_name='') -> LiteralString:
     global current_preset
-    preset = (os.path.dirname(__file__) + os.sep + 'shaders' + os.sep + shader for shader in preset)
+    preset = (os.path.dirname(__file__) + os.sep +
+              'shaders' + os.sep + shader for shader in preset)
     current_preset = preset_name
     if os.name == 'nt':
         sep = ';'
@@ -135,7 +137,7 @@ def to_string(preset, preset_name=''):
     return sep.join(preset)
 
 
-def android_config(preset, path='/storage/emulated/0/mpv/shaders/'):
+def android_config(preset, path='/storage/emulated/0/mpv/shaders/') -> LiteralString:
     if len(path) != 0 and path[-1] == '/':
         path = path[0:-1]
     preset = (path + '/' + shader for shader in preset)

@@ -66,6 +66,38 @@ libadwaita_dark.setColor(QPalette.ColorRole.PlaceholderText, QColor.fromRgb(180,
 libadwaita_dark.setColor(QPalette.ColorRole.ToolTipBase, QColor.fromRgb(240, 241, 242))
 libadwaita_dark.setColor(QPalette.ColorRole.ToolTipText, QColor.fromRgb(64, 64, 64))
 
+new_libadwaita_light = QPalette()
+new_libadwaita_light.setColor(QPalette.ColorRole.Window, QColor.fromRgb(249, 249, 247))
+new_libadwaita_light.setColor(QPalette.ColorRole.Base, QColor.fromRgb(255, 255, 255))
+new_libadwaita_light.setColor(QPalette.ColorRole.Text, QColor.fromRgb(54, 54, 54))
+new_libadwaita_light.setColor(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, QColor.fromRgb(150, 150, 150))
+new_libadwaita_light.setColor(QPalette.ColorRole.WindowText, QColor.fromRgb(54, 54, 54))
+new_libadwaita_light.setColor(QPalette.ColorRole.Button, QColor.fromRgb(230, 230, 231))
+new_libadwaita_light.setColor(QPalette.ColorRole.ButtonText, QColor.fromRgb(54, 54, 54))
+new_libadwaita_light.setColor(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, QColor.fromRgb(150, 150, 150))
+new_libadwaita_light.setColor(QPalette.ColorRole.Accent, QColor.fromRgb(53, 133, 229))
+new_libadwaita_light.setColor(QPalette.ColorRole.Highlight, QColor.fromRgb(53, 133, 229))
+new_libadwaita_light.setColor(QPalette.ColorRole.HighlightedText, QColor.fromRgb(0, 0, 0))
+new_libadwaita_light.setColor(QPalette.ColorRole.PlaceholderText, QColor.fromRgb(170, 170, 170))
+new_libadwaita_light.setColor(QPalette.ColorRole.ToolTipBase, QColor.fromRgb(240, 241, 242))
+new_libadwaita_light.setColor(QPalette.ColorRole.ToolTipText, QColor.fromRgb(64, 64, 64))
+
+new_libadwaita_dark = QPalette()
+new_libadwaita_dark.setColor(QPalette.ColorRole.Window, QColor.fromRgb(35, 34, 39))
+new_libadwaita_dark.setColor(QPalette.ColorRole.Base, QColor.fromRgb(47, 46, 51))
+new_libadwaita_dark.setColor(QPalette.ColorRole.Text, QColor.fromRgb(255, 255, 255))
+new_libadwaita_dark.setColor(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Text, QColor.fromRgb(150, 150, 150))
+new_libadwaita_dark.setColor(QPalette.ColorRole.WindowText, QColor.fromRgb(255, 255, 255))
+new_libadwaita_dark.setColor(QPalette.ColorRole.Button, QColor.fromRgb(47, 46, 51))
+new_libadwaita_dark.setColor(QPalette.ColorRole.ButtonText, QColor.fromRgb(255, 255, 255))
+new_libadwaita_dark.setColor(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, QColor.fromRgb(150, 150, 150))
+new_libadwaita_dark.setColor(QPalette.ColorRole.Accent, QColor.fromRgb(53, 133, 229))
+new_libadwaita_dark.setColor(QPalette.ColorRole.Highlight, QColor.fromRgb(53, 133, 229))
+new_libadwaita_dark.setColor(QPalette.ColorRole.HighlightedText, QColor.fromRgb(0, 0, 0))
+new_libadwaita_dark.setColor(QPalette.ColorRole.PlaceholderText, QColor.fromRgb(180, 180, 180))
+new_libadwaita_dark.setColor(QPalette.ColorRole.ToolTipBase, QColor.fromRgb(240, 241, 242))
+new_libadwaita_dark.setColor(QPalette.ColorRole.ToolTipText, QColor.fromRgb(64, 64, 64))
+
 classic_light = QPalette()
 classic_light.setColor(QPalette.ColorRole.Window, QColor.fromRgb(245, 241, 235))
 classic_light.setColor(QPalette.ColorRole.Base, QColor.fromRgb(235, 227, 215))
@@ -94,8 +126,8 @@ classic_dark.setColor(QPalette.ColorRole.Button, QColor.fromRgb(66, 71, 77))
 classic_dark.setColor(QPalette.ColorRole.ButtonText, QColor.fromRgb(194, 231, 255))
 classic_dark.setColor(QPalette.ColorGroup.Disabled, QPalette.ColorRole.ButtonText, QColor.fromRgb(150, 150, 150))
 classic_dark.setColor(QPalette.ColorRole.Accent, QColor.fromRgb(194, 231, 255))
-classic_dark.setColor(QPalette.ColorRole.Highlight, QColor.fromRgb(80, 95, 105))
-classic_dark.setColor(QPalette.ColorRole.HighlightedText, QColor.fromRgb(227, 227, 227))
+classic_dark.setColor(QPalette.ColorRole.Highlight, QColor.fromRgb(194, 231, 255))
+classic_dark.setColor(QPalette.ColorRole.HighlightedText, QColor.fromRgb(32, 35, 40))
 classic_dark.setColor(QPalette.ColorRole.PlaceholderText, QColor.fromRgb(170, 170, 170))
 classic_dark.setColor(QPalette.ColorRole.ToolTipBase, QColor.fromRgb(240, 241, 242))
 classic_dark.setColor(QPalette.ColorRole.ToolTipText, QColor.fromRgb(64, 64, 64))
@@ -106,6 +138,8 @@ palettes = {
     'Qlementine Dark': qlementine_dark,
     'Adwaita Light': libadwaita_light,
     'Adwaita Dark': libadwaita_dark,
+    'New Adwaita Light': new_libadwaita_light,
+    'New Adwaita Dark': new_libadwaita_dark,
     'Classic Light': classic_light,
     'Classic Dark': classic_dark
 }

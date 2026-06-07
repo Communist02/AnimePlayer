@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'about_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.2
+## Created by: Qt User Interface Compiler version 6.11.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -109,11 +109,11 @@ class Ui_AboutWindow(object):
 
     def retranslateUi(self, AboutWindow):
         AboutWindow.setWindowTitle(QCoreApplication.translate("AboutWindow", u"About", None))
-        self.label_2.setText(QCoreApplication.translate("AboutWindow", u"Anime Player v2.1", None))
+        self.label_2.setText(QCoreApplication.translate("AboutWindow", u"Anime Player v2.3", None))
         self.label_3.setText(QCoreApplication.translate("AboutWindow", u"Media player written in Python programming language using PySide 6 library, mpv media player and Anime4K scaling algorithm\n"
 "\n"
 "Site: https://github.com/Communist02/AnimePlayer", None))
-        self.label_4.setText(QCoreApplication.translate("AboutWindow", u"Copyright \u00a9 2025 Denis Mazur", None))
+        self.label_4.setText(QCoreApplication.translate("AboutWindow", u"Copyright \u00a9 2026 Denis Mazur", None))
         self.image.setText("")
     # retranslateUi
 

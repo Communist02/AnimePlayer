@@ -29,7 +29,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Anime Player v2.1</string>
+        <string>Anime Player v2.3</string>
        </property>
       </widget>
      </item>
@@ -80,7 +80,7 @@ Site: https://github.com/Communist02/AnimePlayer</string>
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Copyright © 2025 Denis Mazur</string>
+        <string>Copyright © 2026 Denis Mazur</string>
        </property>
       </widget>
      </item>

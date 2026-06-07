@@ -263,14 +263,102 @@ ja = {
     'Sound offset': 'サウンドオフセット (秒)'
 }
 
+pt_br = {
+    'lang': 'Português (Brasil)',
+    'File': 'Arquivo',
+    'Open file': 'Abrir arquivo',
+    'Open URL': 'Abrir URL',
+    'Open folder': 'Abrir pasta',
+    'Close': 'Fechar',
+    'Exit': 'Sair',
+    'Playback': 'Reprodução',
+    'Play | Pause': 'Reproduzir | Pausar',
+    'Fullscreen': 'Tela cheia',
+    'Increasing image quality': 'Aumentar qualidade de imagem',
+    'Disable': 'Desabilitar',
+    'Other': 'Outro',
+    'Reference': 'Referência',
+    'About': 'Sobre',
+    'Settings': 'Configurações',
+    'Quality': 'Qualidade',
+    'Mode': 'Modo',
+    'About program': 'Media player escrito em Python usando a biblioteca PySide 6, o reprodutor mpv e o algoritmo de escalonamento Anime4K\n\nSite: https://github.com/Communist02/AnimePlayer',
+    'Activate SVP': 'Ativar SVP',
+    'Create config for Android': 'Criar configuração para Android',
+    'Play': 'Reproduzir',
+    'Pause': 'Pausar',
+    'Menu': 'Menu',
+    'Next file': 'Próximo arquivo',
+    'Previous file': 'Arquivo anterior',
+    'Volume level': 'Nível de volume',
+    'Frames lost': 'Quadros perdidos',
+    'Information': 'Informações',
+    'Clear': 'Limpar',
+    'Select': 'Selecionar',
+    'Cancel': 'Cancelar',
+    'Language selection': 'Seleção de idioma (requer reinicialização)',
+    'On startup open the last opened file': 'Ao iniciar, abrir o último arquivo aberto',
+    'Set the position of the last opened file': 'Definir a posição do último arquivo aberto',
+    'Dark theme': 'Tema escuro',
+    'Speed': 'Velocidade',
+    'Playback speed': 'Velocidade de reprodução',
+    'Subtitles': 'Legendas',
+    'Soundtrack': 'Trilha sonora',
+    'Choose file': 'Escolher arquivo',
+    'All supported files': 'Todos os arquivos suportados',
+    'Enter the URL': 'Digite a URL',
+    'Opening a link': 'Abrindo um link',
+    'Select a folder': 'Selecionar uma pasta',
+    'Opening a folder': 'Abrindo uma pasta',
+    'You can use this config to use the Anime4K algorithm in the mpv video player on android': 'Você pode usar esta configuração para utilizar o algoritmo Anime4K no reprodutor de vídeo mpv no Android',
+    'Enter the path to the shaders': 'Digite o caminho para os shaders',
+    'Select the algorithm configuration': 'Selecione a configuração do algoritmo',
+    'All': 'Todos',
+    'Selected': 'Selecionado',
+    'Off': 'Desligado',
+    'Paste': 'Colar',
+    'Screenshot': 'Captura de tela',
+    'Take a screenshot': 'Fazer uma captura de tela',
+    'Enter folder path for screenshots': 'Digite o caminho da pasta para capturas de tela',
+    'Increase maximum volume up to 150%': 'Aumentar o volume máximo para 150%',
+    'Launch parameters': 'Parâmetros de inicialização',
+    'Manual launch parameters': 'Use o manual do mpv https://mpv.io/manual/\nMas lembre-se de que é necessária a sintaxe Python.\nAcesse a variável "mpv".\nPor exemplo, em vez de --volume=50 use mpv.volume = 50',
+    'Apply': 'Aplicar',
+    'Save': 'Salvar',
+    'Error': 'Erro',
+    'Success': 'Sucesso',
+    'Volume +10': 'Volume +10',
+    'Volume -10': 'Volume -10',
+    'Rewind +5 sec': 'Avançar +5 seg',
+    'Rewind -5 sec': 'Retroceder -5 seg',
+    'Zoom in': 'Ampliar',
+    'Zoom out': 'Reduzir',
+    'Playlist': 'Lista de reprodução',
+    'Theme': 'Tema',
+    'Light': 'Claro',
+    'Dark': 'Escuro',
+    'System': 'Sistema',
+    'All files': 'Todos os arquivos',
+    'Video': 'Vídeo',
+    'Audio': 'Áudio',
+    'No video tracks': 'Sem faixas de vídeo',
+    'No audio tracks': 'Sem faixas de áudio',
+    'No subtitles': 'Sem legendas',
+    'Add subtitles': 'Adicionar legendas',
+    'Add audio track': 'Adicionar faixa de áudio',
+    'Palette': 'Paleta de cores',
+    'Sound offset': 'Deslocamento de som (segundos)'
+}
+
 for key, value in en.items():
     ru[key] = ru.get(key, value)
     ja[key] = ja.get(key, value)
+    pt_br[key] = pt_br.get(key, value)
 
 strings = en
 
 
-def set_locale(lang: str):
+def set_locale(lang: str | None):
     global strings
     match lang:
         case 'Русский':
@@ -279,6 +367,8 @@ def set_locale(lang: str):
             strings = en
         case 'Japanese':
             strings = ja
+        case 'Português (Brasil)':
+            strings = pt_br
         case _:
             if os.name == 'nt':
                 windll = ctypes.windll.kernel32
@@ -290,5 +380,7 @@ def set_locale(lang: str):
                     strings = ru
                 case 'Japanese_Japan' | 'ja_JP':
                     strings = ja
+                case 'Portuguese_Brazil' | 'pt_BR':
+                    strings = pt_br
                 case _:
                     strings = en

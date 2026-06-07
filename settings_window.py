@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'settings_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.2
+## Created by: Qt User Interface Compiler version 6.11.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,7 +23,7 @@ class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
         if not SettingsWindow.objectName():
             SettingsWindow.setObjectName(u"SettingsWindow")
-        SettingsWindow.resize(285, 297)
+        SettingsWindow.resize(285, 300)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         SettingsWindow.setWindowIcon(icon)
@@ -37,6 +37,7 @@ class Ui_SettingsWindow(object):
         self.horizontalLayout.addWidget(self.label)
 
         self.language = QComboBox(SettingsWindow)
+        self.language.addItem("")
         self.language.addItem("")
         self.language.addItem("")
         self.language.addItem("")
@@ -138,6 +139,7 @@ class Ui_SettingsWindow(object):
         self.language.setItemText(1, QCoreApplication.translate("SettingsWindow", u"English", None))
         self.language.setItemText(2, QCoreApplication.translate("SettingsWindow", u"\u0420\u0443\u0441\u0441\u043a\u0438\u0439", None))
         self.language.setItemText(3, QCoreApplication.translate("SettingsWindow", u"Japanese", None))
+        self.language.setItemText(4, QCoreApplication.translate("SettingsWindow", u"Portugu\u00eas (Brasil)", None))
 
         self.label_style.setText(QCoreApplication.translate("SettingsWindow", u"Style", None))
         self.label_palette.setText(QCoreApplication.translate("SettingsWindow", u"Palette", None))
