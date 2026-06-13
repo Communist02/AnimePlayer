@@ -23,7 +23,7 @@ class Ui_SettingsWindow(object):
     def setupUi(self, SettingsWindow):
         if not SettingsWindow.objectName():
             SettingsWindow.setObjectName(u"SettingsWindow")
-        SettingsWindow.resize(285, 300)
+        SettingsWindow.resize(285, 330)
         icon = QIcon()
         icon.addFile(u"../favicon.ico", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         SettingsWindow.setWindowIcon(icon)
@@ -99,21 +99,31 @@ class Ui_SettingsWindow(object):
 
         self.openLastFile = QCheckBox(SettingsWindow)
         self.openLastFile.setObjectName(u"openLastFile")
+        self.openLastFile.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.verticalLayout.addWidget(self.openLastFile)
 
         self.posLastFile = QCheckBox(SettingsWindow)
         self.posLastFile.setObjectName(u"posLastFile")
+        self.posLastFile.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.verticalLayout.addWidget(self.posLastFile)
 
         self.volumePlus = QCheckBox(SettingsWindow)
         self.volumePlus.setObjectName(u"volumePlus")
+        self.volumePlus.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.verticalLayout.addWidget(self.volumePlus)
 
+        self.checkBox_fixed_control_panel = QCheckBox(SettingsWindow)
+        self.checkBox_fixed_control_panel.setObjectName(u"checkBox_fixed_control_panel")
+        self.checkBox_fixed_control_panel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+        self.verticalLayout.addWidget(self.checkBox_fixed_control_panel)
+
         self.svp = QCheckBox(SettingsWindow)
         self.svp.setObjectName(u"svp")
+        self.svp.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.verticalLayout.addWidget(self.svp)
 
@@ -148,6 +158,7 @@ class Ui_SettingsWindow(object):
         self.openLastFile.setText(QCoreApplication.translate("SettingsWindow", u"On startup open the last opened file", None))
         self.posLastFile.setText(QCoreApplication.translate("SettingsWindow", u"Set the position of the last opened file", None))
         self.volumePlus.setText(QCoreApplication.translate("SettingsWindow", u"Increase maxumum volume up to 150%", None))
+        self.checkBox_fixed_control_panel.setText(QCoreApplication.translate("SettingsWindow", u"Fixed control panel", None))
         self.svp.setText(QCoreApplication.translate("SettingsWindow", u"Activate SVP", None))
     # retranslateUi
 

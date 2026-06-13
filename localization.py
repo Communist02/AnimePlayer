@@ -86,7 +86,8 @@ en = {
     'Add subtitles': 'Add subtitles',
     'Add audio track': 'Add audio track',
     'Palette': 'Palette',
-    'Sound offset': 'Sound offset (seconds)'
+    'Sound offset': 'Sound offset (seconds)',
+    'Fixed multimedia control panel': 'Fixed multimedia control panel'
 }
 
 ru = {
@@ -173,7 +174,8 @@ ru = {
     'Add subtitles': 'Добавить субтитры',
     'Add audio track': 'Добавить аудио дорожку',
     'Palette': 'Цветовая палитра',
-    'Sound offset': 'Задержка звука (секунды)'
+    'Sound offset': 'Задержка звука (секунды)',
+    'Fixed multimedia control panel': 'Фиксированная панель контроля мультимедиа'
 }
 
 ja = {

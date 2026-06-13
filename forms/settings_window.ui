@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>285</width>
-    <height>300</height>
+    <height>330</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -116,6 +116,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="openLastFile">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="text">
       <string>On startup open the last opened file</string>
      </property>
@@ -123,6 +126,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="posLastFile">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="text">
       <string>Set the position of the last opened file</string>
      </property>
@@ -130,13 +136,29 @@
    </item>
    <item>
     <widget class="QCheckBox" name="volumePlus">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="text">
       <string>Increase maxumum volume up to 150%</string>
      </property>
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkBox_fixed_control_panel">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Fixed control panel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="svp">
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="text">
       <string>Activate SVP</string>
      </property>

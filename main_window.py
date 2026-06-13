@@ -319,6 +319,7 @@ class Ui_MainWindow(object):
         sizePolicy4.setHeightForWidth(self.horizontalSlider_playtime.sizePolicy().hasHeightForWidth())
         self.horizontalSlider_playtime.setSizePolicy(sizePolicy4)
         self.horizontalSlider_playtime.setMinimumSize(QSize(100, 0))
+        self.horizontalSlider_playtime.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.horizontalSlider_playtime.setMaximum(60)
         self.horizontalSlider_playtime.setPageStep(5)
         self.horizontalSlider_playtime.setOrientation(Qt.Orientation.Horizontal)
@@ -347,6 +348,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.prev.sizePolicy().hasHeightForWidth())
         self.prev.setSizePolicy(sizePolicy5)
         self.prev.setMinimumSize(QSize(64, 64))
+        self.prev.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.prev.setIconSize(QSize(40, 40))
         self.prev.setFlat(True)
 
@@ -358,6 +360,7 @@ class Ui_MainWindow(object):
         self.play.setSizePolicy(sizePolicy5)
         self.play.setMinimumSize(QSize(64, 64))
         self.play.setBaseSize(QSize(0, 0))
+        self.play.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.play.setIconSize(QSize(40, 40))
         self.play.setFlat(True)
 
@@ -368,6 +371,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.next.sizePolicy().hasHeightForWidth())
         self.next.setSizePolicy(sizePolicy5)
         self.next.setMinimumSize(QSize(64, 64))
+        self.next.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.next.setIconSize(QSize(40, 40))
         self.next.setFlat(True)
 
@@ -379,6 +383,7 @@ class Ui_MainWindow(object):
         self.volume.setSizePolicy(sizePolicy4)
         self.volume.setMinimumSize(QSize(80, 0))
         self.volume.setMaximumSize(QSize(140, 16777215))
+        self.volume.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.volume.setMaximum(100)
         self.volume.setValue(100)
         self.volume.setOrientation(Qt.Orientation.Horizontal)
@@ -395,6 +400,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.sub.sizePolicy().hasHeightForWidth())
         self.sub.setSizePolicy(sizePolicy5)
         self.sub.setMinimumSize(QSize(64, 64))
+        self.sub.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.sub.setIconSize(QSize(40, 40))
         self.sub.setFlat(True)
 
@@ -405,6 +411,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.audio.sizePolicy().hasHeightForWidth())
         self.audio.setSizePolicy(sizePolicy5)
         self.audio.setMinimumSize(QSize(64, 64))
+        self.audio.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.audio.setIconSize(QSize(40, 40))
         self.audio.setFlat(True)
 
@@ -415,6 +422,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.menu.sizePolicy().hasHeightForWidth())
         self.menu.setSizePolicy(sizePolicy5)
         self.menu.setMinimumSize(QSize(64, 64))
+        self.menu.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.menu.setIconSize(QSize(40, 40))
         self.menu.setFlat(True)
 
@@ -425,6 +433,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.fullscreen.sizePolicy().hasHeightForWidth())
         self.fullscreen.setSizePolicy(sizePolicy5)
         self.fullscreen.setMinimumSize(QSize(64, 64))
+        self.fullscreen.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.fullscreen.setIconSize(QSize(40, 40))
         self.fullscreen.setFlat(True)
 

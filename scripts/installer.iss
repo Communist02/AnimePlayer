@@ -1,5 +1,5 @@
 #define MyAppName "Anime Player"
-#define MyAppVersion "2.3.2"
+#define MyAppVersion "2.3.3"
 #define MyAppPublisher "Denis Mazur"
 #define MyAppURL "https://github.com/Communist02/AnimePlayer"
 #define MyAppExeName "anime_player.exe"

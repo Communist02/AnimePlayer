@@ -24,7 +24,7 @@ from mpv import MPV, MpvRenderContext, MpvGlGetProcAddressFn
 from palettes import palettes
 
 name_program = 'Anime Player'
-version = '2.3.2'
+version = '2.3.3'
 video_formats = ('mp4', 'mkv', 'webm', 'avi',
                  'mov', 'wmv', '3gp', 'ts', 'mpeg', 'gif')
 audio_formats = ('m4a', 'mp3', 'flac', 'ogg', 'aac', 'opus', 'wav')
@@ -240,6 +240,7 @@ class SettingsWindow(QDialog):
         self.ui.posLastFile.setChecked(config.get('onPosLastFile', True))
         self.ui.volumePlus.setChecked(config.get('volumePlus', False))
         self.ui.svp.setChecked(config.get('SVP', False))
+        self.ui.checkBox_fixed_control_panel.setChecked(config.get('fixedControlPanel', False))
         self.ui.doubleSpinBox_sound_offset.setValue(config.get('soundOffset', 0))
 
         self.ui.buttonBox.accepted.connect(self.ok)
@@ -256,12 +257,14 @@ class SettingsWindow(QDialog):
         self.ui.label_palette.setText(loc['Palette'])
         self.ui.label_style.setText(loc['Theme'])
         self.ui.label_sound_offset.setText(loc['Sound offset'])
+        self.ui.checkBox_fixed_control_panel.setText(loc['Fixed multimedia control panel'])
 
     def ok(self):
         config.set('onOpenLastFile', self.ui.openLastFile.isChecked())
         config.set('onPosLastFile', self.ui.posLastFile.isChecked())
         config.set('SVP', self.ui.svp.isChecked())
         config.set('volumePlus', self.ui.volumePlus.isChecked())
+        config.set('fixedControlPanel', self.ui.checkBox_fixed_control_panel.isChecked())
         config.set('style', self.ui.comboBox_style.currentText())
         config.set('palette', self.ui.comboBox_palette.currentText())
         config.set('soundOffset', self.ui.doubleSpinBox_sound_offset.value())
@@ -1091,7 +1094,7 @@ class Player:
             cls.is_maximized = window.isMaximized()
             window.showFullScreen()
             window.ui.menubar.setFixedHeight(0)
-            if os.name == 'nt':
+            if os.name == 'nt' and not config.get('fixedControlPanel', False):
                 window.ui.controlPanel.setFloating(True)
             window.ui.controlPanel.setVisible(False)
             cls.is_menu_visible = window.ui.rightPanel.isVisible()
@@ -1113,12 +1116,13 @@ class Player:
     def update_fullscreen_layout(self, x: float, y: float):
         video_x_end = window.ui.centralwidget.pos().x() + window.ui.centralwidget.size().width()
         video_y_end = window.ui.centralwidget.pos().y() + window.ui.centralwidget.size().height()
-        if y > video_y_end - window.ui.controlPanel.height():
+        if y > video_y_end - window.ui.controlPanel.height() if not config.get('fixedControlPanel', False) or window.ui.controlPanel.isHidden() else 0:
             window.ui.controlPanel.setVisible(True)
-            if os.name != 'nt':
+            if os.name != 'nt' and not config.get('fixedControlPanel', False):
                 window.ui.controlPanel.setFloating(True)
-            window.ui.controlPanel.activateWindow()
-            window.ui.controlPanel.move(window.ui.centralwidget.pos().x(), video_y_end - window.ui.controlPanel.height())
+            if not config.get('fixedControlPanel', False):
+                window.ui.controlPanel.activateWindow()
+                window.ui.controlPanel.move(window.ui.centralwidget.pos().x(), video_y_end - window.ui.controlPanel.height())
         elif x > video_x_end - window.ui.rightPanel.width() - 20 and Player.is_menu_visible and x < video_x_end:
             window.ui.rightPanel.setVisible(True)
         else:
