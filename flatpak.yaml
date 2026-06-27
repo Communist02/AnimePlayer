@@ -26,7 +26,7 @@ modules:
     buildsystem: simple
     sources: []
     build-commands:
-      - find /app -mindepth 1 -maxdepth 1 -not -name "lib" -exec rm -rf {} +
+      - find /app -mindepth 1 -maxdepth 1 \( -not -name "lib" -a -not -name "lib64" \) -exec rm -rf {} +
 
   - name: xcb-libs
     buildsystem: simple
